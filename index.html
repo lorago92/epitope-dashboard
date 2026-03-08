@@ -1517,7 +1517,7 @@ async function loadData(){
     const res=await fetch('data/meta_signal_latest.csv?t='+Date.now());
     if(res.ok){
       const text=await res.text();
-      const rows=text.trim().split('\n').slice(1).map(l=>{const c=l.split(',');return{ticker:c[0],score:parseFloat(c[1]||0)};}).filter(r=>!isNaN(r.score));
+      const rows=text.trim().split('\n').slice(1).map(l=>{const c=l.split(',');return{ticker:c[0],score:parseFloat(c[3]||0),final_score:parseFloat(c[1]||0),phi:parseFloat(c[9]||0),psi:parseFloat(c[10]||0)};}).filter(r=>!isNaN(r.score));
       rows.sort((a,b)=>b.score-a.score);
       D.sig=rows;
     }
@@ -2044,13 +2044,16 @@ async function renderSignals(r){
     const gate=gateText(regime);
     function row(s,rank,action){
       const ac=action==='BUY'?'var(--cyan)':action==='AVOID'?'var(--red)':'var(--amber)';
+      const phi=s.phi!=null&&!isNaN(s.phi)?s.phi.toFixed(2):'—';
+      const psi=s.psi!=null&&!isNaN(s.psi)?s.psi.toFixed(2):'—';
+      const gated=s.final_score!=null&&!isNaN(s.final_score)?s.final_score.toFixed(3):'—';
       return `<tr>
         <td style="color:var(--t4)">${rank}</td>
         <td style="color:var(--cyan);font-weight:600">${s.ticker}</td>
-        <td>${(s.score*0.6+Math.random()*0.1).toFixed(2)}</td>
-        <td>${(s.score*0.4+Math.random()*0.1).toFixed(2)}</td>
+        <td>${phi}</td>
+        <td>${psi}</td>
         <td style="color:var(--amber)">${gate}</td>
-        <td style="font-weight:600">${s.score.toFixed(3)}</td>
+        <td style="font-weight:600">${s.score.toFixed(3)} <span style="color:var(--t4);font-size:9px">(${gated})</span></td>
         <td style="color:${ac};font-weight:600">${action}</td>
       </tr>`;
     }
