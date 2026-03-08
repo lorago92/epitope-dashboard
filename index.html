@@ -1071,7 +1071,7 @@ body::after{
               <div style="font-size:9px;color:rgba(96,144,255,0.4);letter-spacing:1px">AFFINITY·Score · data/meta_signal_latest.csv</div>
             </div>
             <div>
-              <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:10px">TOP 20 · LONG ONLY SELECTION</div>
+              <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:10px">TOP 5 & BOTTOM 5</div>
               <div id="pl-top20" style="display:flex;flex-direction:column;gap:5px"></div>
             </div>
           </div>
@@ -2117,22 +2117,25 @@ async function renderSignals(r){
     set('pl-rank-table',h);
   }
 
-  // Top 20 — compact vertical list in side panel
+  // Top 5 + Bottom 5 — compact vertical list in side panel
   if(scored>0){
-    const top20=sig.slice(0,20);
-    const maxScore=top20[0]?.score||100;
-    set('pl-top20',top20.map((s,i)=>{
-      const bar=Math.round(s.score/maxScore*100);
-      const col=s.score>60?'var(--cyan)':s.score<30?'var(--red)':'var(--blue)';
-      return `<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid rgba(50,70,140,0.1)">
+    const top5=sig.slice(0,5);
+    const bot5=[...sig].slice(-5).reverse();
+    const maxScore=top5[0]?.score||100;
+    const row=(s,i,col)=>`<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid rgba(50,70,140,0.1)">
         <span style="font-size:9px;color:var(--t4);width:16px;flex-shrink:0;text-align:right">${i+1}</span>
         <span style="font-size:10px;font-weight:600;color:${col};width:42px;flex-shrink:0;font-family:'JetBrains Mono',monospace">${s.ticker}</span>
         <div style="flex:1;height:3px;border-radius:2px;background:rgba(50,70,140,0.15)">
-          <div style="width:${bar}%;height:100%;background:${col};opacity:0.7;border-radius:2px"></div>
+          <div style="width:${Math.round(s.score/maxScore*100)}%;height:100%;background:${col};opacity:0.7;border-radius:2px"></div>
         </div>
         <span style="font-size:9px;color:${col};width:32px;text-align:right;flex-shrink:0">${s.score.toFixed(1)}</span>
       </div>`;
-    }).join(''));
+    const sep=`<div style="font-size:8px;letter-spacing:2px;color:var(--t4);text-align:center;padding:6px 0">· · · BOTTOM 5 · · ·</div>`;
+    set('pl-top20',
+      top5.map((s,i)=>row(s,i+1,'var(--cyan)')).join('')+
+      sep+
+      bot5.map((s,i)=>row(s,sig.length-4+i,'var(--red)')).join('')
+    );
   } else {
     set('pl-top20','<div style="font-size:11px;color:var(--t4);padding:8px">No signal data available</div>');
   }
