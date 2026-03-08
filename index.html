@@ -1380,17 +1380,17 @@ body::after{
             <input id="univ-search" type="text" placeholder="Search ticker or name…"
               style="background:rgba(30,40,80,0.5);border:1px solid rgba(50,70,140,0.3);border-radius:4px;padding:5px 10px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t2);outline:none;width:200px"
               oninput="filterUnivTable(this.value)">
-            <span style="font-size:9px;color:var(--t4)">Showing 20 rows · scroll for more</span>
+            <span style="font-size:9px;color:var(--t4)">Showing 40 rows · scroll for more</span>
           </div>
         </div>
-        <div style="overflow-y:auto;max-height:440px">
+        <div style="overflow-y:auto;max-height:880px">
           <table style="width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:10px">
             <thead>
               <tr style="position:sticky;top:0;background:#0a0c1e;z-index:2">
                 <th style="padding:10px 16px;text-align:left;color:var(--t4);font-weight:400;letter-spacing:1px;font-size:9px;border-bottom:1px solid var(--bd);white-space:nowrap">TICKER</th>
                 <th style="padding:10px 16px;text-align:left;color:var(--t4);font-weight:400;letter-spacing:1px;font-size:9px;border-bottom:1px solid var(--bd);white-space:nowrap">COMPANY</th>
-                <th style="padding:10px 12px;text-align:left;color:var(--t4);font-weight:400;letter-spacing:1px;font-size:9px;border-bottom:1px solid var(--bd);white-space:nowrap">GICS SUB-INDUSTRY</th>
-                <th style="padding:10px 12px;text-align:right;color:var(--t4);font-weight:400;letter-spacing:1px;font-size:9px;border-bottom:1px solid var(--bd);white-space:nowrap">MKT CAP</th>
+                <th style="padding:10px 12px;text-align:left;color:var(--t4);font-weight:400;letter-spacing:1px;font-size:9px;border-bottom:1px solid var(--bd);white-space:nowrap;cursor:pointer" onclick="sortUnivTable('gics')">GICS SUB-INDUSTRY <span id="sort-gics"></span></th>
+                <th style="padding:10px 12px;text-align:right;color:var(--t4);font-weight:400;letter-spacing:1px;font-size:9px;border-bottom:1px solid var(--bd);white-space:nowrap;cursor:pointer" onclick="sortUnivTable('mcap')">MKT CAP <span id="sort-mcap">▼</span></th>
                 <th style="padding:10px 12px;text-align:right;color:var(--t4);font-weight:400;letter-spacing:1px;font-size:9px;border-bottom:1px solid var(--bd);white-space:nowrap">ADDV</th>
                 <th style="padding:10px 12px;text-align:center;color:var(--t4);font-weight:400;letter-spacing:1px;font-size:9px;border-bottom:1px solid var(--bd);white-space:nowrap">TIER</th>
                 <th style="padding:10px 12px;text-align:center;color:var(--t4);font-weight:400;letter-spacing:1px;font-size:9px;border-bottom:1px solid var(--bd);white-space:nowrap">EXCH</th>
@@ -2612,7 +2612,15 @@ function renderUnivTable(rows){
     tbody.innerHTML = `<tr><td colspan="9" style="padding:40px;text-align:center;color:var(--t4);font-size:11px">Awaiting universe data · data/universe_latest.csv</td></tr>`;
     return;
   }
-  tbody.innerHTML = rows.map((d, i) => {
+  // Apply current sort
+  const sortKey = window._univSort || 'mcap';
+  const sortDir = window._univSortDir || -1; // -1 = desc, 1 = asc
+  const sorted = [...rows].sort((a,b) => {
+    if(sortKey === 'mcap') return sortDir * ((b.mcap||0) - (a.mcap||0));
+    if(sortKey === 'gics') return sortDir * (a.sub||'').localeCompare(b.sub||'');
+    return 0;
+  });
+  tbody.innerHTML = sorted.map((d, i) => {
     const catCol = GICS_PALETTE[d.cat] || '#607090';
     const rowBg  = i % 2 === 0 ? 'transparent' : 'rgba(20,28,60,0.3)';
     return `<tr style="background:${rowBg};border-bottom:1px solid rgba(30,40,80,0.4)">
@@ -2631,7 +2639,25 @@ function renderUnivTable(rows){
   }).join('');
 }
 
-function filterUnivTable(q){
+function sortUnivTable(key){
+  if(window._univSort === key){
+    window._univSortDir = (window._univSortDir || -1) * -1; // toggle direction
+  } else {
+    window._univSort = key;
+    window._univSortDir = -1; // default desc
+  }
+  // Update header indicators
+  $('sort-mcap') && ($('sort-mcap').textContent = '');
+  $('sort-gics') && ($('sort-gics').textContent = '');
+  const ind = window._univSortDir === -1 ? '▼' : '▲';
+  if(key === 'mcap' && $('sort-mcap')) $('sort-mcap').textContent = ind;
+  if(key === 'gics' && $('sort-gics')) $('sort-gics').textContent = ind;
+  // Re-render with current search filter applied
+  const q = ($('univ-search')||{}).value || '';
+  filterUnivTable(q);
+}
+
+
   const all = window._univAllRows || [];
   if(!q || !q.trim()){
     renderUnivTable(all);
