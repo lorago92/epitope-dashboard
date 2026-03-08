@@ -1998,6 +1998,7 @@ async function renderSignals(r){
     setTimeout(()=>clearInterval(waitPlotly),10000);
   }
   if(scored>0 && window.Plotly){
+    const scores=sig.map(s=>s.score);
     set('pl-score-dist','');
     $('pl-score-dist').style.cssText='height:220px';
     const layout={
