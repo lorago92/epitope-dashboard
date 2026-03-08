@@ -1641,11 +1641,11 @@ function renderOverview(m,r,p){
     else if(t==='Mid') tierC.Mid++;
     else tierC.Small++;
   });
-  const total = positions.length || 0;
-  if(total > 0){
-    const lPct=(tierC.Large/total*100).toFixed(0);
-    const mPct=(tierC.Mid/total*100).toFixed(0);
-    const sPct=(tierC.Small/total*100).toFixed(0);
+  const nPos = positions.length || 0;
+  if(nPos > 0){
+    const lPct=(tierC.Large/nPos*100).toFixed(0);
+    const mPct=(tierC.Mid/nPos*100).toFixed(0);
+    const sPct=(tierC.Small/nPos*100).toFixed(0);
     const lEl=$('ov-mcap-large'), mEl=$('ov-mcap-mid'), sEl=$('ov-mcap-small');
     if(lEl) lEl.style.width=lPct+'%';
     if(mEl) mEl.style.width=mPct+'%';
