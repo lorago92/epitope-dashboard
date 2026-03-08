@@ -1041,7 +1041,7 @@ body::after{
                 </div>
                 <div>
                   <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px">
-                    <div style="font-size:40px;font-weight:700;color:var(--blue);line-height:1;text-shadow:0 0 20px rgba(96,144,255,0.2)">Ψ</div>
+                    <div style="font-size:40px;font-weight:700;color:var(--cyan);line-height:1;text-shadow:0 0 20px rgba(0,255,180,0.2)">Ψ</div>
                     <div>
                       <div style="font-size:11px;font-weight:600;color:var(--t1)">Divergence Index</div>
                       <div style="font-size:9px;color:var(--t4);letter-spacing:1px">ANTIBODY·Bind</div>
@@ -2037,7 +2037,7 @@ async function renderSignals(r){
     };
     Plotly.newPlot('pl-landscape',[{
       x:sig.map(s=>s.phi??0),
-      y:sig.map(s=>Math.max(s.psi??0,0)),
+      y:sig.map(s=>s.psi??0),
       z:sig.map(s=>s.score),
       mode:'markers',
       type:'scatter3d',
@@ -2057,7 +2057,7 @@ async function renderSignals(r){
       scene:{
         bgcolor:'rgba(6,10,28,0)',
         xaxis:{...axStyle,title:'Φ · Signal Intensity',range:[0,100]},
-        yaxis:{...axStyle,title:'Ψ · Divergence',range:[0,100]},
+        yaxis:{...axStyle,title:'Ψ · Divergence',range:[-500,500]},
         zaxis:{...axStyle,title:'Score',range:[0,100]},
         camera:{eye:{x:1.5,y:-1.5,z:1.1},center:{x:0,y:0,z:-0.15}},
         aspectmode:'cube',
@@ -2092,17 +2092,22 @@ async function renderSignals(r){
     $('pl-rank-table').style.cssText='';
 
     // Build full ranked list: top half sorted desc, bottom half sorted asc for display
-    const allRanked=[...sig].map((s,i)=>({...s,rank:i+1}));
+    const allRanked=[...sig].map((s,i)=>({
+      ...s,
+      rank:i+1,
+      final_action: s.final_score>0 ? 'BUY' : s.gate===0 ? 'GATED' : 'AVOID',
+    }));
 
     const cols=[
-      {key:'rank',   label:'RANK'},
-      {key:'ticker', label:'TICKER'},
-      {key:'phi',    label:'Φ'},
-      {key:'psi',    label:'Ψ'},
-      {key:'score',  label:'COMPOSITE'},
-      {key:'action', label:'ACTION (PRE-GATE)'},
-      {key:'gate',   label:'GATE'},
+      {key:'rank',        label:'RANK'},
+      {key:'ticker',      label:'TICKER'},
+      {key:'phi',         label:'Φ'},
+      {key:'psi',         label:'Ψ'},
+      {key:'score',       label:'COMPOSITE'},
+      {key:'action',      label:'PRE-GATE ACTION'},
+      {key:'gate',        label:'GATE'},
       {key:'final_score', label:'FINAL SCORE'},
+      {key:'final_action',label:'FINAL ACTION'},
     ];
 
     let sortCol='rank', sortDir=1;
@@ -2122,6 +2127,7 @@ async function renderSignals(r){
           </tr></thead><tbody>`;
       sorted.forEach((s,i)=>{
         const ac=s.action==='BUY'?'var(--cyan)':s.action==='AVOID'?'var(--red)':'var(--amber)';
+        const fac=s.final_action==='BUY'?'var(--cyan)':s.final_action==='GATED'?'var(--red)':'var(--amber)';
         const fc=s.final_score>0?'var(--cyan)':'var(--t4)';
         const gateColor=s.gate===0?'var(--red)':s.gate===1?'var(--cyan)':'var(--amber)';
         const phi=!isNaN(s.phi)?s.phi.toFixed(1):'—';
@@ -2136,6 +2142,7 @@ async function renderSignals(r){
           <td style="padding:7px 12px;font-size:10px;color:${ac};font-weight:600">${s.action}</td>
           <td style="padding:7px 12px;font-size:10px;color:${gateColor};font-weight:600">${(s.gate*100).toFixed(0)}%</td>
           <td style="padding:7px 12px;font-size:10px;color:${fc};font-weight:600">${s.final_score.toFixed(1)}</td>
+          <td style="padding:7px 12px;font-size:10px;color:${fac};font-weight:600;letter-spacing:0.5px">${s.final_action}</td>
         </tr>${sep}`;
       });
       h+='</tbody></table></div>';
@@ -2155,7 +2162,7 @@ async function renderSignals(r){
   // Top 5 + Bottom 5 — compact vertical list in side panel
   if(scored>0){
     const top5=sig.slice(0,5);
-    const bot5=[...sig].slice(-5).reverse();
+    const bot5=[...sig].slice(-5);
     const maxScore=top5[0]?.score||100;
     const row=(s,rank,col)=>`<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid rgba(50,70,140,0.1)">
         <span style="font-size:9px;color:var(--t4);width:18px;flex-shrink:0;text-align:right">${rank}</span>
