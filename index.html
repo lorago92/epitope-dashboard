@@ -1,52 +1,4 @@
 <!DOCTYPE html><!-- v4.1 -->
-<!--
-=============================================================================
-EPITOPE DASHBOARD — OPEN TO-DO LIST (added 2026-03-08)
-=============================================================================
-
-[1] OVERVIEW PAGE — Row 3 Portfolio card — Market Cap Distribution
-    PROBLEM: Shows distribution of full universe (418 tickers), not portfolio holdings
-    FIX: Replace with same dynamic Holdings Distribution logic used in Portfolio page
-         (market cap tier breakdown from live positions[] in monitoring_report.json)
-    REF: Portfolio page Row 3 Holdings Distribution card — copy that logic
-
-[2] OVERVIEW PAGE — Row 3 Simulated Sharpe card — vs XBI / vs SPY values
-    PROBLEM: Shows +139.8% and +132.4% — these are WRONG
-             They appear to be ann return differences (154.2 - 14.4 = 139.8), not actual outperformance
-    CORRECT VALUES (computed from equity arrays Jan 2023 - Mar 2026):
-        Strategy total return: +1790.4%
-        XBI total return:       +52.8%
-        SPY total return:       +86.1%
-        vs XBI outperformance: +1737.7%  (strategy total - XBI total)
-        vs SPY outperformance: +1704.3%  (strategy total - SPY total)
-    FIX: Compute dynamically from equity arrays OR hardcode correct values above
-    NOTE: These are total return outperformance over the full backtest period, not annualised diff
-
-[3] PORTFOLIO PAGE — Row 1 Capital card — Benchmarks Since Inception
-    PROBLEM: Shows SPY 86.1% and XBI 52.8% — these are actually CORRECT
-             They match the equity array total returns (SPY +86.1%, XBI +52.8% from Jan 2023)
-             BUT inception date shown is 2026-03-07 (paper trading start), not 2023-01-01
-             So the dashboard is showing backtest-period benchmark returns against a live inception date
-    FIX: Either (a) compute benchmarks from actual paper trading inception date (2026-03-07)
-              in which case we need live SPY/XBI prices from the day of inception
-         OR   (b) label clearly as "Since Backtest Start (Jan 2023)" to avoid confusion
-    DECISION NEEDED before fixing
-
-[4] TRACK RECORD PAGE — Benchmark Comparison table
-    CURRENT VALUES (need verification against actual equity arrays):
-        XBI Ann Return: 10.9%  — WRONG, correct is ~13.9% (from equity array CAGR over 39 months)
-        XBI Sharpe: 0.56       — close, computed from monthly returns = 0.55 ✓
-        XBI Max DD: -25.5%     — CORRECT (matches equity array) ✓
-        SPY Ann Return: 18.7%  — WRONG, correct is ~21.1% (from equity array CAGR over 39 months)
-        SPY Sharpe: 1.62       — close, computed = 1.59 ✓
-        SPY Max DD: -8.3%      — CORRECT (matches equity array) ✓
-    FIX: Update XBI ann return to 13.9% and SPY ann return to 21.1%
-         (or compute dynamically from equity arrays using same CAGR formula as strategy)
-    NOTE: Annualised = (final/100)^(12/n_months) - 1, n_months = 39
-
-=============================================================================
--->
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -693,16 +645,16 @@ body::after{
             <div><div class="lbl">Regime</div><div class="val amber" id="pf-regime">—</div></div>
           </div>
           <div style="padding-top:12px;border-top:1px solid var(--bd)">
-            <div style="font-size:9px;letter-spacing:1.5px;color:var(--t3);margin-bottom:6px">MARKET CAP DISTRIBUTION</div>
-            <div style="display:flex;height:7px;border-radius:3px;overflow:hidden;margin-bottom:5px">
-              <div style="width:12%;background:var(--cyan);opacity:0.8" title="Large Cap"></div>
-              <div style="width:32%;background:var(--blue);opacity:0.8" title="Mid Cap"></div>
-              <div style="width:56%;background:var(--amber);opacity:0.8" title="Small Cap"></div>
+            <div style="font-size:9px;letter-spacing:1.5px;color:var(--t3);margin-bottom:6px">PORTFOLIO COMPOSITION</div>
+            <div style="display:flex;height:7px;border-radius:3px;overflow:hidden;margin-bottom:5px" id="ov-mcap-bar">
+              <div id="ov-mcap-large" style="width:0%;background:var(--cyan);opacity:0.8" title="Large Cap"></div>
+              <div id="ov-mcap-mid" style="width:0%;background:var(--blue);opacity:0.8" title="Mid Cap"></div>
+              <div id="ov-mcap-small" style="width:0%;background:var(--amber);opacity:0.8" title="Small Cap"></div>
             </div>
-            <div style="display:flex;justify-content:space-between;font-size:10px">
-              <span style="color:var(--cyan)">Large ~52</span>
-              <span style="color:var(--blue)">Mid ~134</span>
-              <span style="color:var(--amber)">Small ~232</span>
+            <div style="display:flex;justify-content:space-between;font-size:10px" id="ov-mcap-labels">
+              <span style="color:var(--cyan)" id="ov-mcap-large-lbl">—</span>
+              <span style="color:var(--blue)" id="ov-mcap-mid-lbl">—</span>
+              <span style="color:var(--amber)" id="ov-mcap-small-lbl">—</span>
             </div>
           </div>
           <div style="margin-top:10px;display:flex;align-items:center;gap:6px">
@@ -760,11 +712,11 @@ body::after{
           <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--bd)">
             <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:10px">
               <span style="color:var(--t4)">vs XBI</span>
-              <span style="color:var(--cyan)">+139.8%</span>
+              <span style="color:var(--cyan)" id="ov-vs-xbi">—</span>
             </div>
             <div style="display:flex;justify-content:space-between;font-size:10px">
               <span style="color:var(--t4)">vs SPY</span>
-              <span style="color:var(--cyan)">+132.4%</span>
+              <span style="color:var(--cyan)" id="ov-vs-spy">—</span>
             </div>
           </div>
         </div>
@@ -836,7 +788,7 @@ body::after{
               <div class="sub" id="pt-pl-pct">—</div>
             </div>
             <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--bd)">
-              <div class="lbl" style="margin-bottom:5px">BENCHMARKS SINCE INCEPTION</div>
+              <div class="lbl" style="margin-bottom:5px">BENCHMARKS JAN 2023 – MAR 2026</div>
               <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px">
                 <span style="color:var(--t4)">SPY</span><span id="pt-spy-ret" style="color:var(--t3)">—</span>
               </div>
@@ -1676,6 +1628,57 @@ function renderOverview(m,r,p){
   // Countdown
   startCountdown(p.last_rebalance);
 
+  // Portfolio composition (market cap tier from live positions)
+  const positions = m.positions || [];
+  const tierC = {'Large':0,'Mid':0,'Small':0};
+  const univMap2 = {};
+  (window._univAllRows||[]).forEach(r=>{if(r.ticker)univMap2[r.ticker]=r;});
+  positions.forEach(pos=>{
+    const u = univMap2[pos.ticker];
+    const tier = (u&&u.mcap_tier) || (pos.mcap_tier) || 'Small';
+    const t = tier.charAt(0).toUpperCase()+tier.slice(1).toLowerCase();
+    if(t==='Large') tierC.Large++;
+    else if(t==='Mid') tierC.Mid++;
+    else tierC.Small++;
+  });
+  const total = positions.length || 0;
+  if(total > 0){
+    const lPct=(tierC.Large/total*100).toFixed(0);
+    const mPct=(tierC.Mid/total*100).toFixed(0);
+    const sPct=(tierC.Small/total*100).toFixed(0);
+    const lEl=$('ov-mcap-large'), mEl=$('ov-mcap-mid'), sEl=$('ov-mcap-small');
+    if(lEl) lEl.style.width=lPct+'%';
+    if(mEl) mEl.style.width=mPct+'%';
+    if(sEl) sEl.style.width=sPct+'%';
+    txt('ov-mcap-large-lbl', `Large ${tierC.Large}`);
+    txt('ov-mcap-mid-lbl',   `Mid ${tierC.Mid}`);
+    txt('ov-mcap-small-lbl', `Small ${tierC.Small}`);
+  } else {
+    // Bear regime — no positions — show universe distribution
+    const lEl=$('ov-mcap-large'), mEl=$('ov-mcap-mid'), sEl=$('ov-mcap-small');
+    if(lEl) lEl.style.width='12%';
+    if(mEl) mEl.style.width='32%';
+    if(sEl) sEl.style.width='56%';
+    txt('ov-mcap-large-lbl','Large ~52');
+    txt('ov-mcap-mid-lbl','Mid ~134');
+    txt('ov-mcap-small-lbl','Small ~232');
+  }
+
+  // vs XBI / vs SPY — total return outperformance over backtest period
+  const bData = window.D&&window.D.b||SAMPLE.b;
+  const stratArr = bData.strategy_equity||[];
+  const xbiArr2  = bData.xbi_equity||[];
+  const spyArr2  = bData.spy_equity||[];
+  if(stratArr.length && xbiArr2.length && spyArr2.length){
+    const stratTot = stratArr[stratArr.length-1] - 100;
+    const xbiTot   = xbiArr2[xbiArr2.length-1]  - 100;
+    const spyTot   = spyArr2[spyArr2.length-1]   - 100;
+    const vsXbi = (stratTot - xbiTot).toFixed(1);
+    const vsSpy = (stratTot - spyTot).toFixed(1);
+    txt('ov-vs-xbi', '+'+vsXbi+'%');
+    txt('ov-vs-spy', '+'+vsSpy+'%');
+  }
+
   // Signal Strength card
   const sig=D.sig||[
     {ticker:'RXRX',score:0.91},{ticker:'FOLD',score:0.87},{ticker:'ARQT',score:0.84},
@@ -2179,7 +2182,7 @@ function renderTrack(b){
     const mean=rets.reduce((a,v)=>a+v,0)/rets.length;
     const std=Math.sqrt(rets.reduce((a,v)=>a+(v-mean)**2,0)/rets.length);
     const years=arr.length/12;
-    const annRet=(Math.pow(arr[arr.length-1]/arr[0], 1/years)-1)*100;
+    const annRet=(Math.pow(arr[arr.length-1]/100, 1/years)-1)*100;
     const sharpe=std>0?(mean/std)*Math.sqrt(12):0; // monthly → annualised
     let peak=arr[0],maxDD=0;
     arr.forEach(v=>{peak=Math.max(peak,v);maxDD=Math.min(maxDD,(v-peak)/peak);});
