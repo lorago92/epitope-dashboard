@@ -2011,7 +2011,7 @@ async function renderSignals(r){
     };
     Plotly.newPlot('pl-score-dist',[{
       x:scores,type:'histogram',nbinsx:40,
-      marker:{color:scores.map(s=>s>0.6?'rgba(0,255,180,0.7)':s<0.3?'rgba(255,50,80,0.5)':'rgba(96,144,255,0.5)'),line:{width:0}},
+      marker:{color:scores.map(s=>s>60?'rgba(0,255,180,0.7)':s<30?'rgba(255,50,80,0.5)':'rgba(96,144,255,0.5)'),line:{width:0}},
       hovertemplate:'Score: %{x:.2f}<br>Count: %{y}<extra></extra>',
     }],layout,{displayModeBar:false,responsive:true});
   }
@@ -2021,22 +2021,22 @@ async function renderSignals(r){
     set('pl-landscape','');
     $('pl-landscape').style.cssText='height:220px';
     const top=sig.slice(0,20), rest=sig.slice(20);
-    function jitter(n){return n+(Math.random()-0.5)*0.15;}
+    function jitter(n){return n+(Math.random()-0.5)*4;}
     const layout={
       paper_bgcolor:'transparent',plot_bgcolor:'transparent',
       margin:{l:40,r:10,t:10,b:30},
       font:{family:'JetBrains Mono',size:9,color:'rgba(255,255,255,0.4)'},
-      xaxis:{gridcolor:'rgba(50,70,130,0.1)',linecolor:'rgba(50,70,130,0.15)',title:'Φ',titlefont:{size:9},range:[0,1]},
-      yaxis:{gridcolor:'rgba(50,70,130,0.1)',linecolor:'rgba(50,70,130,0.15)',title:'Ψ',titlefont:{size:9},range:[0,1]},
+      xaxis:{gridcolor:'rgba(50,70,130,0.1)',linecolor:'rgba(50,70,130,0.15)',title:'Φ',titlefont:{size:9},range:[0,100]},
+      yaxis:{gridcolor:'rgba(50,70,130,0.1)',linecolor:'rgba(50,70,130,0.15)',title:'Ψ',titlefont:{size:9},range:[0,100]},
       showlegend:false,
     };
     Plotly.newPlot('pl-landscape',[
-      {x:rest.map(s=>jitter(s.score)),y:rest.map(s=>jitter(1-s.score+Math.random()*0.3)),
+      {x:rest.map(s=>jitter(s.phi??s.score)),y:rest.map(s=>jitter(s.psi??s.score)),
        mode:'markers',type:'scatter',
        marker:{size:4,color:'rgba(96,144,255,0.3)'},
        hovertemplate:'%{text}<br>Score: %{x:.2f}<extra></extra>',
        text:rest.map(s=>s.ticker)},
-      {x:top.map(s=>jitter(s.score)),y:top.map(s=>jitter(1-s.score+Math.random()*0.3)),
+      {x:top.map(s=>jitter(s.phi??s.score)),y:top.map(s=>jitter(s.psi??s.score)),
        mode:'markers+text',type:'scatter',
        marker:{size:7,color:'rgba(0,255,180,0.8)',line:{color:'rgba(0,255,180,0.4)',width:1}},
        textfont:{size:8,color:'rgba(0,255,180,0.7)'},textposition:'top center',
