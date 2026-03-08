@@ -1388,10 +1388,10 @@ body::after{
             <thead>
               <tr style="position:sticky;top:0;background:#0a0c1e;z-index:2">
                 <th style="padding:10px 16px;text-align:left;color:var(--t4);font-weight:400;letter-spacing:1px;font-size:9px;border-bottom:1px solid var(--bd);white-space:nowrap">TICKER</th>
-                <th style="padding:10px 16px;text-align:left;color:var(--t4);font-weight:400;letter-spacing:1px;font-size:9px;border-bottom:1px solid var(--bd);white-space:nowrap">COMPANY</th>
+                <th style="padding:10px 16px;text-align:left;color:var(--t4);font-weight:400;letter-spacing:1px;font-size:9px;border-bottom:1px solid var(--bd);white-space:nowrap;cursor:pointer" onclick="sortUnivTable('name')">COMPANY <span id="sort-name"></span></th>
                 <th style="padding:10px 12px;text-align:left;color:var(--t4);font-weight:400;letter-spacing:1px;font-size:9px;border-bottom:1px solid var(--bd);white-space:nowrap;cursor:pointer" onclick="sortUnivTable('gics')">GICS SUB-INDUSTRY <span id="sort-gics"></span></th>
                 <th style="padding:10px 12px;text-align:right;color:var(--t4);font-weight:400;letter-spacing:1px;font-size:9px;border-bottom:1px solid var(--bd);white-space:nowrap;cursor:pointer" onclick="sortUnivTable('mcap')">MKT CAP <span id="sort-mcap">▼</span></th>
-                <th style="padding:10px 12px;text-align:right;color:var(--t4);font-weight:400;letter-spacing:1px;font-size:9px;border-bottom:1px solid var(--bd);white-space:nowrap">ADDV</th>
+                <th style="padding:10px 12px;text-align:right;color:var(--t4);font-weight:400;letter-spacing:1px;font-size:9px;border-bottom:1px solid var(--bd);white-space:nowrap;cursor:pointer" onclick="sortUnivTable('addv')">ADDV <span id="sort-addv"></span></th>
                 <th style="padding:10px 12px;text-align:center;color:var(--t4);font-weight:400;letter-spacing:1px;font-size:9px;border-bottom:1px solid var(--bd);white-space:nowrap">TIER</th>
                 <th style="padding:10px 12px;text-align:center;color:var(--t4);font-weight:400;letter-spacing:1px;font-size:9px;border-bottom:1px solid var(--bd);white-space:nowrap">EXCH</th>
                 <th style="padding:10px 12px;text-align:center;color:var(--t4);font-weight:400;letter-spacing:1px;font-size:9px;border-bottom:1px solid var(--bd);white-space:nowrap">XBI</th>
@@ -2617,7 +2617,9 @@ function renderUnivTable(rows){
   const sortDir = window._univSortDir || -1; // -1 = desc, 1 = asc
   const sorted = [...rows].sort((a,b) => {
     if(sortKey === 'mcap') return sortDir * ((b.mcap||0) - (a.mcap||0));
+    if(sortKey === 'addv') return sortDir * ((b.addv||0) - (a.addv||0));
     if(sortKey === 'gics') return sortDir * (a.sub||'').localeCompare(b.sub||'');
+    if(sortKey === 'name') return sortDir * (a.name||'').localeCompare(b.name||'');
     return 0;
   });
   tbody.innerHTML = sorted.map((d, i) => {
@@ -2649,9 +2651,13 @@ function sortUnivTable(key){
   // Update header indicators
   $('sort-mcap') && ($('sort-mcap').textContent = '');
   $('sort-gics') && ($('sort-gics').textContent = '');
+  $('sort-name') && ($('sort-name').textContent = '');
+  $('sort-addv') && ($('sort-addv').textContent = '');
   const ind = window._univSortDir === -1 ? '▼' : '▲';
   if(key === 'mcap' && $('sort-mcap')) $('sort-mcap').textContent = ind;
   if(key === 'gics' && $('sort-gics')) $('sort-gics').textContent = ind;
+  if(key === 'name' && $('sort-name')) $('sort-name').textContent = ind;
+  if(key === 'addv' && $('sort-addv')) $('sort-addv').textContent = ind;
   // Re-render with current search filter applied
   const q = ($('univ-search')||{}).value || '';
   filterUnivTable(q);
