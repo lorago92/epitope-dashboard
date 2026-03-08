@@ -2001,25 +2001,28 @@ async function renderSignals(r){
     const scores=sig.map(s=>s.score);
     set('pl-score-dist','');
     $('pl-score-dist').style.cssText='height:280px';
-    // Build manual bins so we can color each bar by its midpoint
-    const binSize=5, bins=[];
+    const binSize=5, binsR=[], binsB=[], binsG=[];
     for(let b=0;b<100;b+=binSize){
       const count=scores.filter(s=>s>=b&&s<b+binSize).length;
       const mid=b+binSize/2;
-      bins.push({x:mid,count,color:mid>60?'rgba(0,255,180,0.75)':mid<30?'rgba(255,50,80,0.55)':'rgba(96,144,255,0.55)'});
+      binsR.push({x:mid,y:mid<30?count:0});
+      binsB.push({x:mid,y:(mid>=30&&mid<=60)?count:0});
+      binsG.push({x:mid,y:mid>60?count:0});
     }
-    Plotly.newPlot('pl-score-dist',[{
-      x:bins.map(b=>b.x),y:bins.map(b=>b.count),type:'bar',
-      width:binSize*0.9,
-      marker:{color:bins.map(b=>b.color),line:{width:0}},
-      hovertemplate:'Score: %{x}<br>Count: %{y}<extra></extra>',
-    }],{
+    const barBase={type:'bar',width:binSize*0.88,line:{width:0},hovertemplate:'Score: %{x}<br>Count: %{y}<extra></extra>'};
+    Plotly.newPlot('pl-score-dist',[
+      {...barBase,name:'Score < 30',x:binsR.map(b=>b.x),y:binsR.map(b=>b.y),marker:{color:'rgba(255,50,80,0.7)'}},
+      {...barBase,name:'Score 30–60',x:binsB.map(b=>b.x),y:binsB.map(b=>b.y),marker:{color:'rgba(96,144,255,0.65)'}},
+      {...barBase,name:'Score > 60',x:binsG.map(b=>b.x),y:binsG.map(b=>b.y),marker:{color:'rgba(0,255,180,0.75)'}},
+    ],{
       paper_bgcolor:'transparent',plot_bgcolor:'transparent',
       margin:{l:36,r:10,t:10,b:30},
       font:{family:'JetBrains Mono',size:9,color:'rgba(255,255,255,0.4)'},
-      xaxis:{gridcolor:'rgba(50,70,130,0.1)',linecolor:'rgba(50,70,130,0.15)',title:'AFFINITY Score',titlefont:{size:9},range:[0,100]},
+      xaxis:{gridcolor:'rgba(50,70,130,0.1)',linecolor:'rgba(50,70,130,0.15)',title:'AFFINITY Score',titlefont:{size:9},range:[0,105]},
       yaxis:{gridcolor:'rgba(50,70,130,0.1)',linecolor:'rgba(50,70,130,0.15)',title:'Count',titlefont:{size:9}},
-      bargap:0.05,
+      bargap:0.05,barmode:'overlay',
+      legend:{x:0.98,y:0.98,xanchor:'right',yanchor:'top',bgcolor:'rgba(6,10,28,0.7)',bordercolor:'rgba(50,80,160,0.3)',borderwidth:1,font:{size:8}},
+      showlegend:true,
     },{displayModeBar:false,responsive:true});
   }
 
@@ -2052,6 +2055,14 @@ async function renderSignals(r){
         cmin:0,cmax:100,
         opacity:1,
         line:{width:0},
+        showscale:true,
+        colorbar:{
+          thickness:8,len:0.6,x:1.02,y:0.5,
+          title:{text:'Score',side:'right',font:{size:8,color:'rgba(255,255,255,0.4)'}},
+          tickfont:{size:7,color:'rgba(255,255,255,0.35)'},
+          outlinewidth:0,
+          bgcolor:'rgba(0,0,0,0)',
+        },
       },
     }],{
       paper_bgcolor:'transparent',
@@ -2063,22 +2074,21 @@ async function renderSignals(r){
         camera:{eye:{x:1.6,y:-1.6,z:0.9},center:{x:0,y:0,z:-0.1}},
         aspectmode:'cube',
       },
-      margin:{l:0,r:0,t:0,b:0},
+      margin:{l:0,r:40,t:0,b:40},
       font:{family:'JetBrains Mono',size:8,color:'rgba(255,255,255,0.35)'},
       showlegend:false,
     },{displayModeBar:false,responsive:true});
 
-    // Auto-rotation — slow orbit around Z axis, pauses on hover
+    // Auto-rotation — orbit around Z axis, pauses on hover
     let angle=0, rotating=true;
     const el3d=$('pl-landscape');
     el3d.addEventListener('mouseenter',()=>rotating=false);
     el3d.addEventListener('mouseleave',()=>rotating=true);
-    // Cancel any previous rotation loop
     if(window._landscape3dLoop) cancelAnimationFrame(window._landscape3dLoop);
     const R=2.2, zEye=0.9;
     function rotate3d(){
       if(rotating){
-        angle+=0.004;
+        angle+=0.002; // 0.004 → 0.002: 50% slower
         Plotly.relayout('pl-landscape',{
           'scene.camera.eye':{x:R*Math.cos(angle),y:R*Math.sin(angle),z:zEye}
         });
