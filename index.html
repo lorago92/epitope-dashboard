@@ -2000,7 +2000,7 @@ async function renderSignals(r){
   if(scored>0 && window.Plotly){
     const scores=sig.map(s=>s.score);
     set('pl-score-dist','');
-    $('pl-score-dist').style.cssText='height:220px';
+    $('pl-score-dist').style.cssText='height:280px';
     // Build manual bins so we can color each bar by its midpoint
     const binSize=5, bins=[];
     for(let b=0;b<100;b+=binSize){
@@ -2026,9 +2026,17 @@ async function renderSignals(r){
   // Signal Landscape — 3D scatter: Φ (x) vs Ψ (y) vs SCORE (z)
   if(scored>0 && window.Plotly){
     set('pl-landscape','');
-    $('pl-landscape').style.cssText='height:220px';
+    $('pl-landscape').style.cssText='height:280px';
     const top20ids=new Set(sig.slice(0,20).map(s=>s.ticker));
-    const colors=sig.map(s=>s.score);
+    const axStyle={
+      showbackground:true,
+      backgroundcolor:'rgba(8,14,36,0.6)',
+      gridcolor:'rgba(50,80,160,0.18)',
+      zerolinecolor:'rgba(50,80,160,0.25)',
+      showline:false,
+      tickfont:{size:7,color:'rgba(255,255,255,0.25)'},
+      titlefont:{size:9,color:'rgba(255,255,255,0.45)'},
+    };
     Plotly.newPlot('pl-landscape',[{
       x:sig.map(s=>s.phi??0),
       y:sig.map(s=>Math.max(s.psi??0,0)),
@@ -2038,31 +2046,46 @@ async function renderSignals(r){
       text:sig.map(s=>s.ticker),
       hovertemplate:'<b>%{text}</b><br>Φ: %{x:.1f}<br>Ψ: %{y:.1f}<br>Score: %{z:.1f}<extra></extra>',
       marker:{
-        size:sig.map(s=>top20ids.has(s.ticker)?6:3),
-        color:colors,
-        colorscale:[
-          [0,'rgba(255,50,80,0.7)'],
-          [0.3,'rgba(96,144,255,0.6)'],
-          [0.6,'rgba(0,200,255,0.7)'],
-          [1,'rgba(0,255,180,0.9)']
-        ],
+        size:sig.map(s=>top20ids.has(s.ticker)?5:2.5),
+        color:sig.map(s=>s.score),
+        colorscale:[[0,'#ff3250'],[0.3,'#6090ff'],[0.65,'#00c8ff'],[1,'#00ffb4']],
         cmin:0,cmax:100,
-        opacity:0.85,
+        opacity:1,
         line:{width:0},
       },
     }],{
       paper_bgcolor:'transparent',
       scene:{
-        bgcolor:'transparent',
-        xaxis:{title:'Φ',titlefont:{size:8},gridcolor:'rgba(50,70,130,0.2)',zerolinecolor:'rgba(50,70,130,0.3)',tickfont:{size:7,color:'rgba(255,255,255,0.3)'},range:[0,100]},
-        yaxis:{title:'Ψ',titlefont:{size:8},gridcolor:'rgba(50,70,130,0.2)',zerolinecolor:'rgba(50,70,130,0.3)',tickfont:{size:7,color:'rgba(255,255,255,0.3)'},range:[0,100]},
-        zaxis:{title:'Score',titlefont:{size:8},gridcolor:'rgba(50,70,130,0.2)',zerolinecolor:'rgba(50,70,130,0.3)',tickfont:{size:7,color:'rgba(255,255,255,0.3)'},range:[0,100]},
-        camera:{eye:{x:1.4,y:1.4,z:0.8}},
+        bgcolor:'rgba(6,10,28,0)',
+        xaxis:{...axStyle,title:'Φ (Signal Intensity)',range:[0,100]},
+        yaxis:{...axStyle,title:'Ψ (Divergence)',range:[0,100]},
+        zaxis:{...axStyle,title:'AFFINITY Score',range:[0,100]},
+        camera:{eye:{x:1.6,y:-1.6,z:0.9},center:{x:0,y:0,z:-0.1}},
+        aspectmode:'cube',
       },
       margin:{l:0,r:0,t:0,b:0},
-      font:{family:'JetBrains Mono',size:8,color:'rgba(255,255,255,0.4)'},
+      font:{family:'JetBrains Mono',size:8,color:'rgba(255,255,255,0.35)'},
       showlegend:false,
     },{displayModeBar:false,responsive:true});
+
+    // Auto-rotation — slow orbit around Z axis, pauses on hover
+    let angle=0, rotating=true;
+    const el3d=$('pl-landscape');
+    el3d.addEventListener('mouseenter',()=>rotating=false);
+    el3d.addEventListener('mouseleave',()=>rotating=true);
+    // Cancel any previous rotation loop
+    if(window._landscape3dLoop) cancelAnimationFrame(window._landscape3dLoop);
+    const R=2.2, zEye=0.9;
+    function rotate3d(){
+      if(rotating){
+        angle+=0.004;
+        Plotly.relayout('pl-landscape',{
+          'scene.camera.eye':{x:R*Math.cos(angle),y:R*Math.sin(angle),z:zEye}
+        });
+      }
+      window._landscape3dLoop=requestAnimationFrame(rotate3d);
+    }
+    rotate3d();
   }
 
   // Top 10 / Bottom 10 table
