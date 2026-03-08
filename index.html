@@ -633,7 +633,7 @@ body::after{
       </div>
 
       <!-- Row 3: Portfolio + P&L + Sharpe -->
-      <div class="g-auto mb16" style="grid-template-columns:2fr 1fr 1fr">
+      <div class="g-auto mb0" style="grid-template-columns:2fr 1fr 1fr">
         <div class="card">
           <div class="card-title">Portfolio</div>
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px">
@@ -913,7 +913,7 @@ body::after{
       </div>
 
       <!-- Row 3: Holdings distribution -->
-      <div class="card mb16">
+      <div class="card mb0">
         <div class="card-title">Holdings Distribution</div>
         <div id="pt-dist-wrap">
           <div style="color:var(--t4);font-size:11px;padding:12px 0">No positions — Bear regime · CYTOKINE·Gate closed</div>
@@ -1187,7 +1187,7 @@ body::after{
       </div>
 
       <!-- ROW 5: CASCADE·Execute + Risk Management -->
-      <div class="g2 mb16">
+      <div class="g2 mb0">
         <div class="card">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
             <div class="pipe-circle" style="background:rgba(255,50,80,0.08);border-color:rgba(255,50,80,0.25);color:var(--red);font-size:12px;width:32px;height:32px;flex-shrink:0">5</div>
@@ -1292,7 +1292,7 @@ body::after{
       </div>
 
       <!-- Row 2: Equity curve (left) + Benchmark table (right) -->
-      <div class="g-auto mb16" style="grid-template-columns:3fr 2fr">
+      <div class="g-auto mb0" style="grid-template-columns:3fr 2fr">
         <div class="card" style="padding:16px">
           <div class="card-title">Equity Curve · $100 Base · Jan 2023 – Mar 2026</div>
           <div id="eq-chart" style="height:260px"></div>
@@ -1446,7 +1446,7 @@ const SAMPLE = {
   p:{last_rebalance:"2026-03-07",regime:"Bear",n_long:0,capital_deployed_A:0},
   b:{bt_start:"2023-01-01",bt_end:"2026-03-07",n_rebalances:69,sharpe_tc:2.945,ann_return_tc:1.5419,max_drawdown:-0.3297,beta:1.222,hit_rate:0.667,months:["2023-01","2023-02","2023-03","2023-04","2023-05","2023-06","2023-07","2023-08","2023-09","2023-10","2023-11","2023-12","2024-01","2024-02","2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-09","2024-10","2024-11","2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03"],strategy_equity:[122.5,113.2,119.08,133.65,146.84,137.7,160.3,172.87,164.25,151.82,151.77,215.43,220.33,314.05,338.78,314.07,323.86,317.4,400.12,364.97,366.79,430.51,440.14,438.85,425.88,452.48,418.89,479.66,439.07,501.09,779.3,847.03,1060.21,1271.54,1515.16,1656.84,1950.09,1993.22,1890.44],xbi_equity:[109.04,101.62,93.47,98.37,102.93,102.05,103.39,97.15,89.57,81.24,92.63,109.54,107.26,120.74,116.41,103.81,109.34,113.88,121.68,124.38,121.38,119.2,122.38,110.64,113.85,108.98,99.64,101.91,97.29,101.9,105.25,110.4,123.15,138.53,151.37,150.35,153.83,157.06,152.78],spy_equity:[106.74,104.05,107.91,109.64,110.14,117.28,121.12,119.15,113.5,111.03,121.18,126.71,128.73,135.45,139.87,134.23,141.02,146,147.77,151.22,154.4,153.02,162.14,158.24,162.49,160.43,151.49,150.18,159.62,167.82,171.68,175.21,181.45,185.77,186.13,186.28,189.03,187.39,186.12]}
 };
-let D={};
+window.D={};
 const $=id=>document.getElementById(id);
 const set=(id,h)=>{const e=$(id);if(e)e.innerHTML=h};
 const txt=(id,t)=>{const e=$(id);if(e)e.textContent=t};
@@ -1880,7 +1880,7 @@ function renderPortfolio(m,p){
 /* ─ SIGNALS / PIPELINE ────────────────────────────────────────────── */
 async function renderSignals(r){
   // ANTIBODY·Bind stats
-  const sig=window.D&&window.D.sig||[];
+  const sig=D.sig||[];
   const scored=sig.length;
   txt('pl-scored', scored||'—');
   txt('pl-coverage', scored?(scored/418*100).toFixed(1)+'%':'—');
