@@ -1,4 +1,52 @@
 <!DOCTYPE html><!-- v4.1 -->
+<!--
+=============================================================================
+EPITOPE DASHBOARD — OPEN TO-DO LIST (added 2026-03-08)
+=============================================================================
+
+[1] OVERVIEW PAGE — Row 3 Portfolio card — Market Cap Distribution
+    PROBLEM: Shows distribution of full universe (418 tickers), not portfolio holdings
+    FIX: Replace with same dynamic Holdings Distribution logic used in Portfolio page
+         (market cap tier breakdown from live positions[] in monitoring_report.json)
+    REF: Portfolio page Row 3 Holdings Distribution card — copy that logic
+
+[2] OVERVIEW PAGE — Row 3 Simulated Sharpe card — vs XBI / vs SPY values
+    PROBLEM: Shows +139.8% and +132.4% — these are WRONG
+             They appear to be ann return differences (154.2 - 14.4 = 139.8), not actual outperformance
+    CORRECT VALUES (computed from equity arrays Jan 2023 - Mar 2026):
+        Strategy total return: +1790.4%
+        XBI total return:       +52.8%
+        SPY total return:       +86.1%
+        vs XBI outperformance: +1737.7%  (strategy total - XBI total)
+        vs SPY outperformance: +1704.3%  (strategy total - SPY total)
+    FIX: Compute dynamically from equity arrays OR hardcode correct values above
+    NOTE: These are total return outperformance over the full backtest period, not annualised diff
+
+[3] PORTFOLIO PAGE — Row 1 Capital card — Benchmarks Since Inception
+    PROBLEM: Shows SPY 86.1% and XBI 52.8% — these are actually CORRECT
+             They match the equity array total returns (SPY +86.1%, XBI +52.8% from Jan 2023)
+             BUT inception date shown is 2026-03-07 (paper trading start), not 2023-01-01
+             So the dashboard is showing backtest-period benchmark returns against a live inception date
+    FIX: Either (a) compute benchmarks from actual paper trading inception date (2026-03-07)
+              in which case we need live SPY/XBI prices from the day of inception
+         OR   (b) label clearly as "Since Backtest Start (Jan 2023)" to avoid confusion
+    DECISION NEEDED before fixing
+
+[4] TRACK RECORD PAGE — Benchmark Comparison table
+    CURRENT VALUES (need verification against actual equity arrays):
+        XBI Ann Return: 10.9%  — WRONG, correct is ~13.9% (from equity array CAGR over 39 months)
+        XBI Sharpe: 0.56       — close, computed from monthly returns = 0.55 ✓
+        XBI Max DD: -25.5%     — CORRECT (matches equity array) ✓
+        SPY Ann Return: 18.7%  — WRONG, correct is ~21.1% (from equity array CAGR over 39 months)
+        SPY Sharpe: 1.62       — close, computed = 1.59 ✓
+        SPY Max DD: -8.3%      — CORRECT (matches equity array) ✓
+    FIX: Update XBI ann return to 13.9% and SPY ann return to 21.1%
+         (or compute dynamically from equity arrays using same CAGR formula as strategy)
+    NOTE: Annualised = (final/100)^(12/n_months) - 1, n_months = 39
+
+=============================================================================
+-->
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
