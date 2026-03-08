@@ -633,7 +633,7 @@ body::after{
       </div>
 
       <!-- Row 3: Portfolio + P&L + Sharpe -->
-      <div class="g-auto mb0" style="grid-template-columns:2fr 1fr 1fr">
+      <div class="g-auto mb16" style="grid-template-columns:2fr 1fr 1fr">
         <div class="card">
           <div class="card-title">Portfolio</div>
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px">
@@ -913,7 +913,7 @@ body::after{
       </div>
 
       <!-- Row 3: Holdings distribution -->
-      <div class="card mb0">
+      <div class="card mb16">
         <div class="card-title">Holdings Distribution</div>
         <div id="pt-dist-wrap">
           <div style="color:var(--t4);font-size:11px;padding:12px 0">No positions — Bear regime · CYTOKINE·Gate closed</div>
@@ -1187,7 +1187,7 @@ body::after{
       </div>
 
       <!-- ROW 5: CASCADE·Execute + Risk Management -->
-      <div class="g2 mb0">
+      <div class="g2 mb16">
         <div class="card">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
             <div class="pipe-circle" style="background:rgba(255,50,80,0.08);border-color:rgba(255,50,80,0.25);color:var(--red);font-size:12px;width:32px;height:32px;flex-shrink:0">5</div>
@@ -1292,7 +1292,7 @@ body::after{
       </div>
 
       <!-- Row 2: Equity curve (left) + Benchmark table (right) -->
-      <div class="g-auto mb0" style="grid-template-columns:3fr 2fr">
+      <div class="g-auto mb16" style="grid-template-columns:3fr 2fr">
         <div class="card" style="padding:16px">
           <div class="card-title">Equity Curve · $100 Base · Jan 2023 – Mar 2026</div>
           <div id="eq-chart" style="height:260px"></div>
@@ -1373,7 +1373,7 @@ body::after{
       </div>
 
       <!-- Row 4: Full universe table -->
-      <div class="card mb0" style="padding:0;overflow:hidden">
+      <div class="card mb16" style="padding:0;overflow:hidden">
         <div style="padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd)">
           <div class="card-title" style="margin:0">Full Universe · <span id="univ-count" style="color:var(--cyan)">418</span> Securities</div>
           <div style="display:flex;gap:8px;align-items:center">
@@ -1520,6 +1520,10 @@ async function loadData(){
       const rows=text.trim().split('\n').slice(1).map(l=>{const c=l.split(',');return{ticker:c[0],score:parseFloat(c[3]||0),final_score:parseFloat(c[1]||0),phi:parseFloat(c[9]||0),psi:parseFloat(c[10]||0)};}).filter(r=>!isNaN(r.score));
       rows.sort((a,b)=>b.score-a.score);
       D.sig=rows;
+      // Re-render signals page if it's currently active
+      if(document.getElementById('page-signals')&&document.getElementById('page-signals').classList.contains('active')){
+        renderSignals(D.r||SAMPLE.r);
+      }
     }
   }catch{}
   renderAll();
@@ -2699,7 +2703,7 @@ function nav(name,btn){
     if(name==='track')renderTrack(D.b||SAMPLE.b);
     if(name==='coverage')renderCoverage().catch(()=>{});
     if(name==='overview')initParticles();
-    if(name==='signals')renderSignals(D.r||SAMPLE.r);
+    if(name==='signals'){setTimeout(()=>renderSignals(D.r||SAMPLE.r),100);}
   },30);
 }
 
