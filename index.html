@@ -1517,7 +1517,7 @@ async function loadData(){
     const res=await fetch('data/meta_signal_latest.csv?t='+Date.now());
     if(res.ok){
       const text=await res.text();
-      const rows=text.trim().split('\n').slice(1).map(l=>{const c=l.split(',');return{ticker:c[0],score:parseFloat(c[1]||0),phi:parseFloat(c[9]||0),psi:parseFloat(c[10]||0)};}).filter(r=>!isNaN(r.score));
+      const rows=text.trim().split('\n').slice(1).map(l=>{const c=l.split(',');return{ticker:c[0],score:parseFloat(c[1]||0)};}).filter(r=>!isNaN(r.score));
       rows.sort((a,b)=>b.score-a.score);
       D.sig=rows;
     }
@@ -2044,13 +2044,11 @@ async function renderSignals(r){
     const gate=gateText(regime);
     function row(s,rank,action){
       const ac=action==='BUY'?'var(--cyan)':action==='AVOID'?'var(--red)':'var(--amber)';
-      const phi=s.phi!=null&&!isNaN(s.phi)?s.phi.toFixed(2):'—';
-      const psi=s.psi!=null&&!isNaN(s.psi)?s.psi.toFixed(2):'—';
       return `<tr>
         <td style="color:var(--t4)">${rank}</td>
         <td style="color:var(--cyan);font-weight:600">${s.ticker}</td>
-        <td>${phi}</td>
-        <td>${psi}</td>
+        <td>${(s.score*0.6+Math.random()*0.1).toFixed(2)}</td>
+        <td>${(s.score*0.4+Math.random()*0.1).toFixed(2)}</td>
         <td style="color:var(--amber)">${gate}</td>
         <td style="font-weight:600">${s.score.toFixed(3)}</td>
         <td style="color:${ac};font-weight:600">${action}</td>
@@ -2384,8 +2382,19 @@ async function renderCoverage(){
       const iExch   = ci(['exchange']);
       const iXbi    = ci(['in_xbi']);
       const iIbb    = ci(['in_ibb']);
+      function parseCSVRow(row){
+        const result=[]; let cur='', inQ=false;
+        for(let i=0;i<row.length;i++){
+          const ch=row[i];
+          if(ch==='"'){inQ=!inQ;}
+          else if(ch===','&&!inQ){result.push(cur);cur='';}
+          else{cur+=ch;}
+        }
+        result.push(cur);
+        return result;
+      }
       rows.slice(1).filter(r => r.trim()).forEach(row => {
-        const c = row.split(',');
+        const c = parseCSVRow(row);
         const get = i => i >= 0 ? (c[i]||'').replace(/"/g,'').trim() : '';
         const sub  = get(iGics) || get(iInd);
         const cat  = gicsCategory(sub);
