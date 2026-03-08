@@ -2374,7 +2374,7 @@ async function renderCoverage(){
       const ci = (names) => names.map(n => hdrs.findIndex(h => h.includes(n))).find(i => i >= 0) ?? -1;
       const iTicker = ci(['ticker']);
       const iName   = ci(['company_name','name']);
-      const iGics   = ci(['gics_sub_industry','gics_name','gics','sub_industry']);
+      const iGics   = ci(['gics_name','gics_sub_industry','gics','sub_industry']);
       const iInd    = ci(['industry']);
       const iMcap   = ci(['market_cap','mcap']);
       const iAddv   = ci(['addv']);
