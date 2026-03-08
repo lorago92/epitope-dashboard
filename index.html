@@ -710,13 +710,13 @@ body::after{
             <div><div class="lbl">Rebalances</div><div style="font-size:14px;font-weight:600;color:var(--t1)">69</div></div>
           </div>
           <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--bd)">
-            <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:10px">
-              <span style="color:var(--t4)">vs XBI</span>
-              <span style="color:var(--cyan)" id="ov-vs-xbi">—</span>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:10px">
+              <span style="color:var(--t4)">XBI ann</span>
+              <span style="color:var(--t2)" id="ov-vs-xbi">—</span>
             </div>
-            <div style="display:flex;justify-content:space-between;font-size:10px">
-              <span style="color:var(--t4)">vs SPY</span>
-              <span style="color:var(--cyan)" id="ov-vs-spy">—</span>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:10px">
+              <span style="color:var(--t4)">SPY ann</span>
+              <span style="color:var(--t2)" id="ov-vs-spy">—</span>
             </div>
           </div>
         </div>
@@ -1664,19 +1664,20 @@ function renderOverview(m,r,p){
     txt('ov-mcap-small-lbl','Small ~232');
   }
 
-  // vs XBI / vs SPY — total return outperformance over backtest period
+  // vs XBI / vs SPY — total return outperformance + benchmark ann return
   const bData = window.D&&window.D.b||SAMPLE.b;
   const stratArr = bData.strategy_equity||[];
   const xbiArr2  = bData.xbi_equity||[];
   const spyArr2  = bData.spy_equity||[];
   if(stratArr.length && xbiArr2.length && spyArr2.length){
-    const stratTot = stratArr[stratArr.length-1] - 100;
-    const xbiTot   = xbiArr2[xbiArr2.length-1]  - 100;
-    const spyTot   = spyArr2[spyArr2.length-1]   - 100;
-    const vsXbi = (stratTot - xbiTot).toFixed(1);
-    const vsSpy = (stratTot - spyTot).toFixed(1);
-    txt('ov-vs-xbi', '+'+vsXbi+'%');
-    txt('ov-vs-spy', '+'+vsSpy+'%');
+    const nMonths = (bData.months||[]).length || stratArr.length;
+    const years = nMonths / 12;
+    if(years > 0){
+      const xbiAnn = ((Math.pow((xbiArr2[xbiArr2.length-1]/100), 1/years) - 1) * 100).toFixed(1);
+      const spyAnn = ((Math.pow((spyArr2[spyArr2.length-1]/100), 1/years) - 1) * 100).toFixed(1);
+      txt('ov-vs-xbi', xbiAnn+'% ann');
+      txt('ov-vs-spy', spyAnn+'% ann');
+    }
   }
 
   // Signal Strength card
