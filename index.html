@@ -2657,7 +2657,7 @@ function sortUnivTable(key){
   filterUnivTable(q);
 }
 
-
+function filterUnivTable(q){
   const all = window._univAllRows || [];
   if(!q || !q.trim()){
     renderUnivTable(all);
