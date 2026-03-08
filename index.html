@@ -2117,22 +2117,24 @@ async function renderSignals(r){
         const av=a[sortCol]??'', bv=b[sortCol]??'';
         return typeof av==='number'?(av-bv)*sortDir:String(av).localeCompare(String(bv))*sortDir;
       });
-      const visible=sorted.slice(0,20);
-      const thStyle='padding:8px 12px;font-size:9px;letter-spacing:1.5px;color:var(--t4);border-bottom:1px solid var(--bd);white-space:nowrap;cursor:pointer;user-select:none;text-align:left';
+      const thStyle='padding:8px 12px;font-size:9px;letter-spacing:1.5px;color:var(--t4);border-bottom:1px solid var(--bd);white-space:nowrap;cursor:pointer;user-select:none;text-align:left;background:var(--bg2);position:sticky;top:0;z-index:1';
       const arrow=k=>k===sortCol?(sortDir===1?' ▼':' ▲'):'';
-      let h=`<div style="max-height:480px;overflow-y:auto">
-        <table class="pos-tbl" style="width:100%;border-collapse:collapse">
-          <thead style="position:sticky;top:0;background:var(--bg2);z-index:1"><tr>
+      // Fixed column widths to ensure header/row alignment
+      const widths=['60px','100px','70px','80px','110px','150px','70px','110px','120px'];
+      const colGroup=`<colgroup>${widths.map(w=>`<col style="width:${w}">`).join('')}</colgroup>`;
+      let h=`<div style="overflow-y:auto;max-height:480px;border-radius:0 0 10px 10px">
+        <table class="pos-tbl" style="width:100%;border-collapse:collapse;table-layout:fixed">
+          ${colGroup}
+          <thead><tr>
             ${cols.map(c=>`<th style="${thStyle}" data-col="${c.key}">${c.label}${arrow(c.key)}</th>`).join('')}
           </tr></thead><tbody>`;
-      sorted.forEach((s,i)=>{
+      sorted.forEach((s)=>{
         const ac=s.action==='BUY'?'var(--cyan)':s.action==='AVOID'?'var(--red)':'var(--amber)';
         const fac=s.final_action==='BUY'?'var(--cyan)':s.final_action==='GATED'?'var(--red)':'var(--amber)';
         const fc=s.final_score>0?'var(--cyan)':'var(--t4)';
         const gateColor=s.gate===0?'var(--red)':s.gate===1?'var(--cyan)':'var(--amber)';
         const phi=!isNaN(s.phi)?s.phi.toFixed(1):'—';
         const psi=!isNaN(s.psi)?s.psi.toFixed(1):'—';
-        const sep=i===19&&sorted.length>20?`<tr><td colspan="${cols.length}" style="text-align:center;padding:6px;color:var(--t4);font-size:9px;letter-spacing:2px">· · · scroll for more · · ·</td></tr>`:'';
         h+=`<tr style="border-bottom:1px solid rgba(50,70,140,0.08)">
           <td style="padding:7px 12px;color:var(--t4);font-size:10px">${s.rank}</td>
           <td style="padding:7px 12px;color:var(--cyan);font-weight:600;font-family:'JetBrains Mono',monospace;font-size:10px">${s.ticker}</td>
@@ -2143,7 +2145,7 @@ async function renderSignals(r){
           <td style="padding:7px 12px;font-size:10px;color:${gateColor};font-weight:600">${(s.gate*100).toFixed(0)}%</td>
           <td style="padding:7px 12px;font-size:10px;color:${fc};font-weight:600">${s.final_score.toFixed(1)}</td>
           <td style="padding:7px 12px;font-size:10px;color:${fac};font-weight:600;letter-spacing:0.5px">${s.final_action}</td>
-        </tr>${sep}`;
+        </tr>`;
       });
       h+='</tbody></table></div>';
       set('pl-rank-table',h);
