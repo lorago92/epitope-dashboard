@@ -1062,10 +1062,10 @@ body::after{
             <div class="pipe-circle" style="background:rgba(96,144,255,0.08);border-color:rgba(96,144,255,0.25);color:var(--blue);font-size:12px;width:32px;height:32px;flex-shrink:0">3</div>
             <div>
               <div style="font-size:13px;letter-spacing:1px;color:var(--blue)">AFFINITY·Score</div>
-              <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4)">SCORE DISTRIBUTION · <span id="pl-dist-count">418</span> TICKERS</div>
+              <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4)">SIGNAL LANDSCAPE · Φ vs Ψ vs SCORE</div>
             </div>
           </div>
-          <div id="pl-score-dist" style="height:220px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+          <div id="pl-landscape" style="height:220px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
             <div style="font-size:11px;color:var(--t4)">Awaiting signal data</div>
             <div style="font-size:9px;color:rgba(96,144,255,0.4);letter-spacing:1px">AFFINITY·Score · data/meta_signal_latest.csv</div>
           </div>
@@ -1075,10 +1075,10 @@ body::after{
             <div class="pipe-circle" style="background:rgba(96,144,255,0.08);border-color:rgba(96,144,255,0.25);color:var(--blue);font-size:12px;width:32px;height:32px;flex-shrink:0">3</div>
             <div>
               <div style="font-size:13px;letter-spacing:1px;color:var(--blue)">AFFINITY·Score</div>
-              <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4)">SIGNAL LANDSCAPE · Φ vs Ψ vs SCORE</div>
+              <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4)">SCORE DISTRIBUTION · <span id="pl-dist-count">418</span> TICKERS</div>
             </div>
           </div>
-          <div id="pl-landscape" style="height:220px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+          <div id="pl-score-dist" style="height:220px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
             <div style="font-size:11px;color:var(--t4)">Awaiting signal data</div>
             <div style="font-size:9px;color:rgba(96,144,255,0.4);letter-spacing:1px">AFFINITY·Score · data/meta_signal_latest.csv</div>
           </div>
@@ -2001,48 +2001,68 @@ async function renderSignals(r){
     const scores=sig.map(s=>s.score);
     set('pl-score-dist','');
     $('pl-score-dist').style.cssText='height:220px';
-    const layout={
+    // Build manual bins so we can color each bar by its midpoint
+    const binSize=5, bins=[];
+    for(let b=0;b<100;b+=binSize){
+      const count=scores.filter(s=>s>=b&&s<b+binSize).length;
+      const mid=b+binSize/2;
+      bins.push({x:mid,count,color:mid>60?'rgba(0,255,180,0.75)':mid<30?'rgba(255,50,80,0.55)':'rgba(96,144,255,0.55)'});
+    }
+    Plotly.newPlot('pl-score-dist',[{
+      x:bins.map(b=>b.x),y:bins.map(b=>b.count),type:'bar',
+      width:binSize*0.9,
+      marker:{color:bins.map(b=>b.color),line:{width:0}},
+      hovertemplate:'Score: %{x}<br>Count: %{y}<extra></extra>',
+    }],{
       paper_bgcolor:'transparent',plot_bgcolor:'transparent',
-      margin:{l:40,r:10,t:10,b:30},
+      margin:{l:36,r:10,t:10,b:30},
       font:{family:'JetBrains Mono',size:9,color:'rgba(255,255,255,0.4)'},
-      xaxis:{gridcolor:'rgba(50,70,130,0.1)',linecolor:'rgba(50,70,130,0.15)',title:'Score',titlefont:{size:9}},
+      xaxis:{gridcolor:'rgba(50,70,130,0.1)',linecolor:'rgba(50,70,130,0.15)',title:'AFFINITY Score',titlefont:{size:9},range:[0,100]},
       yaxis:{gridcolor:'rgba(50,70,130,0.1)',linecolor:'rgba(50,70,130,0.15)',title:'Count',titlefont:{size:9}},
       bargap:0.05,
-    };
-    Plotly.newPlot('pl-score-dist',[{
-      x:scores,type:'histogram',nbinsx:40,
-      marker:{color:scores.map(s=>s>60?'rgba(0,255,180,0.7)':s<30?'rgba(255,50,80,0.5)':'rgba(96,144,255,0.5)'),line:{width:0}},
-      hovertemplate:'Score: %{x:.2f}<br>Count: %{y}<extra></extra>',
-    }],layout,{displayModeBar:false,responsive:true});
+    },{displayModeBar:false,responsive:true});
   }
 
-  // Signal Landscape scatter
+  // Signal Landscape — 3D scatter: Φ (x) vs Ψ (y) vs SCORE (z)
   if(scored>0 && window.Plotly){
     set('pl-landscape','');
     $('pl-landscape').style.cssText='height:220px';
-    const top=sig.slice(0,20), rest=sig.slice(20);
-    function jitter(n){return n+(Math.random()-0.5)*4;}
-    const layout={
-      paper_bgcolor:'transparent',plot_bgcolor:'transparent',
-      margin:{l:40,r:10,t:10,b:30},
-      font:{family:'JetBrains Mono',size:9,color:'rgba(255,255,255,0.4)'},
-      xaxis:{gridcolor:'rgba(50,70,130,0.1)',linecolor:'rgba(50,70,130,0.15)',title:'Φ',titlefont:{size:9},range:[0,100]},
-      yaxis:{gridcolor:'rgba(50,70,130,0.1)',linecolor:'rgba(50,70,130,0.15)',title:'Ψ',titlefont:{size:9},range:[0,100]},
+    const top20ids=new Set(sig.slice(0,20).map(s=>s.ticker));
+    const colors=sig.map(s=>s.score);
+    Plotly.newPlot('pl-landscape',[{
+      x:sig.map(s=>s.phi??0),
+      y:sig.map(s=>Math.max(s.psi??0,0)),
+      z:sig.map(s=>s.score),
+      mode:'markers',
+      type:'scatter3d',
+      text:sig.map(s=>s.ticker),
+      hovertemplate:'<b>%{text}</b><br>Φ: %{x:.1f}<br>Ψ: %{y:.1f}<br>Score: %{z:.1f}<extra></extra>',
+      marker:{
+        size:sig.map(s=>top20ids.has(s.ticker)?6:3),
+        color:colors,
+        colorscale:[
+          [0,'rgba(255,50,80,0.7)'],
+          [0.3,'rgba(96,144,255,0.6)'],
+          [0.6,'rgba(0,200,255,0.7)'],
+          [1,'rgba(0,255,180,0.9)']
+        ],
+        cmin:0,cmax:100,
+        opacity:0.85,
+        line:{width:0},
+      },
+    }],{
+      paper_bgcolor:'transparent',
+      scene:{
+        bgcolor:'transparent',
+        xaxis:{title:'Φ',titlefont:{size:8},gridcolor:'rgba(50,70,130,0.2)',zerolinecolor:'rgba(50,70,130,0.3)',tickfont:{size:7,color:'rgba(255,255,255,0.3)'},range:[0,100]},
+        yaxis:{title:'Ψ',titlefont:{size:8},gridcolor:'rgba(50,70,130,0.2)',zerolinecolor:'rgba(50,70,130,0.3)',tickfont:{size:7,color:'rgba(255,255,255,0.3)'},range:[0,100]},
+        zaxis:{title:'Score',titlefont:{size:8},gridcolor:'rgba(50,70,130,0.2)',zerolinecolor:'rgba(50,70,130,0.3)',tickfont:{size:7,color:'rgba(255,255,255,0.3)'},range:[0,100]},
+        camera:{eye:{x:1.4,y:1.4,z:0.8}},
+      },
+      margin:{l:0,r:0,t:0,b:0},
+      font:{family:'JetBrains Mono',size:8,color:'rgba(255,255,255,0.4)'},
       showlegend:false,
-    };
-    Plotly.newPlot('pl-landscape',[
-      {x:rest.map(s=>jitter(s.phi??s.score)),y:rest.map(s=>jitter(s.psi??s.score)),
-       mode:'markers',type:'scatter',
-       marker:{size:4,color:'rgba(96,144,255,0.3)'},
-       hovertemplate:'%{text}<br>Score: %{x:.2f}<extra></extra>',
-       text:rest.map(s=>s.ticker)},
-      {x:top.map(s=>jitter(s.phi??s.score)),y:top.map(s=>jitter(s.psi??s.score)),
-       mode:'markers+text',type:'scatter',
-       marker:{size:7,color:'rgba(0,255,180,0.8)',line:{color:'rgba(0,255,180,0.4)',width:1}},
-       textfont:{size:8,color:'rgba(0,255,180,0.7)'},textposition:'top center',
-       hovertemplate:'%{text}<br>Score: %{x:.2f}<extra></extra>',
-       text:top.map(s=>s.ticker)},
-    ],layout,{displayModeBar:false,responsive:true});
+    },{displayModeBar:false,responsive:true});
   }
 
   // Top 10 / Bottom 10 table
