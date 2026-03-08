@@ -788,13 +788,14 @@ body::after{
               <div class="sub" id="pt-pl-pct">—</div>
             </div>
             <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--bd)">
-              <div class="lbl" style="margin-bottom:5px">BENCHMARKS JAN 2023 – MAR 2026</div>
+              <div class="lbl" style="margin-bottom:5px">BENCHMARKS SINCE INCEPTION · 2026-03-07</div>
               <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px">
-                <span style="color:var(--t4)">SPY</span><span id="pt-spy-ret" style="color:var(--t3)">—</span>
+                <span style="color:var(--t4)">SPY</span><span id="pt-spy-ret" style="color:var(--t4)">—</span>
               </div>
               <div style="display:flex;justify-content:space-between;font-size:10px">
-                <span style="color:var(--t4)">XBI</span><span id="pt-xbi-ret" style="color:var(--t3)">—</span>
+                <span style="color:var(--t4)">XBI</span><span id="pt-xbi-ret" style="color:var(--t4)">—</span>
               </div>
+              <div style="font-size:9px;color:var(--t4);margin-top:4px">Requires live feed</div>
             </div>
           </div>
         </div>
@@ -1739,10 +1740,8 @@ function renderPortfolio(m,p){
   // SPY/XBI since inception from backtest equity arrays
   const b=window.D&&window.D.b||SAMPLE.b;
   const spyArr=b.spy_equity||[], xbiArr=b.xbi_equity||[];
-  const spyRet=spyArr.length?(spyArr[spyArr.length-1]-100).toFixed(1)+'%':null;
-  const xbiRet=xbiArr.length?(xbiArr[xbiArr.length-1]-100).toFixed(1)+'%':null;
-  const spyEl=$('pt-spy-ret');if(spyEl){spyEl.textContent=spyRet||'—';spyEl.style.color=parseFloat(spyRet)>=0?'var(--cyan)':'var(--red)';}
-  const xbiEl=$('pt-xbi-ret');if(xbiEl){xbiEl.textContent=xbiRet||'—';xbiEl.style.color=parseFloat(xbiRet)>=0?'var(--cyan)':'var(--red)';}
+  // Benchmarks since inception — requires prices_latest.csv (pending NB13-v2 export)
+  // pt-spy-ret and pt-xbi-ret will populate once live price data is available
 
   // Positions card
   txt('pt-npos',(m.long_positions||0).toString());
