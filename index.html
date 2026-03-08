@@ -1988,8 +1988,12 @@ async function renderSignals(r){
   if(depEl){depEl.textContent=fmt$(p.capital_deployed_A||0);depEl.style.color=(p.capital_deployed_A||0)>0?'var(--cyan)':'var(--t3)';}
 
   // Score Distribution histogram
+  if(scored>0 && !window.Plotly){
+    // Plotly not yet loaded — retry once it arrives
+    const waitPlotly=setInterval(()=>{if(window.Plotly){clearInterval(waitPlotly);renderSignals(r);}},200);
+    setTimeout(()=>clearInterval(waitPlotly),10000);
+  }
   if(scored>0 && window.Plotly){
-    const scores=sig.map(s=>s.score);
     set('pl-score-dist','');
     $('pl-score-dist').style.cssText='height:220px';
     const layout={
