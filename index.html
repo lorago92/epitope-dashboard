@@ -1127,28 +1127,32 @@ body::after{
         </div>
 
         <!-- Step 1+2: Factor Profile Table (left) + Live Readings (right) -->
-        <div style="display:grid;grid-template-columns:3fr 1px 1fr;gap:0;padding-bottom:16px;border-bottom:1px solid var(--bd);margin-bottom:16px">
+        <!-- Left panel hidden until state_profiles available; shown by JS when data loads -->
+        <div id="pl-step12-grid" style="display:grid;grid-template-columns:1fr;gap:0;padding-bottom:16px;border-bottom:1px solid var(--bd);margin-bottom:16px;align-items:start">
 
-          <!-- LEFT: Option A — Factor × HMM State centroid table -->
-          <div style="padding-right:24px">
+          <!-- LEFT: Option A — Factor × HMM State centroid table (shown when data available) -->
+          <div id="pl-state-table-wrap" style="display:none;padding-right:24px">
             <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:4px">STEP 1+2 · FACTOR PROFILE & HMM STATE CENTROIDS</div>
             <div style="font-size:9px;color:rgba(255,255,255,0.2);margin-bottom:12px">Mean PCA factor loadings per state · PCA variance · regime mapping · historical frequency</div>
-            <div id="pl-state-table">
-              <div style="font-size:10px;color:var(--t4);padding:20px 0;text-align:center">Awaiting regime data · available after next rebalance run</div>
-            </div>
+            <div id="pl-state-table"></div>
           </div>
 
-          <!-- Divider -->
-          <div style="background:var(--bd)"></div>
+          <!-- Divider (shown when data available) -->
+          <div id="pl-step12-divider" style="display:none;background:var(--bd)"></div>
 
-          <!-- RIGHT: Live readings today -->
-          <div style="padding-left:24px">
-            <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:4px">LIVE · TODAY</div>
-            <div style="font-size:9px;color:rgba(255,255,255,0.2);margin-bottom:12px">Current factor readings</div>
-            <div id="pl-zfactors-live"></div>
-            <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(50,70,140,0.12)">
-              <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:8px">PCA VARIANCE</div>
-              <div id="pl-pca-bars"></div>
+          <!-- RIGHT: Live readings today (always visible) -->
+          <div id="pl-live-wrap" style="padding-left:0">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">
+              <div>
+                <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:4px">LIVE · TODAY · FACTOR READINGS</div>
+                <div style="font-size:9px;color:rgba(255,255,255,0.2);margin-bottom:12px">Current PCA factor values</div>
+                <div id="pl-zfactors-live"></div>
+              </div>
+              <div>
+                <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:4px">PCA VARIANCE</div>
+                <div style="font-size:9px;color:rgba(255,255,255,0.2);margin-bottom:12px">Variance captured per component</div>
+                <div id="pl-pca-bars"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -1237,7 +1241,7 @@ body::after{
           </div>
           <div style="display:flex;flex-direction:column;gap:8px">
             <div style="display:flex;justify-content:space-between;font-size:10px;padding-bottom:8px;border-bottom:1px solid var(--bd)">
-              <span style="color:var(--t4)">SELECTION</span><span>Top 20 · AFFINITY·Score ranked</span>
+              <span style="color:var(--t4)">SELECTION</span><span>Top 20 · AFFINITY·Score × CYTOKINE·Gate</span>
             </div>
             <div style="display:flex;justify-content:space-between;font-size:10px;padding-bottom:8px;border-bottom:1px solid var(--bd)">
               <span style="color:var(--t4)">POSITION SIZING</span><span>Equal weight (~5% per position)</span>
@@ -2016,6 +2020,15 @@ async function renderSignals(r){
     };
 
     if(profiles){
+      // Expand to 3fr|1px|1fr layout
+      const grid=$('pl-step12-grid');
+      if(grid) grid.style.gridTemplateColumns='3fr 1px 1fr';
+      const wrap=$('pl-state-table-wrap');
+      if(wrap) wrap.style.display='block';
+      const div=$('pl-step12-divider');
+      if(div) div.style.display='block';
+      const live=$('pl-live-wrap');
+      if(live) live.style.paddingLeft='24px';
       const thS='padding:7px 10px;font-size:9px;letter-spacing:1px;color:var(--t4);border-bottom:1px solid var(--bd);text-align:right;white-space:nowrap;position:sticky;top:0;background:var(--bg2)';
       const thSL=thS+';text-align:left';
       let h=`<table style="width:100%;border-collapse:collapse;font-size:10px">
