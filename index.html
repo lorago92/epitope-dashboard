@@ -1142,17 +1142,12 @@ body::after{
 
           <!-- RIGHT: Live readings today (always visible) -->
           <div id="pl-live-wrap" style="padding-left:0">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">
-              <div>
-                <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:4px">LIVE · TODAY · FACTOR READINGS</div>
-                <div style="font-size:9px;color:rgba(255,255,255,0.2);margin-bottom:12px">Current PCA factor values</div>
-                <div id="pl-zfactors-live"></div>
-              </div>
-              <div>
-                <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:4px">PCA VARIANCE</div>
-                <div style="font-size:9px;color:rgba(255,255,255,0.2);margin-bottom:12px">Variance captured per component</div>
-                <div id="pl-pca-bars"></div>
-              </div>
+            <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:4px">LIVE · TODAY · FACTOR READINGS</div>
+            <div style="font-size:9px;color:rgba(255,255,255,0.2);margin-bottom:12px">Current PCA factor values</div>
+            <div id="pl-zfactors-live"></div>
+            <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(50,70,140,0.12)">
+              <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:8px">PCA VARIANCE</div>
+              <div id="pl-pca-bars"></div>
             </div>
           </div>
         </div>
