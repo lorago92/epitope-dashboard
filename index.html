@@ -1109,7 +1109,7 @@ body::after{
       <!-- ROW 3: CYTOKINE·Gate -->
       <div class="card mb16">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
-          <div class="pipe-circle" style="background:rgba(255,200,40,0.08);border-color:rgba(255,200,40,0.25);color:var(--amber);font-size:12px;width:32px;height:32px;flex-shrink:0">3</div>
+          <div class="pipe-circle" style="background:rgba(255,200,40,0.08);border-color:rgba(255,200,40,0.25);color:var(--amber);font-size:12px;width:32px;height:32px;flex-shrink:0">4</div>
           <div>
             <div style="font-size:13px;letter-spacing:1px;color:var(--amber)">CYTOKINE·Gate <span id="pl-cytokine-status" style="font-size:9px;margin-left:8px;color:var(--red)">← ACTIVE · BEAR</span></div>
             <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4)">MACRO REGIME FILTER</div>
@@ -1180,33 +1180,30 @@ body::after{
       <div class="mb16">
         <div class="card" style="padding:0;overflow:hidden">
 
-          <!-- Dual-circle header showing the two steps that feed this table -->
-          <div style="padding:16px 20px 14px;display:flex;align-items:center;gap:0;border-bottom:1px solid var(--bd)">
+          <!-- Header row: dual circles left, search right -->
+          <div style="padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd)">
 
-            <!-- Step 3 circle -->
-            <div class="pipe-circle" style="background:rgba(96,144,255,0.08);border-color:rgba(96,144,255,0.25);color:var(--blue);font-size:12px;width:32px;height:32px;flex-shrink:0">3</div>
-
-            <!-- Arrow connector -->
-            <div style="font-size:11px;color:var(--t4);margin:0 6px;letter-spacing:1px">×</div>
-
-            <!-- Step 4 circle -->
-            <div class="pipe-circle" style="background:rgba(255,200,40,0.08);border-color:rgba(255,200,40,0.25);color:var(--amber);font-size:12px;width:32px;height:32px;flex-shrink:0">4</div>
-
-            <!-- Title block -->
-            <div style="margin-left:12px">
-              <div style="display:flex;align-items:baseline;gap:8px">
-                <span style="font-size:13px;letter-spacing:1px;color:var(--blue)">AFFINITY·Score</span>
-                <span style="font-size:11px;color:var(--t4)">×</span>
-                <span style="font-size:13px;letter-spacing:1px;color:var(--amber)">CYTOKINE·Gate</span>
+            <!-- Left: dual circles + title -->
+            <div style="display:flex;align-items:center;gap:0">
+              <div class="pipe-circle" style="background:rgba(96,144,255,0.08);border-color:rgba(96,144,255,0.25);color:var(--blue);font-size:12px;width:32px;height:32px;flex-shrink:0">3</div>
+              <div style="font-size:11px;color:var(--t4);margin:0 6px">×</div>
+              <div class="pipe-circle" style="background:rgba(255,200,40,0.08);border-color:rgba(255,200,40,0.25);color:var(--amber);font-size:12px;width:32px;height:32px;flex-shrink:0">4</div>
+              <div style="margin-left:12px">
+                <div style="display:flex;align-items:baseline;gap:8px">
+                  <span style="font-size:13px;letter-spacing:1px;color:var(--blue)">AFFINITY·Score</span>
+                  <span style="font-size:11px;color:var(--t4)">×</span>
+                  <span style="font-size:13px;letter-spacing:1px;color:var(--amber)">CYTOKINE·Gate</span>
+                </div>
+                <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-top:2px">GATED SIGNAL RANKING · COMPOSITE × REGIME MULTIPLIER → FINAL SCORE</div>
               </div>
-              <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-top:2px">GATED SIGNAL RANKING · COMPOSITE × REGIME MULTIPLIER → FINAL SCORE</div>
             </div>
-          </div>
 
-          <!-- Search + count bar -->
-          <div style="padding:10px 20px 12px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--bd)">
-            <input id="pl-rank-search" type="text" placeholder="Search ticker…" style="background:rgba(50,70,140,0.12);border:1px solid rgba(50,70,140,0.25);border-radius:6px;padding:6px 12px;font-size:11px;color:var(--t1);font-family:'JetBrains Mono',monospace;width:220px;outline:none" oninput="filterRankTable(this.value)">
-            <span id="pl-rank-count" style="font-size:9px;color:var(--t4);letter-spacing:1px">Showing 418 rows · scroll for more</span>
+            <!-- Right: search + count -->
+            <div style="display:flex;align-items:center;gap:12px">
+              <input id="pl-rank-search" type="text" placeholder="Search ticker…" style="background:rgba(50,70,140,0.12);border:1px solid rgba(50,70,140,0.25);border-radius:6px;padding:6px 12px;font-size:11px;color:var(--t1);font-family:'JetBrains Mono',monospace;width:200px;outline:none" oninput="filterRankTable(this.value)">
+              <span id="pl-rank-count" style="font-size:9px;color:var(--t4);letter-spacing:1px;white-space:nowrap">Showing 418 rows</span>
+            </div>
+
           </div>
 
           <div id="pl-rank-table" style="overflow-x:auto;padding:40px 20px;text-align:center">
