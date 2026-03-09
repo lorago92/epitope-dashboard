@@ -2039,11 +2039,10 @@ async function renderSignals(r){
         const p=profiles[s]; if(!p) return;
         const isActive=parseInt(s)===activeState;
         const rc=regimeColor2(p.regime);
-        const glow=isActive?`box-shadow:0 0 0 1px ${rc};border-radius:3px;`:'';
+        const glow=isActive?`outline:1px solid ${rc};outline-offset:-1px;border-radius:2px;`:'';
         h+=`<th style="${thS};color:${isActive?rc:'var(--t4)'};${glow}">
-          S${parseInt(s)+1}<br>
-          <span style="font-size:8px;opacity:0.7">${p.regime.toUpperCase()}</span>
-          ${isActive?'<br><span style="font-size:7px;letter-spacing:1px;color:'+rc+'">▶ NOW</span>':''}
+          S${parseInt(s)+1} · <span style="font-size:8px">${p.regime.toUpperCase()}</span>
+          ${isActive?`<br><span style="font-size:7px;letter-spacing:1px;color:${rc}">▶ NOW</span>`:''}
         </th>`;
       });
       h+=`<th style="${thS};color:var(--cyan)">TODAY</th>
@@ -2073,17 +2072,6 @@ async function renderSignals(r){
 
       // Separator row
       h+=`<tr><td colspan="6" style="padding:0;height:1px;background:var(--bd)"></td></tr>`;
-
-      // Var Explained row
-      h+=`<tr style="border-bottom:1px solid rgba(50,70,140,0.06)">
-        <td style="padding:7px 10px;color:var(--t4);font-size:9px">VAR EXPLAINED</td>`;
-      const pcaArr=r.pca_explained_variance||[];
-      stateOrder.forEach((s,si)=>{
-        const profiles_s=profiles[s]; if(!profiles_s) return;
-        const v=pcaArr[si]!=null?(pcaArr[si]*100).toFixed(1)+'%':'—';
-        h+=`<td style="padding:7px 10px;text-align:right;color:var(--t3)">${v}</td>`;
-      });
-      h+=`<td style="padding:7px 10px;text-align:right;color:var(--t4)">—</td></tr>`;
 
       // Regime row
       h+=`<tr style="border-bottom:1px solid rgba(50,70,140,0.06)">
@@ -2378,33 +2366,26 @@ async function renderSignals(r){
           }
         });
         if(dates.length>0 && window.Plotly){
-          // Build colored background shapes for regime periods
+          const regimeFill={'Strong Bull':'rgba(0,255,180,0.07)','Mild Bull':'rgba(0,255,180,0.04)','Neutral':'rgba(255,200,40,0.06)','Bear':'rgba(255,50,80,0.06)','Bull':'rgba(0,255,180,0.06)'};
+          const regimeCol={'Strong Bull':'#00ffcc','Mild Bull':'#00ffb4','Neutral':'#ffc828','Bear':'#ff3250','Bull':'#00ffb4'};
           const shapes=[];
           let segStart=0, segRegime=regimes[0];
-          const regimeFill={Bull:'rgba(0,255,180,0.06)',Neutral:'rgba(255,200,40,0.06)',Bear:'rgba(255,50,80,0.06)'};
           for(let i=1;i<=regimes.length;i++){
             if(i===regimes.length||regimes[i]!==segRegime){
-              shapes.push({type:'rect',xref:'x',yref:'paper',
-                x0:dates[segStart],x1:dates[i-1],y0:0,y1:1,
-                fillcolor:regimeFill[segRegime]||'rgba(100,100,100,0.05)',
-                line:{width:0},layer:'below'});
+              shapes.push({type:'rect',xref:'x',yref:'paper',x0:dates[segStart],x1:dates[i-1],y0:0,y1:1,fillcolor:regimeFill[segRegime]||'rgba(100,100,100,0.05)',line:{width:0},layer:'below'});
               if(i<regimes.length){segStart=i;segRegime=regimes[i];}
             }
           }
-          const lineCol=scores.map((_,i)=>regimes[i]==='Bull'?'#00ffb4':regimes[i]==='Bear'?'#ff3250':'#ffc828');
+          const allRegimes=[...new Set(regimes)];
           set('pl-regime-chart','');
           $('pl-regime-chart').style.cssText='height:160px';
           Plotly.newPlot('pl-regime-chart',[
-            {x:dates,y:scores,type:'scatter',mode:'lines',
-             line:{color:'rgba(150,160,220,0.6)',width:1.5},
-             fill:'tozeroy',fillcolor:'rgba(96,144,255,0.04)',
-             hovertemplate:'%{x}<br>Score: %{y:.4f}<extra></extra>'},
-            // Bull segments
-            ...['Bull','Neutral','Bear'].map(reg=>({
+            {x:dates,y:scores,type:'scatter',mode:'lines',line:{color:'rgba(150,160,220,0.6)',width:1.5},fill:'tozeroy',fillcolor:'rgba(96,144,255,0.04)',hovertemplate:'%{x}<br>Score: %{y:.4f}<extra></extra>'},
+            ...allRegimes.map(reg=>({
               x:dates.filter((_,i)=>regimes[i]===reg),
               y:scores.filter((_,i)=>regimes[i]===reg),
               type:'scatter',mode:'markers',
-              marker:{size:3,color:reg==='Bull'?'#00ffb4':reg==='Bear'?'#ff3250':'#ffc828',opacity:0.7},
+              marker:{size:3,color:regimeCol[reg]||'#aaaaaa',opacity:0.8},
               name:reg,hovertemplate:`${reg}<br>%{x}<br>%{y:.4f}<extra></extra>`
             }))
           ],{
