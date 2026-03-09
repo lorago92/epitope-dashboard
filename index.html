@@ -1091,26 +1091,25 @@ body::after{
           </div>
         </div>
 
-        <!-- Charts row: 3D landscape (full width with overlay) + score distribution -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
-          <div style="position:relative">
-            <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:8px">SIGNAL LANDSCAPE · Φ vs Ψ vs SCORE</div>
-            <div id="pl-landscape" style="height:400px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
-              <div style="font-size:11px;color:var(--t4)">Awaiting signal data</div>
-              <div style="font-size:9px;color:rgba(96,144,255,0.4);letter-spacing:1px">AFFINITY·Score · data/meta_signal_latest.csv</div>
-            </div>
-            <!-- Overlay: Top 5 & Bottom 5 -->
-            <div style="position:absolute;top:28px;left:8px;background:rgba(6,6,16,0.82);border:1px solid rgba(96,144,255,0.18);border-radius:8px;padding:10px 12px;min-width:170px;backdrop-filter:blur(4px);pointer-events:none">
-              <div style="font-size:8px;letter-spacing:1.5px;color:var(--t4);margin-bottom:8px">TOP 5 & BOTTOM 5</div>
-              <div id="pl-top20" style="display:flex;flex-direction:column;gap:2px"></div>
-            </div>
+        <!-- Full-width 3D scatter with overlay -->
+        <div style="position:relative;margin-bottom:12px">
+          <div id="pl-landscape" style="height:480px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+            <div style="font-size:11px;color:var(--t4)">Awaiting signal data</div>
+            <div style="font-size:9px;color:rgba(96,144,255,0.4);letter-spacing:1px">AFFINITY·Score · data/meta_signal_latest.csv</div>
           </div>
-          <div>
-            <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:8px">SCORE DISTRIBUTION · <span id="pl-dist-count">418</span> TICKERS</div>
-            <div id="pl-score-dist" style="height:400px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
-              <div style="font-size:11px;color:var(--t4)">Awaiting signal data</div>
-              <div style="font-size:9px;color:rgba(96,144,255,0.4);letter-spacing:1px">AFFINITY·Score · data/meta_signal_latest.csv</div>
-            </div>
+          <!-- Overlay: Top 5 & Bottom 5 -->
+          <div style="position:absolute;top:8px;left:8px;background:rgba(6,6,16,0.85);border:1px solid rgba(96,144,255,0.2);border-radius:8px;padding:10px 14px;min-width:180px;backdrop-filter:blur(6px);pointer-events:none">
+            <div style="font-size:8px;letter-spacing:1.5px;color:var(--t4);margin-bottom:8px">TOP 5 & BOTTOM 5</div>
+            <div id="pl-top20" style="display:flex;flex-direction:column;gap:2px"></div>
+          </div>
+        </div>
+
+        <!-- Score distribution histogram — thin strip below -->
+        <div style="border-top:1px solid var(--bd);padding-top:12px">
+          <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:6px">SCORE DISTRIBUTION · <span id="pl-dist-count">418</span> TICKERS</div>
+          <div id="pl-score-dist" style="height:160px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+            <div style="font-size:11px;color:var(--t4)">Awaiting signal data</div>
+            <div style="font-size:9px;color:rgba(96,144,255,0.4);letter-spacing:1px">AFFINITY·Score · data/meta_signal_latest.csv</div>
           </div>
         </div>
       </div>
@@ -2142,7 +2141,7 @@ async function renderSignals(r){
   if(scored>0 && window.Plotly){
     const scores=sig.map(s=>s.score);
     set('pl-score-dist','');
-    $('pl-score-dist').style.cssText='height:340px';
+    $('pl-score-dist').style.cssText='height:160px';
     const binSize=5, binsR=[], binsB=[], binsG=[];
     for(let b=0;b<100;b+=binSize){
       const count=scores.filter(s=>s>=b&&s<b+binSize).length;
@@ -2158,7 +2157,7 @@ async function renderSignals(r){
       {...barBase,name:'Score > 60',x:binsG.map(b=>b.x),y:binsG.map(b=>b.y),marker:{color:'rgba(0,255,180,0.75)'}},
     ],{
       paper_bgcolor:'transparent',plot_bgcolor:'transparent',
-      margin:{l:36,r:10,t:10,b:30},
+      margin:{l:36,r:10,t:4,b:36},
       font:{family:'JetBrains Mono',size:9,color:'rgba(255,255,255,0.4)'},
       xaxis:{gridcolor:'rgba(50,70,130,0.1)',linecolor:'rgba(50,70,130,0.15)',title:'AFFINITY Score',titlefont:{size:9},range:[0,105]},
       yaxis:{gridcolor:'rgba(50,70,130,0.1)',linecolor:'rgba(50,70,130,0.15)',title:'Count',titlefont:{size:9}},
@@ -2171,7 +2170,7 @@ async function renderSignals(r){
   // Signal Landscape — 3D scatter: Φ (x) vs Ψ (y) vs SCORE (z)
   if(scored>0 && window.Plotly){
     set('pl-landscape','');
-    $('pl-landscape').style.cssText='height:400px';
+    $('pl-landscape').style.cssText='height:480px';
     const top20ids=new Set(sig.slice(0,20).map(s=>s.ticker));
     const axStyle={
       showbackground:true,
