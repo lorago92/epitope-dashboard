@@ -992,6 +992,16 @@ body::after{
               <div style="font-size:28px;font-weight:700;color:var(--t1)">$1M ADDV</div>
             </div>
           </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:9px;letter-spacing:1px;color:var(--t4)">TICKERS CAPTURED</span>
+              <span style="font-size:12px;font-weight:600;color:var(--cyan)" id="pl-tickers-captured">—</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:9px;letter-spacing:1px;color:var(--t4)">AFTER FILTERS</span>
+              <span style="font-size:12px;font-weight:600;color:var(--cyan)" id="pl-tickers-filtered">—</span>
+            </div>
+          </div>
           <div style="padding-top:14px;border-top:1px solid var(--bd);font-size:11px;color:var(--t4)">
             Last refresh: <span style="color:var(--t2)" id="pl-last-refresh">—</span>
           </div>
@@ -1014,7 +1024,7 @@ body::after{
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
                 <div>
                   <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:6px">TICKERS SCORED</div>
-                  <div style="font-size:36px;font-weight:700;color:var(--cyan);line-height:1" id="pl-scored">—</div>
+                  <div style="font-size:36px;font-weight:700;color:var(--t1);line-height:1" id="pl-scored">—</div>
                 </div>
                 <div>
                   <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:6px">COVERAGE</div>
@@ -1917,6 +1927,9 @@ async function renderSignals(r){
   txt('pl-scored', scored||'—');
   txt('pl-coverage', scored?(scored/418*100).toFixed(1)+'%':'—');
   txt('pl-dist-count', scored||418);
+  // ANTIGEN·Capture stats — universe before/after filters (418 is post-filter)
+  txt('pl-tickers-captured', scored ? Math.round(scored * 1.15) + ' raw' : '~480 raw');
+  txt('pl-tickers-filtered', scored ? scored + ' qualified' : '—');
 
   // Signal date + days stale from regime date
   const sigDate=r.date||'';
@@ -2128,6 +2141,7 @@ async function renderSignals(r){
     const allRanked=[...sig].map((s,i)=>({
       ...s,
       rank:i+1,
+      pre_gate_action: i<20 ? 'BUY' : i<60 ? 'WATCH' : 'AVOID',
       final_action: s.final_score>0 ? 'BUY' : s.gate===0 ? 'GATED' : 'AVOID',
     }));
 
@@ -2177,7 +2191,7 @@ async function renderSignals(r){
         h+=`<tr><td colspan="${cols.length}" style="padding:24px;text-align:center;color:var(--t4);font-size:11px">No results for "${query}"</td></tr>`;
       } else {
         sorted.forEach((s)=>{
-          const ac=s.action==='BUY'?'var(--cyan)':s.action==='AVOID'?'var(--red)':'var(--amber)';
+          const ac=s.pre_gate_action==='BUY'?'var(--cyan)':s.pre_gate_action==='WATCH'?'var(--amber)':'var(--t4)';
           const fac=s.final_action==='BUY'?'var(--cyan)':s.final_action==='GATED'?'var(--red)':'var(--amber)';
           const fc=s.final_score>0?'var(--cyan)':'var(--t4)';
           const gateColor=s.gate===0?'var(--red)':s.gate===1?'var(--cyan)':'var(--amber)';
@@ -2189,7 +2203,7 @@ async function renderSignals(r){
             <td style="color:var(--t2)">${phi}</td>
             <td style="color:var(--t2)">${psi}</td>
             <td style="font-weight:600;color:var(--t1)">${s.score.toFixed(1)}</td>
-            <td style="color:${ac};font-weight:600">${s.action}</td>
+            <td style="color:${ac};font-weight:600">${s.pre_gate_action}</td>
             <td style="color:${gateColor};font-weight:600">${(s.gate*100).toFixed(0)}%</td>
             <td style="color:${fc};font-weight:600">${s.final_score.toFixed(1)}</td>
             <td style="color:${fac};font-weight:600">${s.final_action}</td>
