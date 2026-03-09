@@ -474,7 +474,7 @@ body::after{
 
   <!-- NAV -->
   <nav class="nav">
-    <div class="nav-logo" onclick="nav('overview',document.querySelector('.nav-tab'))" style="cursor:pointer">EPITOPE</div>
+    <div class="nav-logo">EPITOPE</div>
     <div class="nav-sep"></div>
     <div class="nav-sub">Some sequences are never<br>found. We found one.</div>
     <div class="nav-tabs">
@@ -629,7 +629,7 @@ body::after{
       <div class="g-auto mb16" style="grid-template-columns:1fr 320px">
         <div class="card">
           <div class="card-title">From Universe to Portfolio</div>
-          <div id="particle-flow" style="width:100%;height:280px;position:relative;overflow:hidden"></div>
+          <div id="particle-flow" style="width:100%;height:240px;position:relative;overflow:hidden"></div>
         </div>
 
         <!-- Signal Strength -->
@@ -803,14 +803,14 @@ body::after{
               <div class="sub" id="pt-pl-pct">—</div>
             </div>
             <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--bd)">
-              <div class="lbl" style="margin-bottom:5px">BENCHMARKS SINCE INCEPTION · 2026-03-09</div>
+              <div class="lbl" style="margin-bottom:5px">BENCHMARKS SINCE INCEPTION · 2026-03-07</div>
               <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px">
                 <span style="color:var(--t4)">SPY</span><span id="pt-spy-ret" style="color:var(--t4)">—</span>
               </div>
               <div style="display:flex;justify-content:space-between;font-size:10px">
                 <span style="color:var(--t4)">XBI</span><span id="pt-xbi-ret" style="color:var(--t4)">—</span>
               </div>
-              <div style="font-size:9px;color:var(--t4);margin-top:4px">Populates after first daily close</div>
+              <div style="font-size:9px;color:var(--t4);margin-top:4px">Requires live feed</div>
             </div>
           </div>
         </div>
@@ -1082,34 +1082,37 @@ body::after{
       </div>
 
       <!-- ROW 2: Score Distribution + Signal Landscape -->
-      <div class="card mb16">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-          <div class="pipe-circle" style="background:rgba(96,144,255,0.08);border-color:rgba(96,144,255,0.25);color:var(--blue);font-size:12px;width:32px;height:32px;flex-shrink:0">3</div>
-          <div>
-            <div style="font-size:13px;letter-spacing:1px;color:var(--blue)">AFFINITY·Score</div>
-            <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4)">SIGNAL LANDSCAPE · Φ vs Ψ vs SCORE · DISTRIBUTION</div>
+      <div class="g2 mb16">
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+            <div class="pipe-circle" style="background:rgba(96,144,255,0.08);border-color:rgba(96,144,255,0.25);color:var(--blue);font-size:12px;width:32px;height:32px;flex-shrink:0">3</div>
+            <div>
+              <div style="font-size:13px;letter-spacing:1px;color:var(--blue)">AFFINITY·Score</div>
+              <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4)">SIGNAL LANDSCAPE · Φ vs Ψ vs SCORE</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 3fr;gap:16px;align-items:start">
+            <div>
+              <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:10px">TOP 5 & BOTTOM 5</div>
+              <div id="pl-top20" style="display:flex;flex-direction:column;gap:5px"></div>
+            </div>
+            <div id="pl-landscape" style="height:340px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+              <div style="font-size:11px;color:var(--t4)">Awaiting signal data</div>
+              <div style="font-size:9px;color:rgba(96,144,255,0.4);letter-spacing:1px">AFFINITY·Score · data/meta_signal_latest.csv</div>
+            </div>
           </div>
         </div>
-
-        <!-- Charts row: 3D landscape + table + score distribution -->
-        <div style="display:grid;grid-template-columns:2fr 160px 2fr;gap:16px;align-items:start">
-          <div>
-            <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:8px">SIGNAL LANDSCAPE · Φ vs Ψ vs SCORE</div>
-            <div id="pl-landscape" style="height:380px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
-              <div style="font-size:11px;color:var(--t4)">Awaiting signal data</div>
-              <div style="font-size:9px;color:rgba(96,144,255,0.4);letter-spacing:1px">AFFINITY·Score · data/meta_signal_latest.csv</div>
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+            <div class="pipe-circle" style="background:rgba(96,144,255,0.08);border-color:rgba(96,144,255,0.25);color:var(--blue);font-size:12px;width:32px;height:32px;flex-shrink:0">3</div>
+            <div>
+              <div style="font-size:13px;letter-spacing:1px;color:var(--blue)">AFFINITY·Score</div>
+              <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4)">SCORE DISTRIBUTION · <span id="pl-dist-count">418</span> TICKERS</div>
             </div>
           </div>
-          <div style="padding-top:24px">
-            <div style="font-size:8px;letter-spacing:1.5px;color:var(--t4);margin-bottom:10px">TOP 5 & BOTTOM 5</div>
-            <div id="pl-top20" style="display:flex;flex-direction:column;gap:2px"></div>
-          </div>
-          <div>
-            <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:8px">SCORE DISTRIBUTION · <span id="pl-dist-count">418</span> TICKERS</div>
-            <div id="pl-score-dist" style="height:380px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
-              <div style="font-size:11px;color:var(--t4)">Awaiting signal data</div>
-              <div style="font-size:9px;color:rgba(96,144,255,0.4);letter-spacing:1px">AFFINITY·Score · data/meta_signal_latest.csv</div>
-            </div>
+          <div id="pl-score-dist" style="height:340px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+            <div style="font-size:11px;color:var(--t4)">Awaiting signal data</div>
+            <div style="font-size:9px;color:rgba(96,144,255,0.4);letter-spacing:1px">AFFINITY·Score · data/meta_signal_latest.csv</div>
           </div>
         </div>
       </div>
@@ -1787,12 +1790,11 @@ function renderPortfolio(m,p){
   const plPctEl=$('pt-pl-pct');
   if(plPctEl){plPctEl.textContent=(ret>=0?'+':'')+ret.toFixed(2)+'%';plPctEl.style.color=ret>=0?'var(--cyan)':'var(--red)';}
 
-  // Benchmarks since inception — paper trading started today, baseline = last backtest value
+  // SPY/XBI since inception from backtest equity arrays
   const b=window.D&&window.D.b||SAMPLE.b;
-  const spyEl=$('pt-spy-ret');
-  const xbiEl=$('pt-xbi-ret');
-  if(spyEl){spyEl.textContent='—';spyEl.style.color='var(--t4)';}
-  if(xbiEl){xbiEl.textContent='—';xbiEl.style.color='var(--t4)';}
+  const spyArr=b.spy_equity||[], xbiArr=b.xbi_equity||[];
+  // Benchmarks since inception — requires prices_latest.csv (pending NB13-v2 export)
+  // pt-spy-ret and pt-xbi-ret will populate once live price data is available
 
   // Positions card
   txt('pt-npos',(m.long_positions||0).toString());
@@ -1884,24 +1886,13 @@ function renderPortfolio(m,p){
 
   heldPositions.forEach(pos=>{
     const u=univMap[pos.ticker];
-    // Tier — from universe tier field, or infer from mcap
+    // Tier
     const tier=u?.tier||'';
     const tl=tier.toLowerCase();
-    let tk;
-    if(tl.includes('large')) tk='Large';
-    else if(tl.includes('mid')) tk='Mid';
-    else if(tl.includes('small')) tk='Small';
-    else {
-      // Infer from mcap value if available
-      const mc=u?.mcap||0;
-      if(mc>=10e9) tk='Large';
-      else if(mc>=1e9) tk='Mid';
-      else if(mc>=100e6) tk='Small';
-      else tk='Small'; // biotech default — most holdings are small cap
-    }
+    const tk=tl.includes('large')?'Large':tl.includes('mid')?'Mid':tl.includes('small')?'Small':'Unknown';
     tierCounts[tk]=(tierCounts[tk]||0)+1;
     // Sub-industry
-    const cat=u?.cat||gicsCategory(u?.sub||'')||'Biotechnology';
+    const cat=u?.cat||gicsCategory(u?.sub||'');
     subCounts[cat]=(subCounts[cat]||0)+1;
     subColors[cat]=GICS_PALETTE[cat]||'#607090';
   });
@@ -2153,7 +2144,7 @@ async function renderSignals(r){
   if(scored>0 && window.Plotly){
     const scores=sig.map(s=>s.score);
     set('pl-score-dist','');
-    $('pl-score-dist').style.cssText='height:380px';
+    $('pl-score-dist').style.cssText='height:340px';
     const binSize=5, binsR=[], binsB=[], binsG=[];
     for(let b=0;b<100;b+=binSize){
       const count=scores.filter(s=>s>=b&&s<b+binSize).length;
@@ -2182,7 +2173,7 @@ async function renderSignals(r){
   // Signal Landscape — 3D scatter: Φ (x) vs Ψ (y) vs SCORE (z)
   if(scored>0 && window.Plotly){
     set('pl-landscape','');
-    $('pl-landscape').style.cssText='height:380px';
+    $('pl-landscape').style.cssText='height:340px';
     const top20ids=new Set(sig.slice(0,20).map(s=>s.ticker));
     const axStyle={
       showbackground:true,
@@ -2193,8 +2184,6 @@ async function renderSignals(r){
       tickfont:{size:7,color:'rgba(255,255,255,0.25)'},
       titlefont:{size:9,color:'rgba(255,255,255,0.45)'},
     };
-    const el3d=$('pl-landscape');
-    const w3d=el3d.offsetWidth||600, h3d=380;
     Plotly.newPlot('pl-landscape',[{
       x:sig.map(s=>s.phi??0),
       y:sig.map(s=>s.psi??0),
@@ -2214,8 +2203,6 @@ async function renderSignals(r){
       },
     }],{
       paper_bgcolor:'transparent',
-      width:w3d,
-      height:h3d,
       scene:{
         bgcolor:'rgba(6,10,28,0)',
         xaxis:{...axStyle,title:'Φ · Signal Intensity',range:[0,100]},
@@ -2227,17 +2214,11 @@ async function renderSignals(r){
       margin:{l:0,r:0,t:0,b:0},
       font:{family:'JetBrains Mono',size:8,color:'rgba(255,255,255,0.35)'},
       showlegend:false,
-    },{displayModeBar:false,responsive:false});
+    },{displayModeBar:false,responsive:true});
 
-    // Resize observer — redraws if container width changes
-    if(window.ResizeObserver){
-      if(window._3dResizeObs) window._3dResizeObs.disconnect();
-      window._3dResizeObs=new ResizeObserver(()=>{
-        const nw=el3d.offsetWidth;
-        if(nw>50) Plotly.relayout('pl-landscape',{width:nw,height:380});
-      });
-      window._3dResizeObs.observe(el3d);
-    }
+    // Auto-rotation — orbit around Z axis, pauses on hover
+    let angle=0, rotating=true;
+    const el3d=$('pl-landscape');
     el3d.addEventListener('mouseenter',()=>rotating=false);
     el3d.addEventListener('mouseleave',()=>rotating=true);
     if(window._landscape3dLoop) cancelAnimationFrame(window._landscape3dLoop);
@@ -2531,16 +2512,13 @@ function renderTrack(b){
   txt('tr-b-spy-sharpe',spyStats.sharpe);
   txt('tr-b-spy-dd',spyStats.dd);
 
-  const stratMax=Math.max(...(b.strategy_equity||[100]))*1.08;
-  const benchMax=Math.max(...(b.xbi_equity||[100]),...(b.spy_equity||[100]))*1.08;
-
   const layout={
     paper_bgcolor:'transparent',plot_bgcolor:'transparent',
     margin:{l:52,r:52,t:16,b:40},
     font:{family:'JetBrains Mono',size:9,color:'rgba(255,255,255,0.45)'},
     xaxis:{gridcolor:'rgba(50,70,130,0.12)',linecolor:'rgba(50,70,130,0.2)',tickfont:{size:9},tickcolor:'rgba(50,70,130,0.2)'},
-    yaxis:{gridcolor:'rgba(50,70,130,0.12)',linecolor:'rgba(50,70,130,0.2)',tickformat:',.0f',tickfont:{size:9},range:[0,stratMax]},
-    yaxis2:{overlaying:'y',side:'right',gridcolor:'transparent',tickformat:',.0f',tickfont:{size:9,color:'rgba(255,255,255,0.25)'},range:[0,benchMax]},
+    yaxis:{gridcolor:'rgba(50,70,130,0.12)',linecolor:'rgba(50,70,130,0.2)',tickformat:',.0f',tickfont:{size:9}},
+    yaxis2:{overlaying:'y',side:'right',gridcolor:'transparent',linecolor:'rgba(50,70,130,0.2)',tickformat:',.0f',tickfont:{size:9,color:'rgba(255,255,255,0.3)'}},
     legend:{bgcolor:'rgba(6,6,16,0.8)',bordercolor:'rgba(50,70,140,0.3)',borderwidth:1,font:{size:9},x:.01,y:.99},
     hovermode:'x unified',
     hoverlabel:{bgcolor:'rgba(12,14,30,0.95)',bordercolor:'#00ffb4',font:{family:'JetBrains Mono',size:10,color:'rgba(220,230,255,0.92)'}},
@@ -2983,7 +2961,7 @@ function nav(name,btn){
   setTimeout(()=>{
     if(name==='track')renderTrack(D.b||SAMPLE.b);
     if(name==='coverage')renderCoverage().catch(()=>{});
-    if(name==='overview')setTimeout(()=>initParticles(),50);
+    if(name==='overview')initParticles();
     if(name==='signals'){setTimeout(()=>renderSignals(D.r||SAMPLE.r),100);}
   },30);
 }
@@ -2995,7 +2973,7 @@ function initParticles(){
   host._ready=true;
 
   const W=host.offsetWidth||host.parentElement.clientWidth||900;
-  const H=280;
+  const H=240;
   host.style.position='relative';
 
   const STAGES=[
