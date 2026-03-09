@@ -1488,7 +1488,7 @@ window.D={};
 const $=id=>document.getElementById(id);
 const set=(id,h)=>{const e=$(id);if(e)e.innerHTML=h};
 const txt=(id,t)=>{const e=$(id);if(e)e.textContent=t};
-const fmt$=n=>'$'+Number(n).toLocaleString('en-US',{maximumFractionDigits:0});
+const fmt$=n=>{const v=Number(n);const dec=Math.abs(v)<10?2:Math.abs(v)<1000?0:0;return'$'+v.toLocaleString('en-US',{minimumFractionDigits:dec,maximumFractionDigits:dec})};
 
 /* ─ GATE ──────────────────────────────────────────────────────────── */
 function enter(){
@@ -1520,7 +1520,9 @@ function startClock(){
 /* ─ COUNTDOWN ─────────────────────────────────────────────────────── */
 function updateCountdown(lastRebal, dId='cd-d', hId='cd-h', mId='cd-m', sId='cd-s', dateId='next-rebal-date'){
   if(!lastRebal){if(dateId)txt(dateId,'Next rebalance: —');return}
-  const last=new Date(lastRebal);
+  // Parse date parts directly to avoid UTC-to-local timezone shift (e.g. "2026-03-09" → Mar 8)
+  const parts=lastRebal.split('-');
+  const last=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
   const next=new Date(last.getTime()+14*24*60*60*1000);
   const now=new Date();
   const diff=next-now;
@@ -1842,7 +1844,9 @@ function renderPortfolio(m,p){
       <th>Ticker</th><th>Shares</th><th>Entry</th><th>Value</th><th>P&L $</th><th>P&L %</th>
     </tr></thead><tbody>`;
     positions.forEach(pos=>{
-      const upl=pos.unrealized_pl||0,uplpct=pos.unrealized_plpc||0;
+      const upl=pos.unrealized_pl||0;
+      const uplpct=pos.unrealized_plpc!=null?pos.unrealized_plpc
+        :(pos.avg_cost&&pos.avg_cost>0?((pos.current_price-pos.avg_cost)/pos.avg_cost*100):0);
       const c=upl>=0?'var(--cyan)':'var(--red)';
       h+=`<tr>
         <td style="color:var(--cyan);font-weight:600">${pos.ticker}</td>
@@ -2509,21 +2513,22 @@ function renderTrack(b){
 
   const layout={
     paper_bgcolor:'transparent',plot_bgcolor:'transparent',
-    margin:{l:52,r:16,t:16,b:40},
+    margin:{l:52,r:52,t:16,b:40},
     font:{family:'JetBrains Mono',size:9,color:'rgba(255,255,255,0.45)'},
     xaxis:{gridcolor:'rgba(50,70,130,0.12)',linecolor:'rgba(50,70,130,0.2)',tickfont:{size:9},tickcolor:'rgba(50,70,130,0.2)'},
-    yaxis:{gridcolor:'rgba(50,70,130,0.12)',linecolor:'rgba(50,70,130,0.2)',tickformat:',.0f',tickfont:{size:9}},
+    yaxis:{gridcolor:'rgba(50,70,130,0.12)',linecolor:'rgba(50,70,130,0.2)',tickformat:',.0f',tickfont:{size:9},title:{text:'EPITOPE ($100 base)',font:{size:8,color:'rgba(0,255,180,0.5)'},standoff:4}},
+    yaxis2:{overlaying:'y',side:'right',gridcolor:'transparent',linecolor:'rgba(50,70,130,0.2)',tickformat:',.0f',tickfont:{size:9,color:'rgba(255,255,255,0.3)'},title:{text:'XBI / SPY ($100 base)',font:{size:8,color:'rgba(255,255,255,0.3)'},standoff:4}},
     legend:{bgcolor:'rgba(6,6,16,0.8)',bordercolor:'rgba(50,70,140,0.3)',borderwidth:1,font:{size:9},x:.01,y:.99},
     hovermode:'x unified',
     hoverlabel:{bgcolor:'rgba(12,14,30,0.95)',bordercolor:'#00ffb4',font:{family:'JetBrains Mono',size:10,color:'rgba(220,230,255,0.92)'}},
   };
   Plotly.newPlot('eq-chart',[
     {x:b.months,y:b.strategy_equity,name:'EPITOPE',type:'scatter',mode:'lines',
-     line:{color:'#00ffb4',width:2.5},fill:'tozeroy',fillcolor:'rgba(0,255,180,0.04)'},
+     line:{color:'#00ffb4',width:2.5},fill:'tozeroy',fillcolor:'rgba(0,255,180,0.04)',yaxis:'y'},
     {x:b.months,y:b.xbi_equity,name:'XBI',type:'scatter',mode:'lines',
-     line:{color:'rgba(255,200,40,0.6)',width:1.5,dash:'dot'}},
+     line:{color:'rgba(255,200,40,0.7)',width:1.5,dash:'dot'},yaxis:'y2'},
     {x:b.months,y:b.spy_equity,name:'SPY',type:'scatter',mode:'lines',
-     line:{color:'rgba(96,144,255,0.5)',width:1.5,dash:'dot'}},
+     line:{color:'rgba(96,144,255,0.6)',width:1.5,dash:'dot'},yaxis:'y2'},
   ],layout,{responsive:true,displayModeBar:false});
 }
 
