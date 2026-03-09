@@ -1127,21 +1127,25 @@ body::after{
         </div>
 
         <!-- Step 1: PCA → Factors → HMM -->
-        <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:24px;padding-bottom:16px;border-bottom:1px solid var(--bd);margin-bottom:16px;align-items:start">
-          <!-- Macro factors (PCA output) -->
-          <div>
+        <div style="display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;gap:0;padding-bottom:16px;border-bottom:1px solid var(--bd);margin-bottom:16px;align-items:start">
+          <!-- PCA factors output -->
+          <div style="padding-right:24px">
             <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:4px">STEP 1 · PCA OUTPUT</div>
             <div style="font-size:9px;color:rgba(255,255,255,0.2);margin-bottom:12px">17 ETFs → 3 latent factors</div>
             <div id="pl-zfactors"></div>
           </div>
+          <!-- Divider -->
+          <div style="background:var(--bd);width:1px;margin:0 0"></div>
           <!-- PCA explained variance -->
-          <div>
+          <div style="padding:0 24px">
             <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:4px">PCA EXPLAINED VARIANCE</div>
             <div style="font-size:9px;color:rgba(255,255,255,0.2);margin-bottom:12px">Variance captured per component</div>
             <div id="pl-pca-bars"></div>
           </div>
+          <!-- Divider -->
+          <div style="background:var(--bd);width:1px;margin:0 0"></div>
           <!-- HMM states -->
-          <div>
+          <div style="padding-left:24px">
             <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:4px">STEP 2 · HMM STATE</div>
             <div style="font-size:9px;color:rgba(255,255,255,0.2);margin-bottom:12px">Factor history → 4 macro clusters</div>
             <div id="pl-hmm-bars"></div>
