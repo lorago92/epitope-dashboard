@@ -1082,37 +1082,35 @@ body::after{
       </div>
 
       <!-- ROW 2: Score Distribution + Signal Landscape -->
-      <div class="g2 mb16">
-        <div class="card">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-            <div class="pipe-circle" style="background:rgba(96,144,255,0.08);border-color:rgba(96,144,255,0.25);color:var(--blue);font-size:12px;width:32px;height:32px;flex-shrink:0">3</div>
-            <div>
-              <div style="font-size:13px;letter-spacing:1px;color:var(--blue)">AFFINITY·Score</div>
-              <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4)">SIGNAL LANDSCAPE · Φ vs Ψ vs SCORE</div>
-            </div>
+      <div class="card mb16">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+          <div class="pipe-circle" style="background:rgba(96,144,255,0.08);border-color:rgba(96,144,255,0.25);color:var(--blue);font-size:12px;width:32px;height:32px;flex-shrink:0">3</div>
+          <div>
+            <div style="font-size:13px;letter-spacing:1px;color:var(--blue)">AFFINITY·Score</div>
+            <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4)">SIGNAL LANDSCAPE · Φ vs Ψ vs SCORE · DISTRIBUTION</div>
           </div>
-          <div style="display:grid;grid-template-columns:2fr 3fr;gap:16px;align-items:start">
-            <div>
-              <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:10px">TOP 5 & BOTTOM 5</div>
-              <div id="pl-top20" style="display:flex;flex-direction:column;gap:5px"></div>
-            </div>
-            <div id="pl-landscape" style="height:340px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+        </div>
+
+        <!-- Charts row: 3D landscape (full width with overlay) + score distribution -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
+          <div style="position:relative">
+            <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:8px">SIGNAL LANDSCAPE · Φ vs Ψ vs SCORE</div>
+            <div id="pl-landscape" style="height:400px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
               <div style="font-size:11px;color:var(--t4)">Awaiting signal data</div>
               <div style="font-size:9px;color:rgba(96,144,255,0.4);letter-spacing:1px">AFFINITY·Score · data/meta_signal_latest.csv</div>
             </div>
-          </div>
-        </div>
-        <div class="card">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-            <div class="pipe-circle" style="background:rgba(96,144,255,0.08);border-color:rgba(96,144,255,0.25);color:var(--blue);font-size:12px;width:32px;height:32px;flex-shrink:0">3</div>
-            <div>
-              <div style="font-size:13px;letter-spacing:1px;color:var(--blue)">AFFINITY·Score</div>
-              <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4)">SCORE DISTRIBUTION · <span id="pl-dist-count">418</span> TICKERS</div>
+            <!-- Overlay: Top 5 & Bottom 5 -->
+            <div style="position:absolute;top:28px;left:8px;background:rgba(6,6,16,0.82);border:1px solid rgba(96,144,255,0.18);border-radius:8px;padding:10px 12px;min-width:170px;backdrop-filter:blur(4px);pointer-events:none">
+              <div style="font-size:8px;letter-spacing:1.5px;color:var(--t4);margin-bottom:8px">TOP 5 & BOTTOM 5</div>
+              <div id="pl-top20" style="display:flex;flex-direction:column;gap:2px"></div>
             </div>
           </div>
-          <div id="pl-score-dist" style="height:340px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
-            <div style="font-size:11px;color:var(--t4)">Awaiting signal data</div>
-            <div style="font-size:9px;color:rgba(96,144,255,0.4);letter-spacing:1px">AFFINITY·Score · data/meta_signal_latest.csv</div>
+          <div>
+            <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:8px">SCORE DISTRIBUTION · <span id="pl-dist-count">418</span> TICKERS</div>
+            <div id="pl-score-dist" style="height:400px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+              <div style="font-size:11px;color:var(--t4)">Awaiting signal data</div>
+              <div style="font-size:9px;color:rgba(96,144,255,0.4);letter-spacing:1px">AFFINITY·Score · data/meta_signal_latest.csv</div>
+            </div>
           </div>
         </div>
       </div>
@@ -2173,7 +2171,7 @@ async function renderSignals(r){
   // Signal Landscape — 3D scatter: Φ (x) vs Ψ (y) vs SCORE (z)
   if(scored>0 && window.Plotly){
     set('pl-landscape','');
-    $('pl-landscape').style.cssText='height:340px';
+    $('pl-landscape').style.cssText='height:400px';
     const top20ids=new Set(sig.slice(0,20).map(s=>s.ticker));
     const axStyle={
       showbackground:true,
