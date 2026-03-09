@@ -474,7 +474,7 @@ body::after{
 
   <!-- NAV -->
   <nav class="nav">
-    <div class="nav-logo">EPITOPE</div>
+    <div class="nav-logo" onclick="nav('overview',document.querySelector('.nav-tab'))" style="cursor:pointer">EPITOPE</div>
     <div class="nav-sep"></div>
     <div class="nav-sub">Some sequences are never<br>found. We found one.</div>
     <div class="nav-tabs">
@@ -1747,8 +1747,8 @@ function renderOverview(m,r,p){
     if(years > 0){
       const xbiAnn = ((Math.pow((xbiArr2[xbiArr2.length-1]/100), 1/years) - 1) * 100).toFixed(1);
       const spyAnn = ((Math.pow((spyArr2[spyArr2.length-1]/100), 1/years) - 1) * 100).toFixed(1);
-      txt('ov-vs-xbi', xbiAnn+'% ann');
-      txt('ov-vs-spy', spyAnn+'% ann');
+      txt('ov-vs-xbi', xbiAnn+'%');
+      txt('ov-vs-spy', spyAnn+'%');
     }
   }
 
@@ -3022,9 +3022,11 @@ function initParticles(){
     svg.innerHTML='';
     const regime=(window.D&&window.D.r&&window.D.r.regime)||'Bear';
     const m=window.D&&window.D.m||{};
-    const uniTotal=418;
+    const sig=window.D&&window.D.sig||[];
+    const uniTotal=sig.length||418;
     const nLong=m.long_positions||0;
-    const nWatch=0, nAvoid=uniTotal-nLong-nWatch;
+    const nWatch=sig.filter(s=>s.action==='WATCH'||s.final_action==='WATCH').length;
+    const nAvoid=uniTotal-nLong-nWatch;
     const gate=regime==='Bull'?'100%':regime==='Neutral'?'50%':'0%';
 
     const sublabels=[
