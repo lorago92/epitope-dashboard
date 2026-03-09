@@ -629,7 +629,7 @@ body::after{
       <div class="g-auto mb16" style="grid-template-columns:1fr 320px">
         <div class="card">
           <div class="card-title">From Universe to Portfolio</div>
-          <div id="particle-flow" style="width:100%;height:240px;position:relative;overflow:hidden"></div>
+          <div id="particle-flow" style="width:100%;height:260px;position:relative;overflow:hidden"></div>
         </div>
 
         <!-- Signal Strength -->
@@ -810,7 +810,7 @@ body::after{
               <div style="display:flex;justify-content:space-between;font-size:10px">
                 <span style="color:var(--t4)">XBI</span><span id="pt-xbi-ret" style="color:var(--t4)">—</span>
               </div>
-              <div style="font-size:9px;color:var(--t4);margin-top:4px">Requires live feed</div>
+              <div style="font-size:9px;color:var(--t4);margin-top:4px">Backtest ref · live feed pending NB13-v2</div>
             </div>
           </div>
         </div>
@@ -1656,11 +1656,13 @@ function renderOverview(m,r,p){
   if(bw)bw.style.width=watchPct.toFixed(1)+'%';
   if(ba)ba.style.width=avoidPct.toFixed(1)+'%';
 
-  // Portfolio row
+  // Portfolio row — compute deployed from live positions sum (most accurate source)
+  const posDeployed=( m.positions||[]).reduce((s,p)=>s+(p.market_value||0),0);
+  const deployedVal=posDeployed>0?posDeployed:(p.capital_deployed_A||0);
   txt('pf-value',fmt$(m.portfolio_value));
   txt('pf-date',p.last_rebalance||'—');
-  txt('pf-deployed',p.capital_deployed_A>0?fmt$(p.capital_deployed_A):fmt$(0));
-  txt('pf-cash',fmt$(m.portfolio_value-(p.capital_deployed_A||0)));
+  txt('pf-deployed',fmt$(deployedVal));
+  txt('pf-cash',fmt$((m.portfolio_value||0)-deployedVal));
   txt('pf-positions',(m.long_positions||0).toString());
   const prEl=$('pf-regime');
   if(prEl){prEl.textContent=regime;prEl.style.color=col}
@@ -1760,10 +1762,12 @@ function renderOverview(m,r,p){
 function renderPortfolio(m,p){
   const regime=m.regime||'Bear';
   const col=regimeColor(regime);
-  const deployed=p.capital_deployed_A||0;
+  // Compute deployed from live positions sum (most accurate) — fallback to portfolio_state
+  const posDeployedPt=(m.positions||[]).reduce((s,pos)=>s+(pos.market_value||0),0);
+  const deployed=posDeployedPt>0?posDeployedPt:(p.capital_deployed_A||0);
   const portfolioVal=m.portfolio_value||100000;
   const cash=portfolioVal-deployed;
-  const inception=100000; // fixed notional
+  const inception=100000;
 
   // Capital card
   txt('pt-date', p.last_rebalance||'—');
@@ -1790,10 +1794,21 @@ function renderPortfolio(m,p){
   const plPctEl=$('pt-pl-pct');
   if(plPctEl){plPctEl.textContent=(ret>=0?'+':'')+ret.toFixed(2)+'%';plPctEl.style.color=ret>=0?'var(--cyan)':'var(--red)';}
 
-  // Benchmarks since inception (2026-03-09) — populates from prices_latest.csv once NB13 exports live prices
-  // pt-spy-ret and pt-xbi-ret remain '—' until live price feed is available
+  // Benchmarks since inception (2026-03-09) — show backtest total return as reference context
+  // Will be replaced with live Alpaca data once prices_latest.csv exports SPY/XBI prices
   const b=window.D&&window.D.b||SAMPLE.b;
-
+  const spyArr=b.spy_equity||[], xbiArr=b.xbi_equity||[];
+  const spyEl=$('pt-spy-ret'), xbiEl=$('pt-xbi-ret');
+  if(spyArr.length>=2&&spyEl){
+    const r=((spyArr[spyArr.length-1]/spyArr[0]-1)*100);
+    spyEl.textContent=(r>=0?'+':'')+r.toFixed(1)+'% (backtest ref)';
+    spyEl.style.color=r>=0?'var(--cyan)':'var(--red)';
+  }
+  if(xbiArr.length>=2&&xbiEl){
+    const r=((xbiArr[xbiArr.length-1]/xbiArr[0]-1)*100);
+    xbiEl.textContent=(r>=0?'+':'')+r.toFixed(1)+'% (backtest ref)';
+    xbiEl.style.color=r>=0?'var(--cyan)':'var(--red)';
+  }
   // Positions card
   txt('pt-npos',(m.long_positions||0).toString());
   const prEl=$('pt-regime');if(prEl){prEl.textContent=regime;prEl.style.color=col;}
@@ -2510,27 +2525,32 @@ function renderTrack(b){
   txt('tr-b-spy-sharpe',spyStats.sharpe);
   txt('tr-b-spy-dd',spyStats.dd);
 
+  // Normalize XBI and SPY to start at same base as EPITOPE (index to EPITOPE[0])
+  const eBase=b.strategy_equity[0]||100;
+  const xbiBase=b.xbi_equity[0]||100;
+  const spyBase=b.spy_equity[0]||100;
+  const xbiNorm=(b.xbi_equity||[]).map(v=>v/xbiBase*eBase);
+  const spyNorm=(b.spy_equity||[]).map(v=>v/spyBase*eBase);
+
   const stratMax=Math.max(...(b.strategy_equity||[100]))*1.08;
-  const benchMax=Math.max(...(b.xbi_equity||[100]),...(b.spy_equity||[100]))*1.08;
 
   const layout={
     paper_bgcolor:'transparent',plot_bgcolor:'transparent',
-    margin:{l:52,r:52,t:16,b:40},
+    margin:{l:52,r:16,t:16,b:40},
     font:{family:'JetBrains Mono',size:9,color:'rgba(255,255,255,0.45)'},
     xaxis:{gridcolor:'rgba(50,70,130,0.12)',linecolor:'rgba(50,70,130,0.2)',tickfont:{size:9},tickcolor:'rgba(50,70,130,0.2)'},
     yaxis:{gridcolor:'rgba(50,70,130,0.12)',linecolor:'rgba(50,70,130,0.2)',tickformat:',.0f',tickfont:{size:9},range:[0,stratMax]},
-    yaxis2:{overlaying:'y',side:'right',gridcolor:'transparent',linecolor:'rgba(50,70,130,0.2)',tickformat:',.0f',tickfont:{size:9,color:'rgba(255,255,255,0.3)'},range:[0,benchMax]},
     legend:{bgcolor:'rgba(6,6,16,0.8)',bordercolor:'rgba(50,70,140,0.3)',borderwidth:1,font:{size:9},x:.01,y:.99},
     hovermode:'x unified',
     hoverlabel:{bgcolor:'rgba(12,14,30,0.95)',bordercolor:'#00ffb4',font:{family:'JetBrains Mono',size:10,color:'rgba(220,230,255,0.92)'}},
   };
   Plotly.newPlot('eq-chart',[
     {x:b.months,y:b.strategy_equity,name:'EPITOPE',type:'scatter',mode:'lines',
-     line:{color:'#00ffb4',width:2.5},fill:'tozeroy',fillcolor:'rgba(0,255,180,0.04)',yaxis:'y'},
-    {x:b.months,y:b.xbi_equity,name:'XBI',type:'scatter',mode:'lines',
-     line:{color:'rgba(255,200,40,0.7)',width:1.5,dash:'dot'},yaxis:'y2'},
-    {x:b.months,y:b.spy_equity,name:'SPY',type:'scatter',mode:'lines',
-     line:{color:'rgba(96,144,255,0.6)',width:1.5,dash:'dot'},yaxis:'y2'},
+     line:{color:'#00ffb4',width:2.5},fill:'tozeroy',fillcolor:'rgba(0,255,180,0.04)'},
+    {x:b.months,y:xbiNorm,name:'XBI',type:'scatter',mode:'lines',
+     line:{color:'rgba(255,200,40,0.7)',width:1.5,dash:'dot'}},
+    {x:b.months,y:spyNorm,name:'SPY',type:'scatter',mode:'lines',
+     line:{color:'rgba(96,144,255,0.6)',width:1.5,dash:'dot'}},
   ],layout,{responsive:true,displayModeBar:false});
 }
 
@@ -2973,8 +2993,9 @@ function initParticles(){
   if(!host||host._ready)return;
   host._ready=true;
 
-  const W=host.offsetWidth||host.parentElement.clientWidth||900;
-  const H=240;
+  const W=host.getBoundingClientRect().width||host.parentElement.clientWidth||900;
+  const H=260;
+  host.style.height=H+'px';
   host.style.position='relative';
 
   const STAGES=[
@@ -2996,11 +3017,14 @@ function initParticles(){
 
   function drawStatic(){
     svg.innerHTML='';
-    const regime=(window.D&&window.D.r&&window.D.r.regime)||'Bear';
+    const regime=(window.D&&window.D.r&&window.D.r.regime)||'Neutral';
     const m=window.D&&window.D.m||{};
-    const uniTotal=418;
+    const sig=window.D&&window.D.sig||[];
+    const uniTotal=sig.length||418;
     const nLong=m.long_positions||0;
-    const nWatch=0, nAvoid=uniTotal-nLong-nWatch;
+    // Compute WATCH/AVOID from signal array if available
+    const nWatch=sig.filter(s=>s.action==='WATCH'||(!s.action&&sig.indexOf(s)>=20&&sig.indexOf(s)<60)).length||0;
+    const nAvoid=uniTotal-nLong-nWatch;
     const gate=regime==='Bull'?'100%':regime==='Neutral'?'50%':'0%';
 
     const sublabels=[
@@ -3061,7 +3085,7 @@ function initParticles(){
   const cvs=document.createElement('canvas');
   const dpr=window.devicePixelRatio||1;
   cvs.width=W*dpr; cvs.height=H*dpr;
-  cvs.style.cssText=`position:absolute;top:0;left:0;width:${W}px;height:${H}px;pointer-events:none`;
+  cvs.style.cssText=`position:absolute;top:0;left:0;width:100%;height:${H}px;pointer-events:none`;
   host.appendChild(cvs);
   const ctx=cvs.getContext('2d');
   ctx.scale(dpr,dpr);
