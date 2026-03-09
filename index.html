@@ -310,6 +310,21 @@ body::after{
 .pos-tbl tr:hover td{background:rgba(50,70,140,0.08)}
 .pos-tbl tr:last-child td{border:none}
 
+/* Signal rank table — all columns left-aligned, alternating rows */
+.sig-tbl{width:100%;border-collapse:collapse;font-size:10px;table-layout:fixed}
+.sig-tbl th{
+  text-align:left;padding:9px 12px;
+  color:var(--t4);font-weight:400;font-size:9px;letter-spacing:1.5px;
+  border-bottom:1px solid var(--bd);
+  position:sticky;top:0;z-index:1;
+  background:var(--bg2);white-space:nowrap;cursor:pointer;user-select:none;
+}
+.sig-tbl th:hover{color:var(--t2)}
+.sig-tbl td{padding:7px 12px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sig-tbl tbody tr:nth-child(odd) td{background:rgba(50,70,140,0.04)}
+.sig-tbl tbody tr:nth-child(even) td{background:transparent}
+.sig-tbl tbody tr:hover td{background:rgba(50,70,140,0.12)!important}
+
 /* ══ UNIVERSE INTEL BADGES ════════════════════════════════════════════ */
 .ui-row{display:grid;grid-template-columns:80px 48px 1fr;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd)}
 .ui-row:last-of-type{border:none}
@@ -1102,6 +1117,10 @@ body::after{
               <div style="font-size:13px;letter-spacing:1px;color:var(--blue)">AFFINITY·Score</div>
               <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4)">TOP 10 & BOTTOM 10 · GATED SCORES</div>
             </div>
+          </div>
+          <div style="padding:10px 20px 12px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--bd)">
+            <input id="pl-rank-search" type="text" placeholder="Search ticker…" style="background:rgba(50,70,140,0.12);border:1px solid rgba(50,70,140,0.25);border-radius:6px;padding:6px 12px;font-size:11px;color:var(--t1);font-family:'JetBrains Mono',monospace;width:220px;outline:none" oninput="filterRankTable(this.value)">
+            <span id="pl-rank-count" style="font-size:9px;color:var(--t4);letter-spacing:1px">Showing 418 rows · scroll for more</span>
           </div>
           <div id="pl-rank-table" style="overflow-x:auto;padding:40px 20px;text-align:center">
             <div style="font-size:11px;color:var(--t4);margin-bottom:6px">Awaiting signal data</div>
@@ -2110,45 +2129,64 @@ async function renderSignals(r){
       {key:'final_action',label:'FINAL ACTION'},
     ];
 
-    let sortCol='rank', sortDir=1;
+    let sortCol='rank', sortDir=1, rankFilter='';
+
+    window.filterRankTable=function(q){
+      rankFilter=q.trim().toUpperCase();
+      renderRankTable();
+    };
 
     function renderRankTable(){
-      const sorted=[...allRanked].sort((a,b)=>{
+      const query=rankFilter;
+      const filtered=query
+        ? allRanked.filter(s=>s.ticker.includes(query))
+        : allRanked;
+      const sorted=[...filtered].sort((a,b)=>{
         const av=a[sortCol]??'', bv=b[sortCol]??'';
         return typeof av==='number'?(av-bv)*sortDir:String(av).localeCompare(String(bv))*sortDir;
       });
-      const thStyle='padding:8px 12px;font-size:9px;letter-spacing:1.5px;color:var(--t4);border-bottom:1px solid var(--bd);white-space:nowrap;cursor:pointer;user-select:none;text-align:left;background:var(--bg2);position:sticky;top:0;z-index:1';
+      // Update count label
+      const countEl=$('pl-rank-count');
+      if(countEl) countEl.textContent=query
+        ? `${sorted.length} result${sorted.length!==1?'s':''} for "${query}"`
+        : `Showing ${sorted.length} rows · scroll for more`;
       const arrow=k=>k===sortCol?(sortDir===1?' ▼':' ▲'):'';
-      // Fixed column widths to ensure header/row alignment
-      const widths=['60px','100px','70px','80px','110px','150px','70px','110px','120px'];
+      const widths=['50px','90px','65px','75px','105px','145px','65px','105px','115px'];
       const colGroup=`<colgroup>${widths.map(w=>`<col style="width:${w}">`).join('')}</colgroup>`;
-      let h=`<div style="overflow-y:auto;max-height:480px;border-radius:0 0 10px 10px">
-        <table class="pos-tbl" style="width:100%;border-collapse:collapse;table-layout:fixed">
+      let h=`<div style="overflow-y:auto;max-height:480px">
+        <table class="sig-tbl">
           ${colGroup}
           <thead><tr>
-            ${cols.map(c=>`<th style="${thStyle}" data-col="${c.key}">${c.label}${arrow(c.key)}</th>`).join('')}
+            ${cols.map(c=>`<th data-col="${c.key}">${c.label}${arrow(c.key)}</th>`).join('')}
           </tr></thead><tbody>`;
-      sorted.forEach((s)=>{
-        const ac=s.action==='BUY'?'var(--cyan)':s.action==='AVOID'?'var(--red)':'var(--amber)';
-        const fac=s.final_action==='BUY'?'var(--cyan)':s.final_action==='GATED'?'var(--red)':'var(--amber)';
-        const fc=s.final_score>0?'var(--cyan)':'var(--t4)';
-        const gateColor=s.gate===0?'var(--red)':s.gate===1?'var(--cyan)':'var(--amber)';
-        const phi=!isNaN(s.phi)?s.phi.toFixed(1):'—';
-        const psi=!isNaN(s.psi)?s.psi.toFixed(1):'—';
-        h+=`<tr style="border-bottom:1px solid rgba(50,70,140,0.08)">
-          <td style="padding:7px 12px;color:var(--t4);font-size:10px">${s.rank}</td>
-          <td style="padding:7px 12px;color:var(--cyan);font-weight:600;font-family:'JetBrains Mono',monospace;font-size:10px">${s.ticker}</td>
-          <td style="padding:7px 12px;font-size:10px;color:var(--t2)">${phi}</td>
-          <td style="padding:7px 12px;font-size:10px;color:var(--t2)">${psi}</td>
-          <td style="padding:7px 12px;font-size:10px;font-weight:600;color:var(--t1)">${s.score.toFixed(1)}</td>
-          <td style="padding:7px 12px;font-size:10px;color:${ac};font-weight:600">${s.action}</td>
-          <td style="padding:7px 12px;font-size:10px;color:${gateColor};font-weight:600">${(s.gate*100).toFixed(0)}%</td>
-          <td style="padding:7px 12px;font-size:10px;color:${fc};font-weight:600">${s.final_score.toFixed(1)}</td>
-          <td style="padding:7px 12px;font-size:10px;color:${fac};font-weight:600;letter-spacing:0.5px">${s.final_action}</td>
-        </tr>`;
-      });
+      if(sorted.length===0){
+        h+=`<tr><td colspan="${cols.length}" style="padding:24px;text-align:center;color:var(--t4);font-size:11px">No results for "${query}"</td></tr>`;
+      } else {
+        sorted.forEach((s)=>{
+          const ac=s.action==='BUY'?'var(--cyan)':s.action==='AVOID'?'var(--red)':'var(--amber)';
+          const fac=s.final_action==='BUY'?'var(--cyan)':s.final_action==='GATED'?'var(--red)':'var(--amber)';
+          const fc=s.final_score>0?'var(--cyan)':'var(--t4)';
+          const gateColor=s.gate===0?'var(--red)':s.gate===1?'var(--cyan)':'var(--amber)';
+          const phi=!isNaN(s.phi)?s.phi.toFixed(1):'—';
+          const psi=!isNaN(s.psi)?s.psi.toFixed(1):'—';
+          h+=`<tr>
+            <td style="color:var(--t4)">${s.rank}</td>
+            <td style="color:var(--cyan);font-weight:600;font-family:'JetBrains Mono',monospace">${s.ticker}</td>
+            <td style="color:var(--t2)">${phi}</td>
+            <td style="color:var(--t2)">${psi}</td>
+            <td style="font-weight:600;color:var(--t1)">${s.score.toFixed(1)}</td>
+            <td style="color:${ac};font-weight:600">${s.action}</td>
+            <td style="color:${gateColor};font-weight:600">${(s.gate*100).toFixed(0)}%</td>
+            <td style="color:${fc};font-weight:600">${s.final_score.toFixed(1)}</td>
+            <td style="color:${fac};font-weight:600">${s.final_action}</td>
+          </tr>`;
+        });
+      }
       h+='</tbody></table></div>';
       set('pl-rank-table',h);
+      // Preserve search input focus/value after re-render
+      const inp=$('pl-rank-search');
+      if(inp&&document.activeElement!==inp) inp.value=rankFilter;
       // Attach sort listeners
       $('pl-rank-table').querySelectorAll('th[data-col]').forEach(th=>{
         th.addEventListener('click',()=>{
