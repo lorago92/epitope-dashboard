@@ -2530,24 +2530,31 @@ function renderTrack(b){
   txt('tr-b-spy-sharpe',spyStats.sharpe);
   txt('tr-b-spy-dd',spyStats.dd);
 
+  // Normalize XBI and SPY to same starting base as EPITOPE for single-axis comparison
+  const eBase=b.strategy_equity[0]||100;
+  const xbiBase=b.xbi_equity[0]||100;
+  const spyBase=b.spy_equity[0]||100;
+  const xbiNorm=(b.xbi_equity||[]).map(v=>v/xbiBase*eBase);
+  const spyNorm=(b.spy_equity||[]).map(v=>v/spyBase*eBase);
+  const stratMax=Math.max(...(b.strategy_equity||[eBase]))*1.05;
+
   const layout={
     paper_bgcolor:'transparent',plot_bgcolor:'transparent',
-    margin:{l:52,r:52,t:16,b:40},
+    margin:{l:52,r:16,t:16,b:40},
     font:{family:'JetBrains Mono',size:9,color:'rgba(255,255,255,0.45)'},
     xaxis:{gridcolor:'rgba(50,70,130,0.12)',linecolor:'rgba(50,70,130,0.2)',tickfont:{size:9},tickcolor:'rgba(50,70,130,0.2)'},
-    yaxis:{gridcolor:'rgba(50,70,130,0.12)',linecolor:'rgba(50,70,130,0.2)',tickformat:',.0f',tickfont:{size:9}},
-    yaxis2:{overlaying:'y',side:'right',gridcolor:'transparent',linecolor:'rgba(50,70,130,0.2)',tickformat:',.0f',tickfont:{size:9,color:'rgba(255,255,255,0.3)'}},
+    yaxis:{gridcolor:'rgba(50,70,130,0.12)',linecolor:'rgba(50,70,130,0.2)',tickformat:',.0f',tickfont:{size:9},range:[0,stratMax]},
     legend:{bgcolor:'rgba(6,6,16,0.8)',bordercolor:'rgba(50,70,140,0.3)',borderwidth:1,font:{size:9},x:.01,y:.99},
     hovermode:'x unified',
     hoverlabel:{bgcolor:'rgba(12,14,30,0.95)',bordercolor:'#00ffb4',font:{family:'JetBrains Mono',size:10,color:'rgba(220,230,255,0.92)'}},
   };
   Plotly.newPlot('eq-chart',[
     {x:b.months,y:b.strategy_equity,name:'EPITOPE',type:'scatter',mode:'lines',
-     line:{color:'#00ffb4',width:2.5},fill:'tozeroy',fillcolor:'rgba(0,255,180,0.04)',yaxis:'y'},
-    {x:b.months,y:b.xbi_equity,name:'XBI',type:'scatter',mode:'lines',
-     line:{color:'rgba(255,200,40,0.7)',width:1.5,dash:'dot'},yaxis:'y2'},
-    {x:b.months,y:b.spy_equity,name:'SPY',type:'scatter',mode:'lines',
-     line:{color:'rgba(96,144,255,0.6)',width:1.5,dash:'dot'},yaxis:'y2'},
+     line:{color:'#00ffb4',width:2.5},fill:'tozeroy',fillcolor:'rgba(0,255,180,0.04)'},
+    {x:b.months,y:xbiNorm,name:'XBI',type:'scatter',mode:'lines',
+     line:{color:'rgba(255,200,40,0.7)',width:1.5,dash:'dot'}},
+    {x:b.months,y:spyNorm,name:'SPY',type:'scatter',mode:'lines',
+     line:{color:'rgba(96,144,255,0.6)',width:1.5,dash:'dot'}},
   ],layout,{responsive:true,displayModeBar:false});
 }
 
