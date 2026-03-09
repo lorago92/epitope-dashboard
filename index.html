@@ -2199,7 +2199,7 @@ async function renderSignals(r){
           const psi=!isNaN(s.psi)?s.psi.toFixed(1):'—';
           h+=`<tr>
             <td style="color:var(--t4)">${s.rank}</td>
-            <td style="color:var(--cyan);font-weight:600;font-family:'JetBrains Mono',monospace">${s.ticker}</td>
+            <td style="color:${ac};font-weight:600;font-family:'JetBrains Mono',monospace">${s.ticker}</td>
             <td style="color:var(--t2)">${phi}</td>
             <td style="color:var(--t2)">${psi}</td>
             <td style="font-weight:600;color:var(--t1)">${s.score.toFixed(1)}</td>
