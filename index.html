@@ -2181,6 +2181,8 @@ async function renderSignals(r){
       tickfont:{size:7,color:'rgba(255,255,255,0.25)'},
       titlefont:{size:9,color:'rgba(255,255,255,0.45)'},
     };
+    const el3d=$('pl-landscape');
+    const w3d=el3d.offsetWidth||800, h3d=480;
     Plotly.newPlot('pl-landscape',[{
       x:sig.map(s=>s.phi??0),
       y:sig.map(s=>s.psi??0),
@@ -2200,6 +2202,8 @@ async function renderSignals(r){
       },
     }],{
       paper_bgcolor:'transparent',
+      width:w3d,
+      height:h3d,
       scene:{
         bgcolor:'rgba(6,10,28,0)',
         xaxis:{...axStyle,title:'Φ · Signal Intensity',range:[0,100]},
@@ -2211,11 +2215,17 @@ async function renderSignals(r){
       margin:{l:0,r:0,t:0,b:0},
       font:{family:'JetBrains Mono',size:8,color:'rgba(255,255,255,0.35)'},
       showlegend:false,
-    },{displayModeBar:false,responsive:true});
+    },{displayModeBar:false,responsive:false});
 
-    // Auto-rotation — orbit around Z axis, pauses on hover
-    let angle=0, rotating=true;
-    const el3d=$('pl-landscape');
+    // Resize observer — redraws if container width changes
+    if(window.ResizeObserver){
+      if(window._3dResizeObs) window._3dResizeObs.disconnect();
+      window._3dResizeObs=new ResizeObserver(()=>{
+        const nw=el3d.offsetWidth;
+        if(nw>50) Plotly.relayout('pl-landscape',{width:nw,height:h3d});
+      });
+      window._3dResizeObs.observe(el3d);
+    }
     el3d.addEventListener('mouseenter',()=>rotating=false);
     el3d.addEventListener('mouseleave',()=>rotating=true);
     if(window._landscape3dLoop) cancelAnimationFrame(window._landscape3dLoop);
@@ -2514,8 +2524,8 @@ function renderTrack(b){
     margin:{l:52,r:52,t:16,b:40},
     font:{family:'JetBrains Mono',size:9,color:'rgba(255,255,255,0.45)'},
     xaxis:{gridcolor:'rgba(50,70,130,0.12)',linecolor:'rgba(50,70,130,0.2)',tickfont:{size:9},tickcolor:'rgba(50,70,130,0.2)'},
-    yaxis:{gridcolor:'rgba(50,70,130,0.12)',linecolor:'rgba(50,70,130,0.2)',tickformat:',.0f',tickfont:{size:9}},
-    yaxis2:{overlaying:'y',side:'right',gridcolor:'transparent',linecolor:'rgba(50,70,130,0.2)',tickformat:',.0f',tickfont:{size:9,color:'rgba(255,255,255,0.3)'}},
+    yaxis:{gridcolor:'rgba(50,70,130,0.12)',linecolor:'rgba(50,70,130,0.2)',tickformat:',.0f',tickfont:{size:9},range:[0,2200]},
+    yaxis2:{overlaying:'y',side:'right',gridcolor:'transparent',tickformat:',.0f',tickfont:{size:9,color:'rgba(255,255,255,0.25)'},range:[0,220]},
     legend:{bgcolor:'rgba(6,6,16,0.8)',bordercolor:'rgba(50,70,140,0.3)',borderwidth:1,font:{size:9},x:.01,y:.99},
     hovermode:'x unified',
     hoverlabel:{bgcolor:'rgba(12,14,30,0.95)',bordercolor:'#00ffb4',font:{family:'JetBrains Mono',size:10,color:'rgba(220,230,255,0.92)'}},
