@@ -479,15 +479,15 @@ body::after{
     <div class="nav-sub">Some sequences are never<br>found. We found one.</div>
     <div class="nav-tabs">
       <button class="nav-tab active" onclick="nav('overview',this)">Overview</button>
-      <button class="nav-tab" onclick="nav('portfolio',this)">Portfolio</button>
       <button class="nav-tab" onclick="nav('signals',this)">Pipeline</button>
+      <button class="nav-tab" onclick="nav('portfolio',this)">Portfolio</button>
       <button class="nav-tab" onclick="nav('track',this)">Track Record</button>
       <button class="nav-tab" onclick="nav('coverage',this)">Coverage</button>
     </div>
     <div class="nav-right">
       <div class="nav-status">
         <div class="sdot amber" id="nav-dot"></div>
-        <span id="nav-regime-label">BEAR · PAPER</span>
+        <span id="nav-regime-label">BEAR · PAPER TRADING NOW</span>
       </div>
       <div class="nav-clock" id="nav-clock">--:--:-- EST</div>
     </div>
@@ -1601,7 +1601,7 @@ function renderOverview(m,r,p){
   // Nav
   const nd=$('nav-dot');
   if(nd){nd.className='sdot '+(regime==='Bear'?'red':regime==='Bull'?'cyan':'amber')}
-  txt('nav-regime-label',regime.toUpperCase()+' · PAPER');
+  txt('nav-regime-label',regime.toUpperCase()+' · PAPER TRADING NOW');
 
   // Regime card
   const rv=$('ov-regime');
