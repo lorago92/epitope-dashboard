@@ -995,11 +995,11 @@ body::after{
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);margin-bottom:12px">
             <div style="display:flex;justify-content:space-between;align-items:center">
               <span style="font-size:9px;letter-spacing:1px;color:var(--t4)">TICKERS CAPTURED</span>
-              <span style="font-size:12px;font-weight:600;color:var(--t1)" id="pl-tickers-captured">—</span>
+              <span style="font-size:12px;font-weight:600;color:#60dcff" id="pl-tickers-captured">—</span>
             </div>
             <div style="display:flex;justify-content:space-between;align-items:center">
               <span style="font-size:9px;letter-spacing:1px;color:var(--t4)">AFTER FILTERS</span>
-              <span style="font-size:12px;font-weight:600;color:var(--t1)" id="pl-tickers-filtered">—</span>
+              <span style="font-size:12px;font-weight:600;color:#60dcff" id="pl-tickers-filtered">—</span>
             </div>
           </div>
           <div style="padding-top:14px;border-top:1px solid var(--bd);font-size:11px;color:var(--t4)">
@@ -1024,7 +1024,7 @@ body::after{
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
                 <div>
                   <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:6px">TICKERS SCORED</div>
-                  <div style="font-size:36px;font-weight:700;color:var(--t1);line-height:1" id="pl-scored">—</div>
+                  <div style="font-size:36px;font-weight:700;color:var(--cyan);line-height:1" id="pl-scored">—</div>
                 </div>
                 <div>
                   <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:6px">COVERAGE</div>
@@ -1927,8 +1927,8 @@ async function renderSignals(r){
   txt('pl-scored', scored||'—');
   txt('pl-coverage', scored?(scored/418*100).toFixed(1)+'%':'—');
   txt('pl-dist-count', scored||418);
-  // ANTIGEN·Capture stats — universe before/after filters (418 is post-filter)
-  txt('pl-tickers-captured', scored ? Math.round(scored * 1.15) : '~480');
+  // ANTIGEN·Capture stats — 795 from NB00 master df, 418 post-filter
+  txt('pl-tickers-captured', '795');
   txt('pl-tickers-filtered', scored || '—');
 
   // Signal date + days stale from regime date
