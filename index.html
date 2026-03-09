@@ -1126,29 +1126,30 @@ body::after{
           </div>
         </div>
 
-        <!-- Step 1: PCA → Factors → HMM -->
-        <div style="display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;gap:0;padding-bottom:16px;border-bottom:1px solid var(--bd);margin-bottom:16px;align-items:start">
-          <!-- PCA factors output -->
+        <!-- Step 1+2: Factor Profile Table (left) + Live Readings (right) -->
+        <div style="display:grid;grid-template-columns:3fr 1px 1fr;gap:0;padding-bottom:16px;border-bottom:1px solid var(--bd);margin-bottom:16px">
+
+          <!-- LEFT: Option A — Factor × HMM State centroid table -->
           <div style="padding-right:24px">
-            <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:4px">STEP 1 · PCA OUTPUT</div>
-            <div style="font-size:9px;color:rgba(255,255,255,0.2);margin-bottom:12px">17 ETFs → 3 latent factors</div>
-            <div id="pl-zfactors"></div>
+            <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:4px">STEP 1+2 · FACTOR PROFILE & HMM STATE CENTROIDS</div>
+            <div style="font-size:9px;color:rgba(255,255,255,0.2);margin-bottom:12px">Mean PCA factor loadings per state · PCA variance · regime mapping · historical frequency</div>
+            <div id="pl-state-table">
+              <div style="font-size:10px;color:var(--t4);padding:20px 0;text-align:center">Awaiting regime data · available after next rebalance run</div>
+            </div>
           </div>
+
           <!-- Divider -->
-          <div style="background:var(--bd);width:1px;margin:0 0"></div>
-          <!-- PCA explained variance -->
-          <div style="padding:0 24px">
-            <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:4px">PCA EXPLAINED VARIANCE</div>
-            <div style="font-size:9px;color:rgba(255,255,255,0.2);margin-bottom:12px">Variance captured per component</div>
-            <div id="pl-pca-bars"></div>
-          </div>
-          <!-- Divider -->
-          <div style="background:var(--bd);width:1px;margin:0 0"></div>
-          <!-- HMM states -->
+          <div style="background:var(--bd)"></div>
+
+          <!-- RIGHT: Live readings today -->
           <div style="padding-left:24px">
-            <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:4px">STEP 2 · HMM STATE</div>
-            <div style="font-size:9px;color:rgba(255,255,255,0.2);margin-bottom:12px">Factor history → 4 macro clusters</div>
-            <div id="pl-hmm-bars"></div>
+            <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:4px">LIVE · TODAY</div>
+            <div style="font-size:9px;color:rgba(255,255,255,0.2);margin-bottom:12px">Current factor readings</div>
+            <div id="pl-zfactors-live"></div>
+            <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(50,70,140,0.12)">
+              <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:8px">PCA VARIANCE</div>
+              <div id="pl-pca-bars"></div>
+            </div>
           </div>
         </div>
 
@@ -1163,14 +1164,10 @@ body::after{
         </div>
 
         <!-- Step 4: Regime output → gate -->
-        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
           <div>
             <div class="lbl">STEP 4 · REGIME</div>
             <div style="font-size:20px;font-weight:700;margin-top:4px" id="pl-regime">—</div>
-          </div>
-          <div>
-            <div class="lbl">POSITION GATE</div>
-            <div style="font-size:20px;font-weight:700;margin-top:4px" id="pl-gate">—</div>
           </div>
           <div>
             <div class="lbl">HMM STATE</div>
@@ -1184,8 +1181,8 @@ body::after{
             <div style="font-size:20px;font-weight:700;margin-top:4px" id="pl-composite">—</div>
           </div>
           <div>
-            <div class="lbl">POSITION SCALE</div>
-            <div style="font-size:20px;font-weight:700;margin-top:4px" id="pl-pos-scale">—</div>
+            <div class="lbl">POSITION GATE</div>
+            <div style="font-size:20px;font-weight:700;margin-top:4px" id="pl-gate">—</div>
           </div>
         </div>
       </div>
@@ -1949,7 +1946,7 @@ async function renderSignals(r){
   const regime=r.regime||'Bear';
   const col=regimeColor(regime);
   const prEl=$('pl-regime');if(prEl){prEl.textContent=regime;prEl.style.color=col;}
-  const gEl=$('pl-gate');if(gEl){gEl.textContent=gateText(regime);gEl.style.color=col;}
+  const gEl=$('pl-gate');if(gEl){const gv=r.position_gate!=null?r.position_gate:(regime==='Bear'?0:regime==='Neutral'?0.5:1);gEl.textContent=(gv*100).toFixed(0)+'%';gEl.style.color=col;}
   const cEl=$('pl-composite');if(cEl){cEl.textContent=(r.composite_score||0).toFixed(4);cEl.style.color=col;}
   txt('pl-hmm',(r.hmm_state||'—').toString());
 
@@ -1963,15 +1960,7 @@ async function renderSignals(r){
     convEl.style.background=conv?'rgba(0,255,180,0.06)':'rgba(255,50,80,0.06)';
   }
 
-  // Position scale
-  const psEl=$('pl-pos-scale');
-  if(psEl){
-    const ps=r.position_scale_hard!=null?r.position_scale_hard:(regime==='Bull'?1:regime==='Neutral'?0.5:0);
-    psEl.textContent=ps.toFixed(1)+'×';
-    psEl.style.color=ps===0?'var(--red)':ps===1?'var(--cyan)':'var(--amber)';
-  }
-
-  // PCA explained variance bars
+  // PCA explained variance bars (right panel)
   const pca=r.pca_explained_variance||[];
   if(pca.length>0){
     const pcaLabels=['PC1','PC2','PC3'];
@@ -1989,47 +1978,148 @@ async function renderSignals(r){
     set('pl-pca-bars',pcaHtml);
   }
 
-  // HMM states — show current state highlighted among 4, no labels (dynamic mapping)
-  const hmmState=r.hmm_state||1;
-  const hmmCols=['var(--cyan)','var(--amber)','var(--red)','rgba(255,50,80,0.5)'];
-  let hmmHtml='';
-  for(let i=1;i<=4;i++){
-    const active=i===hmmState;
-    const c=active?hmmCols[i-1]:'rgba(80,100,160,0.4)';
-    hmmHtml+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
-      <div style="font-size:9px;color:${c};width:16px;font-weight:${active?'700':'400'}">S${i}</div>
-      <div style="flex:1;height:4px;border-radius:2px;background:rgba(50,70,140,0.2);overflow:hidden">
-        <div style="width:${active?'100':'20'}%;height:100%;background:${c};border-radius:2px;transition:width 0.5s"></div>
-      </div>
-      <div style="font-size:9px;width:52px;text-align:right;color:${c}">${active?'← ACTIVE':''}</div>
-    </div>`;
-  }
-  set('pl-hmm-bars',hmmHtml);
-  const csEl=$('pl-cytokine-status');
-  if(csEl){csEl.textContent=`← ACTIVE · ${regime.toUpperCase()}`;csEl.style.color=col;}
-
-  // Z-factors — write directly
+  // Live Z-factor readings (right panel) — replaces old pl-zfactors
   {
-    const z1=r.z1_mixed_s!=null?r.z1_mixed_s:0;
-    const z2=r.z2_rates_s!=null?r.z2_rates_s:0;
-    const z3=r.z3_inflation_s!=null?r.z3_inflation_s:0;
+    const z1=r.z1_mixed_s!=null?r.z1_mixed_s:(r.z1_s||0);
+    const z2=r.z2_rates_s!=null?r.z2_rates_s:(r.z2_s||0);
+    const z3=r.z3_inflation_s!=null?r.z3_inflation_s:(r.z3_s||0);
     const zc=v=>v>0.2?'var(--cyan)':v<-0.2?'var(--red)':'var(--amber)';
     const zrow=(lbl,v)=>{
       const pct=Math.min(Math.abs(v)/2*45,45);
       const left=v>=0?'50%':`${50-pct}%`;
       const c=zc(v);
-      return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(50,70,140,0.08)">
-        <div style="font-size:9px;color:var(--t3);width:120px;flex-shrink:0">${lbl}</div>
-        <div style="flex:1;height:4px;background:rgba(50,70,140,0.2);border-radius:2px;position:relative">
-          <div style="position:absolute;top:-3px;left:50%;width:1px;height:10px;background:rgba(255,255,255,0.15)"></div>
+      return `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(50,70,140,0.08)">
+        <div style="font-size:9px;color:var(--t3);width:80px;flex-shrink:0">${lbl}</div>
+        <div style="flex:1;height:3px;background:rgba(50,70,140,0.2);border-radius:2px;position:relative">
+          <div style="position:absolute;top:-3px;left:50%;width:1px;height:9px;background:rgba(255,255,255,0.12)"></div>
           <div style="position:absolute;top:0;height:100%;left:${left};width:${pct}%;background:${c};border-radius:2px"></div>
         </div>
-        <div style="font-size:11px;font-weight:600;width:52px;text-align:right;color:${c}">${v.toFixed(2)}</div>
+        <div style="font-size:11px;font-weight:600;width:44px;text-align:right;color:${c}">${v.toFixed(2)}</div>
       </div>`;
     };
-    const el=$('pl-zfactors');
-    if(el) el.innerHTML=zrow('Factor I — Risk',z1)+zrow('Factor II — Rates',z2)+zrow('Factor III — Inflation',z3);
+    const liveEl=$('pl-zfactors-live');
+    if(liveEl) liveEl.innerHTML=zrow('Risk',z1)+zrow('Rates',z2)+zrow('Inflation',z3);
   }
+
+  // State profile table — Option A
+  // Uses state_profiles from JSON if available, else graceful fallback
+  {
+    const profiles=r.state_profiles||null;
+    const activeState=r.hmm_state;
+    const stateOrder=['0','1','2','3'];
+    const regimeColor2=lbl=>{
+      if(lbl==='Bear') return 'var(--red)';
+      if(lbl==='Neutral') return 'var(--amber)';
+      if(lbl==='Mild Bull') return 'var(--cyan)';
+      if(lbl==='Strong Bull') return '#00ffcc';
+      return 'var(--t2)';
+    };
+
+    if(profiles){
+      const thS='padding:7px 10px;font-size:9px;letter-spacing:1px;color:var(--t4);border-bottom:1px solid var(--bd);text-align:right;white-space:nowrap;position:sticky;top:0;background:var(--bg2)';
+      const thSL=thS+';text-align:left';
+      let h=`<table style="width:100%;border-collapse:collapse;font-size:10px">
+        <thead><tr>
+          <th style="${thSL}">FACTOR</th>`;
+      // Column headers — one per state
+      stateOrder.forEach(s=>{
+        const p=profiles[s]; if(!p) return;
+        const isActive=parseInt(s)===activeState;
+        const rc=regimeColor2(p.regime);
+        const glow=isActive?`box-shadow:0 0 0 1px ${rc};border-radius:3px;`:'';
+        h+=`<th style="${thS};color:${isActive?rc:'var(--t4)'};${glow}">
+          S${parseInt(s)+1}<br>
+          <span style="font-size:8px;opacity:0.7">${p.regime.toUpperCase()}</span>
+          ${isActive?'<br><span style="font-size:7px;letter-spacing:1px;color:'+rc+'">▶ NOW</span>':''}
+        </th>`;
+      });
+      h+=`<th style="${thS};color:var(--cyan)">TODAY</th>
+        </tr></thead><tbody>`;
+
+      // Factor rows
+      const factors=[
+        {lbl:'I · Risk',   z:'z1_mean', live:'z1_mixed_s', liveAlt:'z1_s'},
+        {lbl:'II · Rates', z:'z2_mean', live:'z2_rates_s', liveAlt:'z2_s'},
+        {lbl:'III · Infl', z:'z3_mean', live:'z3_inflation_s', liveAlt:'z3_s'},
+      ];
+      factors.forEach((f,fi)=>{
+        const liveVal=r[f.live]!=null?r[f.live]:(r[f.liveAlt]||0);
+        const lc=liveVal>0.2?'var(--cyan)':liveVal<-0.2?'var(--red)':'var(--amber)';
+        h+=`<tr style="border-bottom:1px solid rgba(50,70,140,0.06)">
+          <td style="padding:7px 10px;color:var(--t3);font-size:9px">${f.lbl}</td>`;
+        stateOrder.forEach(s=>{
+          const p=profiles[s]; if(!p) return;
+          const v=p[f.z]||0;
+          const vc=v>0.2?'var(--cyan)':v<-0.2?'var(--red)':'var(--amber)';
+          const isActive=parseInt(s)===activeState;
+          h+=`<td style="padding:7px 10px;text-align:right;color:${vc};${isActive?'font-weight:700':''}">${v>0?'+':''}${v.toFixed(2)}</td>`;
+        });
+        h+=`<td style="padding:7px 10px;text-align:right;color:${lc};font-weight:700">${liveVal>0?'+':''}${liveVal.toFixed(2)} ◀</td>
+        </tr>`;
+      });
+
+      // Separator row
+      h+=`<tr><td colspan="6" style="padding:0;height:1px;background:var(--bd)"></td></tr>`;
+
+      // Var Explained row
+      h+=`<tr style="border-bottom:1px solid rgba(50,70,140,0.06)">
+        <td style="padding:7px 10px;color:var(--t4);font-size:9px">VAR EXPLAINED</td>`;
+      const pcaArr=r.pca_explained_variance||[];
+      stateOrder.forEach((s,si)=>{
+        const profiles_s=profiles[s]; if(!profiles_s) return;
+        const v=pcaArr[si]!=null?(pcaArr[si]*100).toFixed(1)+'%':'—';
+        h+=`<td style="padding:7px 10px;text-align:right;color:var(--t3)">${v}</td>`;
+      });
+      h+=`<td style="padding:7px 10px;text-align:right;color:var(--t4)">—</td></tr>`;
+
+      // Regime row
+      h+=`<tr style="border-bottom:1px solid rgba(50,70,140,0.06)">
+        <td style="padding:7px 10px;color:var(--t4);font-size:9px">REGIME</td>`;
+      stateOrder.forEach(s=>{
+        const p=profiles[s]; if(!p) return;
+        const rc=regimeColor2(p.regime);
+        const isActive=parseInt(s)===activeState;
+        h+=`<td style="padding:7px 10px;text-align:right;color:${rc};font-weight:${isActive?700:400}">${p.regime.toUpperCase()}</td>`;
+      });
+      h+=`<td style="padding:7px 10px;text-align:right;color:${regimeColor2(regime)};font-weight:700">${regime.toUpperCase()}</td></tr>`;
+
+      // Gate row
+      h+=`<tr style="border-bottom:1px solid rgba(50,70,140,0.06)">
+        <td style="padding:7px 10px;color:var(--t4);font-size:9px">GATE</td>`;
+      stateOrder.forEach(s=>{
+        const p=profiles[s]; if(!p) return;
+        const gc=p.gate===0?'var(--red)':p.gate===1?'var(--cyan)':'var(--amber)';
+        const isActive=parseInt(s)===activeState;
+        h+=`<td style="padding:7px 10px;text-align:right;color:${gc};font-weight:${isActive?700:400}">${(p.gate*100).toFixed(0)}%</td>`;
+      });
+      const livGate=r.position_gate!=null?r.position_gate:(regime==='Bear'?0:regime==='Neutral'?0.5:1);
+      const lgc=livGate===0?'var(--red)':livGate===1?'var(--cyan)':'var(--amber)';
+      h+=`<td style="padding:7px 10px;text-align:right;color:${lgc};font-weight:700">${(livGate*100).toFixed(0)}%</td></tr>`;
+
+      // Hist% row
+      h+=`<tr>
+        <td style="padding:7px 10px;color:var(--t4);font-size:9px">HIST %</td>`;
+      stateOrder.forEach(s=>{
+        const p=profiles[s]; if(!p) return;
+        const isActive=parseInt(s)===activeState;
+        h+=`<td style="padding:7px 10px;text-align:right;color:${isActive?'var(--t2)':'var(--t4)'}">${(p.hist_pct*100).toFixed(0)}%</td>`;
+      });
+      h+=`<td style="padding:7px 10px;text-align:right;color:var(--t4)">—</td></tr>`;
+
+      h+=`</tbody></table>`;
+      set('pl-state-table',h);
+
+    } else {
+      // Fallback — no state_profiles yet, show live factors only in a simple table
+      set('pl-state-table',`<div style="font-size:10px;color:var(--t4);padding:12px 0;font-style:italic">
+        State centroid data will appear after next rebalance run (NB01.5 updated).
+        <br><span style="font-size:9px;opacity:0.6">Active regime: <span style="color:${col}">${regime}</span> · HMM State: ${activeState}</span>
+      </div>`);
+    }
+  }
+
+  const csEl=$('pl-cytokine-status');
+  if(csEl){csEl.textContent=`← ACTIVE · ${regime.toUpperCase()}`;csEl.style.color=col;}
 
   // CASCADE deployed
   const p=window.D&&window.D.p||SAMPLE.p;
