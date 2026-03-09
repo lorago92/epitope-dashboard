@@ -1707,11 +1707,11 @@ function renderOverview(m,r,p){
   (window._univAllRows||[]).forEach(r=>{if(r.ticker)univMap2[r.ticker]=r;});
   positions.forEach(pos=>{
     const u = univMap2[pos.ticker];
-    const tier = (u&&u.mcap_tier) || (pos.mcap_tier) || 'Small';
-    const t = tier.charAt(0).toUpperCase()+tier.slice(1).toLowerCase();
-    if(t==='Large') tierC.Large++;
-    else if(t==='Mid') tierC.Mid++;
-    else tierC.Small++;
+    const tier = (u&&u.tier) || (pos.mcap_tier) || 'small_cap';
+    const tl = tier.toLowerCase();
+    if(tl.includes('large')) tierC.Large++;
+    else if(tl.includes('mid')) tierC.Mid++;
+    else tierC.Small++; // small_cap + micro_cap both → Small
   });
   const nPos = positions.length || 0;
   if(nPos > 0){
@@ -1745,8 +1745,8 @@ function renderOverview(m,r,p){
     const nMonths = (bData.months||[]).length || stratArr.length;
     const years = nMonths / 12;
     if(years > 0){
-      const xbiAnn = ((Math.pow((xbiArr2[xbiArr2.length-1]/100), 1/years) - 1) * 100).toFixed(1);
-      const spyAnn = ((Math.pow((spyArr2[spyArr2.length-1]/100), 1/years) - 1) * 100).toFixed(1);
+      const xbiAnn = ((Math.pow(xbiArr2[xbiArr2.length-1]/xbiArr2[0], 1/years) - 1) * 100).toFixed(1);
+      const spyAnn = ((Math.pow(spyArr2[spyArr2.length-1]/spyArr2[0], 1/years) - 1) * 100).toFixed(1);
       txt('ov-vs-xbi', xbiAnn+'%');
       txt('ov-vs-spy', spyAnn+'%');
     }
@@ -1907,7 +1907,7 @@ function renderPortfolio(m,p){
     // Tier
     const tier=u?.tier||'';
     const tl=tier.toLowerCase();
-    const tk=tl.includes('large')?'Large':tl.includes('mid')?'Mid':tl.includes('small')?'Small':'Unknown';
+    const tk=tl.includes('large')?'Large':tl.includes('mid')?'Mid':(tl.includes('small')||tl.includes('micro'))?'Small':'Unknown';
     tierCounts[tk]=(tierCounts[tk]||0)+1;
     // Sub-industry
     const cat=u?.cat||gicsCategory(u?.sub||'');
