@@ -895,6 +895,7 @@ body::after{
               <div class="cd-unit"><div class="cd-num" id="pt-cd-m">--</div><div class="cd-lbl">min</div></div>
               <div class="cd-unit"><div class="cd-num" id="pt-cd-s">--</div><div class="cd-lbl">sec</div></div>
             </div>
+            <div style="font-size:10px;color:var(--t3);margin-top:8px" id="pt-next-rebal-date">Next: —</div>
           </div>
           <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--bd)">
             <div style="display:flex;align-items:center;gap:6px">
@@ -1090,14 +1091,14 @@ body::after{
               <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4)">SIGNAL LANDSCAPE · Φ vs Ψ vs SCORE</div>
             </div>
           </div>
-          <div style="display:grid;grid-template-columns:3fr 2fr;gap:16px;align-items:start">
-            <div id="pl-landscape" style="height:340px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
-              <div style="font-size:11px;color:var(--t4)">Awaiting signal data</div>
-              <div style="font-size:9px;color:rgba(96,144,255,0.4);letter-spacing:1px">AFFINITY·Score · data/meta_signal_latest.csv</div>
-            </div>
+          <div style="display:grid;grid-template-columns:2fr 3fr;gap:16px;align-items:start">
             <div>
               <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-bottom:10px">TOP 5 & BOTTOM 5</div>
               <div id="pl-top20" style="display:flex;flex-direction:column;gap:5px"></div>
+            </div>
+            <div id="pl-landscape" style="height:340px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+              <div style="font-size:11px;color:var(--t4)">Awaiting signal data</div>
+              <div style="font-size:9px;color:rgba(96,144,255,0.4);letter-spacing:1px">AFFINITY·Score · data/meta_signal_latest.csv</div>
             </div>
           </div>
         </div>
@@ -1540,9 +1541,9 @@ function updateCountdown(lastRebal, dId='cd-d', hId='cd-h', mId='cd-m', sId='cd-
 let _lastRebalStore='';
 function startCountdown(lastRebal, dId='cd-d', hId='cd-h', mId='cd-m', sId='cd-s'){
   _lastRebalStore=lastRebal||_lastRebalStore;
-  updateCountdown(_lastRebalStore, dId, hId, mId, sId, dId==='cd-d'?'next-rebal-date':null);
+  updateCountdown(_lastRebalStore, dId, hId, mId, sId, dId==='cd-d'?'next-rebal-date':dId==='pt-cd-d'?'pt-next-rebal-date':null);
   const key=`_cdInterval_${dId}`;
-  if(!window[key]) window[key]=setInterval(()=>updateCountdown(_lastRebalStore, dId, hId, mId, sId, dId==='cd-d'?'next-rebal-date':null),1000);
+  if(!window[key]) window[key]=setInterval(()=>updateCountdown(_lastRebalStore, dId, hId, mId, sId, dId==='cd-d'?'next-rebal-date':dId==='pt-cd-d'?'pt-next-rebal-date':null),1000);
 }
 
 /* ─ DATA ──────────────────────────────────────────────────────────── */
@@ -2244,7 +2245,7 @@ async function renderSignals(r){
       ...s,
       rank:i+1,
       pre_gate_action: i<20 ? 'BUY' : i<60 ? 'WATCH' : 'AVOID',
-      final_action: s.final_score>0 ? 'BUY' : s.gate===0 ? 'GATED' : 'AVOID',
+      final_action: s.gate===0 ? 'GATED' : i<20 ? 'BUY' : i<60 ? 'WATCH' : 'AVOID',
     }));
 
     const cols=[
@@ -2294,7 +2295,7 @@ async function renderSignals(r){
       } else {
         sorted.forEach((s)=>{
           const ac=s.pre_gate_action==='BUY'?'var(--cyan)':s.pre_gate_action==='WATCH'?'var(--amber)':'var(--t4)';
-          const fac=s.final_action==='BUY'?'var(--cyan)':s.final_action==='GATED'?'var(--red)':'var(--amber)';
+          const fac=s.final_action==='BUY'?'var(--cyan)':s.final_action==='GATED'?'var(--red)':s.final_action==='WATCH'?'var(--amber)':'var(--t4)';
           const fc=s.final_score>0?'var(--cyan)':'var(--t4)';
           const gateColor=s.gate===0?'var(--red)':s.gate===1?'var(--cyan)':'var(--amber)';
           const phi=!isNaN(s.phi)?s.phi.toFixed(1):'—';
@@ -2516,8 +2517,8 @@ function renderTrack(b){
     margin:{l:52,r:52,t:16,b:40},
     font:{family:'JetBrains Mono',size:9,color:'rgba(255,255,255,0.45)'},
     xaxis:{gridcolor:'rgba(50,70,130,0.12)',linecolor:'rgba(50,70,130,0.2)',tickfont:{size:9},tickcolor:'rgba(50,70,130,0.2)'},
-    yaxis:{gridcolor:'rgba(50,70,130,0.12)',linecolor:'rgba(50,70,130,0.2)',tickformat:',.0f',tickfont:{size:9},title:{text:'EPITOPE ($100 base)',font:{size:8,color:'rgba(0,255,180,0.5)'},standoff:4}},
-    yaxis2:{overlaying:'y',side:'right',gridcolor:'transparent',linecolor:'rgba(50,70,130,0.2)',tickformat:',.0f',tickfont:{size:9,color:'rgba(255,255,255,0.3)'},title:{text:'XBI / SPY ($100 base)',font:{size:8,color:'rgba(255,255,255,0.3)'},standoff:4}},
+    yaxis:{gridcolor:'rgba(50,70,130,0.12)',linecolor:'rgba(50,70,130,0.2)',tickformat:',.0f',tickfont:{size:9}},
+    yaxis2:{overlaying:'y',side:'right',gridcolor:'transparent',linecolor:'rgba(50,70,130,0.2)',tickformat:',.0f',tickfont:{size:9,color:'rgba(255,255,255,0.3)'}},
     legend:{bgcolor:'rgba(6,6,16,0.8)',bordercolor:'rgba(50,70,140,0.3)',borderwidth:1,font:{size:9},x:.01,y:.99},
     hovermode:'x unified',
     hoverlabel:{bgcolor:'rgba(12,14,30,0.95)',bordercolor:'#00ffb4',font:{family:'JetBrains Mono',size:10,color:'rgba(220,230,255,0.92)'}},
