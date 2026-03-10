@@ -654,7 +654,6 @@ body::after{
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px">
             <div><div class="lbl">Portfolio Value</div><div class="val" id="pf-value">—</div></div>
             <div><div class="lbl">Inception Date</div><div class="val" id="pf-date">—</div></div>
-            <div><div class="lbl">Market Value</div><div class="val cyan" id="pf-deployed">—</div></div>
             <div><div class="lbl">Cash</div><div class="val" id="pf-cash">—</div></div>
             <div><div class="lbl">Positions</div><div class="val" id="pf-positions">—</div></div>
             <div><div class="lbl">Regime</div><div class="val amber" id="pf-regime">—</div></div>
@@ -1805,9 +1804,9 @@ function renderPortfolio(m,p){
   // Capital card
   txt('pt-date', p.last_rebalance||'—');
   const depEl=$('pt-deployed');if(depEl){depEl.textContent=fmt$(deployed);depEl.style.color='var(--cyan)';}
-  txt('pt-deployed-pct',Math.min(100,(deployed/inception*100)).toFixed(1)+'% of inception capital');
+  txt('pt-deployed-pct','');
   txt('pt-cash',fmt$(cash));
-  txt('pt-cash-pct',(cash/inception*100).toFixed(1)+'% of notional');
+  txt('pt-cash-pct','');
 
   // Today P&L (field may not exist yet — show n/a)
   const todayPl=m.today_pl!=null?m.today_pl:null;
