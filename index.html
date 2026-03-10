@@ -3139,17 +3139,34 @@ function initParticles(){
   const ctx=cvs.getContext('2d');
   ctx.scale(dpr,dpr);
 
-  // Resize observer — re-measure on layout change
+  // Resize observer — full reinit when width changes (e.g. dragging to bigger monitor)
   if(window.ResizeObserver){
+    let _resizeTimer=null;
     new ResizeObserver(()=>{
       const nw=getW();
-      if(Math.abs(nw-W)<2)return;
-      W=nw; STAGES=makeStages(W);
-      cvs.width=W*dpr; cvs.height=H*dpr;
-      cvs.style.width=W+'px';
-      ctx.scale(dpr,dpr);
-      drawStatic();
-      particles.forEach(p=>{ p.tx=STAGES[p.seg+1]?STAGES[p.seg+1].x:STAGES[STAGES.length-1].x; });
+      if(Math.abs(nw-W)<4)return;
+      // Debounce slightly to avoid thrashing during drag
+      clearTimeout(_resizeTimer);
+      _resizeTimer=setTimeout(()=>{
+        W=nw; STAGES=makeStages(W);
+        // Resize canvas
+        cvs.width=W*dpr; cvs.height=H*dpr;
+        cvs.style.width=W+'px'; cvs.style.height=H+'px';
+        ctx.setTransform(1,0,0,1,0,0); ctx.scale(dpr,dpr);
+        // Redraw static SVG layer
+        drawStatic();
+        // Clear and respawn particles for new width
+        particles.length=0;
+        const targetCount=Math.round(60*(W/900));
+        for(let i=0;i<targetCount;i++){
+          spawn();
+          const p=particles[particles.length-1];
+          const frac=Math.random();
+          p.x=p.x+(p.tx-p.x)*frac;
+          p.life=frac*60;
+          p.opacity=Math.min(p.life/8,0.9);
+        }
+      },150);
     }).observe(host);
   }
 
@@ -3188,8 +3205,9 @@ function initParticles(){
     });
   }
 
-  // Pre-spawn staggered
-  for(let i=0;i<60;i++){
+  // Pre-spawn staggered — scale count with container width
+  const initCount=Math.round(60*(W/900));
+  for(let i=0;i<initCount;i++){
     spawn();
     const p=particles[particles.length-1];
     // distribute along segment
@@ -3239,7 +3257,7 @@ function initParticles(){
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
-  setInterval(()=>{if(particles.length<70)spawn();},100);
+  setInterval(()=>{const cap=Math.round(70*(W/900));if(particles.length<cap)spawn();},100);
 }
 
 if(document.readyState==='complete'){setTimeout(initParticles,50);}
