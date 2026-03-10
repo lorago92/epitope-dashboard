@@ -3040,17 +3040,19 @@ function initParticles(){
   if(!host||host._ready)return;
   host._ready=true;
 
-  const W=host.offsetWidth||host.parentElement.clientWidth||900;
+  function getW(){ return host.getBoundingClientRect().width||host.offsetWidth||host.parentElement.clientWidth||900; }
+  let W=getW();
   const H=240;
   host.style.position='relative';
 
-  const STAGES=[
-    {name:'ANTIGEN·Capture', col:'#60dcff', x:W*0.06},
-    {name:'ANTIBODY·Bind',   col:'#00ffb4', x:W*0.28},
-    {name:'AFFINITY·Score',  col:'#6090ff', x:W*0.50},
-    {name:'CYTOKINE·Gate',   col:'#ffc828', x:W*0.72},
-    {name:'CASCADE·Execute', col:'#ff3250', x:W*0.94},
-  ];
+  function makeStages(w){ return [
+    {name:'ANTIGEN·Capture', col:'#60dcff', x:w*0.06},
+    {name:'ANTIBODY·Bind',   col:'#00ffb4', x:w*0.26},
+    {name:'AFFINITY·Score',  col:'#6090ff', x:w*0.50},
+    {name:'CYTOKINE·Gate',   col:'#ffc828', x:w*0.74},
+    {name:'CASCADE·Execute', col:'#ff3250', x:w*0.92},
+  ]; }
+  let STAGES=makeStages(W);
   // Probability of spawning in each segment — tapers toward CASCADE
   const SEG_WEIGHT=[0.40, 0.28, 0.18, 0.14];
   const CY=H*0.50;
@@ -3129,11 +3131,27 @@ function initParticles(){
   // ── Canvas particle layer ──
   const cvs=document.createElement('canvas');
   const dpr=window.devicePixelRatio||1;
+  W=getW(); // re-measure after SVG appended
+  STAGES=makeStages(W);
   cvs.width=W*dpr; cvs.height=H*dpr;
   cvs.style.cssText=`position:absolute;top:0;left:0;width:${W}px;height:${H}px;pointer-events:none`;
   host.appendChild(cvs);
   const ctx=cvs.getContext('2d');
   ctx.scale(dpr,dpr);
+
+  // Resize observer — re-measure on layout change
+  if(window.ResizeObserver){
+    new ResizeObserver(()=>{
+      const nw=getW();
+      if(Math.abs(nw-W)<2)return;
+      W=nw; STAGES=makeStages(W);
+      cvs.width=W*dpr; cvs.height=H*dpr;
+      cvs.style.width=W+'px';
+      ctx.scale(dpr,dpr);
+      drawStatic();
+      particles.forEach(p=>{ p.tx=STAGES[p.seg+1]?STAGES[p.seg+1].x:STAGES[STAGES.length-1].x; });
+    }).observe(host);
+  }
 
   // ── Particle pool ──
   const particles=[];
