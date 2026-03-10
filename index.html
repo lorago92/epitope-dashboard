@@ -2638,37 +2638,9 @@ async function renderCoverage(){
     [  8,  4,  1],  // Other
   ];
 
-  const traces = cats.map((cat, i) => ({
-    name: cat,
-    x: tiers,
-    y: counts[i],
-    type: 'bar',
-    marker: { color: colors[i], opacity: 0.85, line:{color:'rgba(6,6,16,0.5)',width:0.5} },
-    hovertemplate: `<b>${cat}</b><br>%{x}: %{y} securities<extra></extra>`,
-  }));
+  // traces computed below after CSV parse
 
-  Plotly.newPlot('cov-chart', traces, {
-    barmode: 'stack',
-    paper_bgcolor: 'transparent',
-    plot_bgcolor:  'transparent',
-    margin: { l:36, r:8, t:12, b:48 },
-    xaxis: {
-      tickfont: { family:'JetBrains Mono', size:9, color:'rgba(220,230,255,0.5)' },
-      tickmode: 'array', tickvals: tiers,
-      gridcolor: 'rgba(50,70,140,0.1)', zeroline: false,
-    },
-    yaxis: {
-      tickfont: { family:'JetBrains Mono', size:9, color:'rgba(220,230,255,0.5)' },
-      gridcolor: 'rgba(50,70,140,0.15)', zeroline: false,
-      title: { text:'', },
-    },
-    legend: {
-      bgcolor: 'transparent',
-      font: { family:'JetBrains Mono', size:8, color:'rgba(220,230,255,0.55)' },
-      orientation: 'h', x: 0.5, xanchor: 'center', y: -0.22,
-    },
-    showlegend: true,
-  }, { responsive:true, displayModeBar:false });
+
 
   // ── Brownian universe canvas ─────────────────────────────────────
   const canvas = $('cov-canvas');
@@ -2749,6 +2721,46 @@ async function renderCoverage(){
   // ── Populate universe table ──────────────────────────────────────
   window._univAllRows = univRows;
   renderUnivTable(univRows);
+
+  // ── Stacked bar: compute real counts from parsed universe data ───
+  const realCounts = cats.map(cat => {
+    const inCat = univRows.filter(d => d.cat === cat);
+    const tl = (t) => (t||'').toLowerCase();
+    return [
+      inCat.filter(d => tl(d.tier).includes('small') || tl(d.tier).includes('micro')).length,
+      inCat.filter(d => tl(d.tier).includes('mid')).length,
+      inCat.filter(d => tl(d.tier).includes('large')).length,
+    ];
+  });
+  const useCounts = univRows.length > 0 ? realCounts : counts;
+  const traces = cats.map((cat, i) => ({
+    name: cat, x: tiers, y: useCounts[i], type: 'bar',
+    marker: { color: colors[i], opacity: 0.85, line:{color:'rgba(6,6,16,0.5)',width:0.5} },
+    hovertemplate: `<b>${cat}</b><br>%{x}: %{y} securities<extra></extra>`,
+  }));
+
+    Plotly.newPlot('cov-chart', traces, {
+    barmode: 'stack',
+    paper_bgcolor: 'transparent',
+    plot_bgcolor:  'transparent',
+    margin: { l:36, r:8, t:12, b:48 },
+    xaxis: {
+      tickfont: { family:'JetBrains Mono', size:9, color:'rgba(220,230,255,0.5)' },
+      tickmode: 'array', tickvals: tiers,
+      gridcolor: 'rgba(50,70,140,0.1)', zeroline: false,
+    },
+    yaxis: {
+      tickfont: { family:'JetBrains Mono', size:9, color:'rgba(220,230,255,0.5)' },
+      gridcolor: 'rgba(50,70,140,0.15)', zeroline: false,
+      title: { text:'', },
+    },
+    legend: {
+      bgcolor: 'transparent',
+      font: { family:'JetBrains Mono', size:8, color:'rgba(220,230,255,0.55)' },
+      orientation: 'h', x: 0.5, xanchor: 'center', y: -0.22,
+    },
+    showlegend: true,
+  }, { responsive:true, displayModeBar:false });
 
   // ── Fallback: synthetic 418 dots ─────────────────────────────────
   if(dots.length === 0){
