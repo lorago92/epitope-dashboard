@@ -1577,6 +1577,30 @@ async function loadData(){
       if(univRows.length>0){window._univAllRows=univRows;}
     }
   }catch{}
+  // Load prices_latest.csv → window._pricesMap {ticker:{price,daily_chg,ytd,...}}
+  try{
+    const pres=await fetch('data/prices_latest.csv?t='+Date.now());
+    if(pres.ok){
+      const ptext=await pres.text();
+      const prows=ptext.trim().split('\n');
+      const phdrs=prows[0].split(',').map(h=>h.trim().toLowerCase());
+      const pi=(n)=>phdrs.indexOf(n);
+      const pm={};
+      prows.slice(1).filter(r=>r.trim()).forEach(row=>{
+        const c=row.split(',');
+        const tk=(c[pi('ticker')]||'').trim();
+        if(!tk) return;
+        pm[tk]={
+          price    : parseFloat(c[pi('price')])||0,
+          daily_chg: parseFloat(c[pi('daily_chg_pct')])||0,
+          ytd      : parseFloat(c[pi('ytd_pct')])||0,
+          w52_high : parseFloat(c[pi('52w_high')])||0,
+          w52_low  : parseFloat(c[pi('52w_low')])||0,
+        };
+      });
+      window._pricesMap=pm;
+    }
+  }catch{}
   renderAll();
 }
 
@@ -1853,18 +1877,22 @@ function renderPortfolio(m,p){
 
   // Holdings table
   if(positions.length>0){
+    const pm=window._pricesMap||{};
     let h=`<table class="pos-tbl"><thead><tr>
-      <th>Ticker</th><th>Shares</th><th>Entry</th><th>Value</th><th>P&L $</th><th>P&L %</th>
+      <th>Ticker</th><th>Shares</th><th>Entry</th><th>Current</th><th>Value</th><th>P&L $</th><th>P&L %</th>
     </tr></thead><tbody>`;
     positions.forEach(pos=>{
       const upl=pos.unrealized_pl||0;
       const uplpct=pos.unrealized_plpc!=null?pos.unrealized_plpc
         :(pos.avg_cost&&pos.avg_cost>0?((pos.current_price-pos.avg_cost)/pos.avg_cost*100):0);
       const c=upl>=0?'var(--cyan)':'var(--red)';
+      const px=pm[pos.ticker];
+      const curPrice=px?px.price:(pos.current_price||0);
       h+=`<tr>
         <td style="color:var(--cyan);font-weight:600">${pos.ticker}</td>
         <td>${Number(pos.qty||0).toFixed(0)}</td>
         <td>${fmt$(pos.avg_cost||0)}</td>
+        <td>${curPrice?fmt$(curPrice):'—'}</td>
         <td>${fmt$(pos.market_value||0)}</td>
         <td style="color:${c}">${upl>=0?'+':''}${fmt$(upl)}</td>
         <td style="color:${c}">${upl>=0?'+':''}${(uplpct||0).toFixed(1)}%</td>
