@@ -1805,7 +1805,7 @@ function renderPortfolio(m,p){
   // Capital card
   txt('pt-date', p.last_rebalance||'—');
   const depEl=$('pt-deployed');if(depEl){depEl.textContent=fmt$(deployed);depEl.style.color='var(--cyan)';}
-  txt('pt-deployed-pct',(deployed/inception*100).toFixed(1)+'% of notional');
+  txt('pt-deployed-pct',Math.min(100,(deployed/inception*100)).toFixed(1)+'% of notional');
   txt('pt-cash',fmt$(cash));
   txt('pt-cash-pct',(cash/inception*100).toFixed(1)+'% of notional');
 
