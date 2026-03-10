@@ -202,5 +202,7 @@
   "portfolio_C_short": {},
   "n_long": 20,
   "n_short": 0,
-  "capital_deployed_A": 99856.82000000002
+  "capital_deployed_A": 99856.82000000002,
+  "spy_inception_price": 677.64,
+  "xbi_inception_price": 126.6
 }
