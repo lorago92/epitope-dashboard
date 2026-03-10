@@ -1,13 +1,13 @@
 {
-  "date": "2026-03-09",
-  "portfolio_value": 99954.51,
-  "total_pl": -45.49000000000524,
-  "total_return_pct": -0.04549000000000358,
-  "today_pl": -45.49,
-  "today_return_pct": -0.0455,
+  "date": "2026-03-10",
+  "portfolio_value": 99985.72,
+  "total_pl": -14.279999999998836,
+  "total_return_pct": -0.014279999999999848,
+  "today_pl": -14.28,
+  "today_return_pct": -0.0143,
   "long_positions": 20,
   "short_positions": 0,
-  "total_long_pl": -45.48000000000009,
+  "total_long_pl": -14.260000000000048,
   "total_short_pl": 0.0,
   "n_alerts": 0,
   "n_drift_alerts": 0,
@@ -16,10 +16,26 @@
   "regime": "Neutral",
   "regime_score": 0.7235,
   "live_score": "3/5",
-  "weeks_live": 0.0,
+  "weeks_live": 0.14285714285714285,
   "cash": -919.42,
-  "long_market_value": 100873.93000000002,
+  "long_market_value": 100905.14000000001,
+  "spy_price": 677.64,
+  "xbi_price": 126.6,
+  "spy_inception_price": 677.64,
+  "xbi_inception_price": 126.6,
+  "spy_return_pct": 0.0,
+  "xbi_return_pct": 0.0,
   "positions": [
+    {
+      "ticker": "TVTX",
+      "side": "long",
+      "qty": 179.0,
+      "avg_cost": 28.79,
+      "market_value": 5420.12,
+      "unrealized_pl": 266.71,
+      "current_price": 30.28,
+      "unrealized_plpc": 5.17
+    },
     {
       "ticker": "HRTX",
       "side": "long",
@@ -31,24 +47,34 @@
       "unrealized_plpc": 3.14
     },
     {
-      "ticker": "XENE",
-      "side": "long",
-      "qty": 83.0,
-      "avg_cost": 61.44,
-      "market_value": 5187.5,
-      "unrealized_pl": 87.98,
-      "current_price": 62.5,
-      "unrealized_plpc": 1.73
-    },
-    {
       "ticker": "ORGO",
       "side": "long",
       "qty": 1888.0,
       "avg_cost": 2.74,
-      "market_value": 5229.76,
-      "unrealized_pl": 56.64,
-      "current_price": 2.77,
-      "unrealized_plpc": 1.09
+      "market_value": 5286.4,
+      "unrealized_pl": 113.28,
+      "current_price": 2.8,
+      "unrealized_plpc": 2.19
+    },
+    {
+      "ticker": "XENE",
+      "side": "long",
+      "qty": 83.0,
+      "avg_cost": 61.44,
+      "market_value": 5184.48,
+      "unrealized_pl": 84.96,
+      "current_price": 62.4636,
+      "unrealized_plpc": 1.67
+    },
+    {
+      "ticker": "SGMO",
+      "side": "long",
+      "qty": 11744.0,
+      "avg_cost": 0.4079,
+      "market_value": 4847.92,
+      "unrealized_pl": 57.55,
+      "current_price": 0.4128,
+      "unrealized_plpc": 1.2
     },
     {
       "ticker": "CNTA",
@@ -69,16 +95,6 @@
       "unrealized_pl": 41.93,
       "current_price": 1.3509,
       "unrealized_plpc": 0.81
-    },
-    {
-      "ticker": "TVTX",
-      "side": "long",
-      "qty": 179.0,
-      "avg_cost": 28.79,
-      "market_value": 5187.42,
-      "unrealized_pl": 34.01,
-      "current_price": 28.98,
-      "unrealized_plpc": 0.66
     },
     {
       "ticker": "BCYC",
@@ -111,16 +127,6 @@
       "unrealized_plpc": 0.18
     },
     {
-      "ticker": "VRDN",
-      "side": "long",
-      "qty": 171.0,
-      "avg_cost": 29.96,
-      "market_value": 5126.58,
-      "unrealized_pl": 3.42,
-      "current_price": 29.98,
-      "unrealized_plpc": 0.07
-    },
-    {
       "ticker": "CTMX",
       "side": "long",
       "qty": 998.0,
@@ -129,6 +135,16 @@
       "unrealized_pl": -9.98,
       "current_price": 5.0,
       "unrealized_plpc": -0.2
+    },
+    {
+      "ticker": "OLMA",
+      "side": "long",
+      "qty": 309.0,
+      "avg_cost": 16.29,
+      "market_value": 5021.25,
+      "unrealized_pl": -12.36,
+      "current_price": 16.25,
+      "unrealized_plpc": -0.25
     },
     {
       "ticker": "ENTA",
@@ -159,16 +175,6 @@
       "unrealized_pl": -26.64,
       "current_price": 5.42,
       "unrealized_plpc": -0.55
-    },
-    {
-      "ticker": "SGMO",
-      "side": "long",
-      "qty": 11744.0,
-      "avg_cost": 0.4079,
-      "market_value": 4756.32,
-      "unrealized_pl": -34.06,
-      "current_price": 0.405,
-      "unrealized_plpc": -0.71
     },
     {
       "ticker": "MDXG",
@@ -211,14 +217,14 @@
       "unrealized_plpc": -2.36
     },
     {
-      "ticker": "OLMA",
+      "ticker": "VRDN",
       "side": "long",
-      "qty": 309.0,
-      "avg_cost": 16.29,
-      "market_value": 4913.1,
-      "unrealized_pl": -120.51,
-      "current_price": 15.9,
-      "unrealized_plpc": -2.39
+      "qty": 171.0,
+      "avg_cost": 29.96,
+      "market_value": 4671.72,
+      "unrealized_pl": -451.44,
+      "current_price": 27.32,
+      "unrealized_plpc": -8.81
     }
   ]
 }
