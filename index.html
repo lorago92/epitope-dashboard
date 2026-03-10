@@ -651,12 +651,25 @@ body::after{
       <div class="g-auto mb16" style="grid-template-columns:2fr 1fr 1fr">
         <div class="card">
           <div class="card-title">Portfolio</div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px">
-            <div><div class="lbl">Portfolio Value</div><div class="val" id="pf-value">—</div></div>
-            <div><div class="lbl">Inception Date</div><div class="val" id="pf-date">—</div></div>
-            <div><div class="lbl">Cash</div><div class="val" id="pf-cash">—</div></div>
-            <div><div class="lbl">Positions</div><div class="val" id="pf-positions">—</div></div>
-            <div><div class="lbl">Regime</div><div class="val amber" id="pf-regime">—</div></div>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:14px">
+            <div>
+              <div class="lbl">Inception</div>
+              <div class="val" id="pf-value">—</div>
+              <div class="sub" id="pf-date">—</div>
+            </div>
+            <div>
+              <div class="lbl">Market Value</div>
+              <div class="val cyan" id="pf-deployed">—</div>
+            </div>
+            <div>
+              <div class="lbl">Cash</div>
+              <div class="val" id="pf-cash">—</div>
+            </div>
+            <div>
+              <div class="lbl">Today P&L</div>
+              <div class="val cyan" id="pf-today-pl">—</div>
+              <div class="sub" id="pf-today-pct">—</div>
+            </div>
           </div>
           <div style="padding-top:12px;border-top:1px solid var(--bd)">
             <div style="font-size:9px;letter-spacing:1.5px;color:var(--t3);margin-bottom:6px">PORTFOLIO COMPOSITION</div>
@@ -1690,16 +1703,22 @@ function renderOverview(m,r,p){
   if(bw)bw.style.width=watchPct.toFixed(1)+'%';
   if(ba)ba.style.width=avoidPct.toFixed(1)+'%';
 
-  // Portfolio row
-  txt('pf-value',fmt$(m.portfolio_value));
+  // Portfolio row — matches Portfolio page card
+  txt('pf-value',fmt$(p.capital_deployed_A||100000));  // inception capital
   txt('pf-date',p.last_rebalance||'—');
   const _ovDeployed=m.long_market_value!=null?m.long_market_value:(p.capital_deployed_A||0);
   const _ovCash=m.cash!=null?m.cash:((m.portfolio_value||0)-_ovDeployed);
   txt('pf-deployed',fmt$(_ovDeployed));
   txt('pf-cash',fmt$(_ovCash));
-  txt('pf-positions',(m.long_positions||0).toString());
-  const prEl=$('pf-regime');
-  if(prEl){prEl.textContent=regime;prEl.style.color=col}
+  // Today P&L
+  const _ovTodayPl=m.today_pl!=null?m.today_pl:null;
+  const _ovTodayPct=m.today_return_pct!=null?m.today_return_pct:null;
+  const _ovTodayEl=$('pf-today-pl');
+  if(_ovTodayEl){
+    if(_ovTodayPl!=null){_ovTodayEl.textContent=(_ovTodayPl>=0?'+':'')+fmt$(_ovTodayPl);_ovTodayEl.style.color=_ovTodayPl>=0?'var(--cyan)':'var(--red)';}
+    else{_ovTodayEl.textContent='—';}
+  }
+  txt('pf-today-pct',_ovTodayPct!=null?(_ovTodayPct>=0?'+':'')+_ovTodayPct.toFixed(2)+'%':'—');
 
   // P&L
   const pl=m.total_pl||0;
