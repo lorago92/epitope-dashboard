@@ -1695,7 +1695,7 @@ function renderOverview(m,r,p){
   txt('pf-value',fmt$(m.portfolio_value));
   txt('pf-date',p.last_rebalance||'—');
   const _ovDeployed=m.long_market_value!=null?m.long_market_value:(p.capital_deployed_A||0);
-  const _ovCash=Math.max(0,m.cash!=null?m.cash:((m.portfolio_value||0)-_ovDeployed));
+  const _ovCash=m.cash!=null?m.cash:((m.portfolio_value||0)-_ovDeployed);
   txt('pf-deployed',fmt$(_ovDeployed));
   txt('pf-cash',fmt$(_ovCash));
   txt('pf-positions',(m.long_positions||0).toString());
@@ -1799,7 +1799,7 @@ function renderPortfolio(m,p){
   const col=regimeColor(regime);
   const deployed=m.long_market_value!=null?m.long_market_value:(p.capital_deployed_A||0);
   const portfolioVal=m.portfolio_value||100000;
-  const cash=Math.max(0,m.cash!=null?m.cash:(portfolioVal-deployed));
+  const cash=m.cash!=null?m.cash:(portfolioVal-deployed);
   const inception=100000; // fixed notional
 
   // Capital card
