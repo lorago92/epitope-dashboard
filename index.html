@@ -1704,7 +1704,7 @@ function renderOverview(m,r,p){
   if(ba)ba.style.width=avoidPct.toFixed(1)+'%';
 
   // Portfolio row — matches Portfolio page card
-  txt('pf-value',fmt$(p.capital_deployed_A||100000));  // inception capital
+  txt('pf-value',fmt$(100000));  // inception capital — fixed $100k notional
   txt('pf-date',p.last_rebalance||'—');
   const _ovDeployed=m.long_market_value!=null?m.long_market_value:(p.capital_deployed_A||0);
   const _ovCash=m.cash!=null?m.cash:((m.portfolio_value||0)-_ovDeployed);
