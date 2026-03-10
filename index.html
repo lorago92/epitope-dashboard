@@ -2500,7 +2500,7 @@ function renderTrack(b){
     const mean=rets.reduce((a,v)=>a+v,0)/rets.length;
     const std=Math.sqrt(rets.reduce((a,v)=>a+(v-mean)**2,0)/rets.length);
     const years=arr.length/12;
-    const annRet=(Math.pow(arr[arr.length-1]/100, 1/years)-1)*100;
+    const annRet=(Math.pow(arr[arr.length-1]/arr[0], 1/years)-1)*100;
     const sharpe=std>0?(mean/std)*Math.sqrt(12):0; // monthly → annualised
     let peak=arr[0],maxDD=0;
     arr.forEach(v=>{peak=Math.max(peak,v);maxDD=Math.min(maxDD,(v-peak)/peak);});
