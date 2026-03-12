@@ -2303,7 +2303,7 @@ async function renderSignals(r){
     // Build full ranked list: top half sorted desc, bottom half sorted asc for display
     // Build position map for avg_cost lookup (BUY rows only)
     const _posMap={};
-    if(m.positions&&m.positions.length){m.positions.forEach(p=>{_posMap[p.ticker]=p.avg_cost;});}
+    if(m.positions&&m.positions.length){m.positions.forEach(_pos=>{_posMap[_pos.ticker]=_pos.avg_cost;});}
     const allRanked=[...sig].map((s,i)=>({
       ...s,
       rank:i+1,
