@@ -1203,7 +1203,7 @@ body::after{
                   <span style="font-size:11px;color:var(--t4)">×</span>
                   <span style="font-size:13px;letter-spacing:1px;color:var(--amber)">CYTOKINE·Gate</span>
                 </div>
-                <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-top:2px">GATED SIGNAL RANKING · COMPOSITE × REGIME MULTIPLIER → FINAL SCORE</div>
+                <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4);margin-top:2px">GATED SIGNAL RANKING · COMPOSITE × REGIME MULTIPLIER → FINAL SCORE · <span id="pl-rank-freshness" style="color:var(--amber)">STALE</span></div>
               </div>
             </div>
 
@@ -2301,11 +2301,16 @@ async function renderSignals(r){
     $('pl-rank-table').style.cssText='';
 
     // Build full ranked list: top half sorted desc, bottom half sorted asc for display
+    // Build position map for avg_cost lookup (BUY rows only)
+    const _posMap={};
+    if(m.positions&&m.positions.length){m.positions.forEach(p=>{_posMap[p.ticker]=p.avg_cost;});}
     const allRanked=[...sig].map((s,i)=>({
       ...s,
       rank:i+1,
       pre_gate_action: i<20 ? 'BUY' : i<60 ? 'WATCH' : 'AVOID',
       final_action: s.gate===0 ? 'GATED' : i<20 ? 'BUY' : i<60 ? 'WATCH' : 'AVOID',
+      rebal_price: i<20 && _posMap[s.ticker] ? _posMap[s.ticker] : null,
+      cur_price: (window._pricesMap&&window._pricesMap[s.ticker]) ? window._pricesMap[s.ticker].price : null,
     }));
 
     const cols=[
@@ -2318,6 +2323,8 @@ async function renderSignals(r){
       {key:'gate',        label:'GATE'},
       {key:'final_score', label:'FINAL SCORE'},
       {key:'final_action',label:'FINAL ACTION'},
+      {key:'rebal_price', label:'REBAL PRICE'},
+      {key:'cur_price',   label:'CURRENT PRICE'},
     ];
 
     let sortCol='rank', sortDir=1, rankFilter='';
@@ -2342,7 +2349,7 @@ async function renderSignals(r){
         ? `${sorted.length} result${sorted.length!==1?'s':''} for "${query}"`
         : `Showing ${sorted.length} rows · scroll for more`;
       const arrow=k=>k===sortCol?(sortDir===1?' ▼':' ▲'):'';
-      const widths=['50px','90px','65px','75px','105px','145px','65px','105px','115px'];
+      const widths=['50px','90px','65px','75px','105px','145px','65px','105px','115px','105px','115px'];
       const colGroup=`<colgroup>${widths.map(w=>`<col style="width:${w}">`).join('')}</colgroup>`;
       let h=`<div style="overflow-y:auto;max-height:480px">
         <table class="sig-tbl">
@@ -2360,6 +2367,10 @@ async function renderSignals(r){
           const gateColor=s.gate===0?'var(--red)':s.gate===1?'var(--cyan)':'var(--amber)';
           const phi=!isNaN(s.phi)?s.phi.toFixed(1):'—';
           const psi=!isNaN(s.psi)?s.psi.toFixed(1):'—';
+          const rebalPriceCell = s.pre_gate_action==='BUY'
+            ? (s.rebal_price!=null ? `$${s.rebal_price.toFixed(2)}` : '—')
+            : '';
+          const curPriceCell = s.cur_price!=null ? `$${s.cur_price.toFixed(2)}` : '—';
           h+=`<tr>
             <td style="color:var(--t4)">${s.rank}</td>
             <td style="color:${ac};font-weight:600;font-family:'JetBrains Mono',monospace">${s.ticker}</td>
@@ -2370,6 +2381,8 @@ async function renderSignals(r){
             <td style="color:${gateColor};font-weight:600">${(s.gate*100).toFixed(0)}%</td>
             <td style="color:${fc};font-weight:600">${s.final_score.toFixed(1)}</td>
             <td style="color:${fac};font-weight:600">${s.final_action}</td>
+            <td style="color:var(--t3)">${rebalPriceCell}</td>
+            <td style="color:var(--cyan)">${curPriceCell}</td>
           </tr>`;
         });
       }
@@ -2388,6 +2401,22 @@ async function renderSignals(r){
       });
     }
     renderRankTable();
+
+    // Update freshness label
+    const freshnessEl=$('pl-rank-freshness');
+    if(freshnessEl){
+      const rd=p.last_rebalance||'';
+      if(rd){
+        // Format YYYY-MM-DD → MM/DD/YYYY
+        const parts=rd.split('-');
+        const fmt=parts.length===3?`${parts[1]}/${parts[2]}/${parts[0]}`:rd;
+        freshnessEl.textContent=`AS OF ${fmt}`;
+        freshnessEl.style.color='var(--t3)';
+      } else {
+        freshnessEl.textContent='STALE';
+        freshnessEl.style.color='var(--amber)';
+      }
+    }
   }
 
   // Top 5 + Bottom 5 — compact vertical list in side panel
