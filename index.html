@@ -1086,7 +1086,7 @@ body::after{
             <div class="pipe-circle" style="background:rgba(96,144,255,0.08);border-color:rgba(96,144,255,0.25);color:var(--blue);font-size:12px;width:32px;height:32px;flex-shrink:0">3</div>
             <div>
               <div style="font-size:13px;letter-spacing:1px;color:var(--blue)">AFFINITY·Score</div>
-              <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4)">SIGNAL LANDSCAPE · Φ vs Ψ vs SCORE</div>
+              <div style="font-size:9px;letter-spacing:1.5px;color:var(--t4)">SIGNAL TERRAIN · SCORE ELEVATION</div>
             </div>
           </div>
           <div style="display:grid;grid-template-columns:2fr 3fr;gap:16px;align-items:start">
@@ -1470,6 +1470,7 @@ body::after{
 </div><!-- /app -->
 
 <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════════
    EPITOPE v4 — Bloomberg-style data dashboard
@@ -2233,69 +2234,202 @@ async function renderSignals(r){
     },{displayModeBar:false,responsive:true});
   }
 
-  // Signal Landscape — 3D scatter: Φ (x) vs Ψ (y) vs SCORE (z)
-  if(scored>0 && window.Plotly){
-    set('pl-landscape','');
-    $('pl-landscape').style.cssText='height:340px';
-    const top20ids=new Set(sig.slice(0,20).map(s=>s.ticker));
-    const axStyle={
-      showbackground:true,
-      backgroundcolor:'rgba(8,14,36,0.6)',
-      gridcolor:'rgba(50,80,160,0.18)',
-      zerolinecolor:'rgba(50,80,160,0.25)',
-      showline:false,
-      tickfont:{size:7,color:'rgba(255,255,255,0.25)'},
-      titlefont:{size:9,color:'rgba(255,255,255,0.45)'},
-    };
-    Plotly.newPlot('pl-landscape',[{
-      x:sig.map(s=>s.phi??0),
-      y:sig.map(s=>s.psi??0),
-      z:sig.map(s=>s.score),
-      mode:'markers',
-      type:'scatter3d',
-      text:sig.map(s=>s.ticker),
-      hovertemplate:'<b>%{text}</b><br>Φ: %{x:.1f}<br>Ψ: %{y:.1f}<br>Score: %{z:.1f}<extra></extra>',
-      marker:{
-        size:sig.map(s=>top20ids.has(s.ticker)?5:2.5),
-        color:sig.map(s=>s.score),
-        colorscale:[[0,'#ff3250'],[0.3,'#6090ff'],[0.65,'#00c8ff'],[1,'#00ffb4']],
-        cmin:0,cmax:100,
-        opacity:1,
-        line:{width:0},
-        showscale:false,
-      },
-    }],{
-      paper_bgcolor:'transparent',
-      scene:{
-        bgcolor:'rgba(6,10,28,0)',
-        xaxis:{...axStyle,title:'Φ · Signal Intensity',range:[0,100]},
-        yaxis:{...axStyle,title:'Ψ · Divergence',range:[-500,500]},
-        zaxis:{...axStyle,title:'Score',range:[0,100]},
-        camera:{eye:{x:1.5,y:-1.5,z:1.1},center:{x:0,y:0,z:-0.15}},
-        aspectmode:'cube',
-      },
-      margin:{l:0,r:0,t:0,b:0},
-      font:{family:'JetBrains Mono',size:8,color:'rgba(255,255,255,0.35)'},
-      showlegend:false,
-    },{displayModeBar:false,responsive:true});
-
-    // Auto-rotation — orbit around Z axis, pauses on hover
-    let angle=0, rotating=true;
-    const el3d=$('pl-landscape');
-    el3d.addEventListener('mouseenter',()=>rotating=false);
-    el3d.addEventListener('mouseleave',()=>rotating=true);
-    if(window._landscape3dLoop) cancelAnimationFrame(window._landscape3dLoop);
-    const R=2.2, zEye=0.9;
-    function rotate3d(){
-      if(rotating){
-        angle+=0.002; // 0.004 → 0.002: 50% slower
-        Plotly.relayout('pl-landscape',{
-          'scene.camera.eye':{x:R*Math.cos(angle),y:R*Math.sin(angle),z:zEye}
-        });
-      }
-      window._landscape3dLoop=requestAnimationFrame(rotate3d);
+  // Signal Terrain — 3D mesh: score drives elevation (replaces Plotly scatter)
+  if(scored>0 && window.THREE){
+    // Destroy previous instance if re-rendered
+    if(window._terrainRenderer){
+      window._terrainRenderer.dispose();
+      if(window._terrainRAF) cancelAnimationFrame(window._terrainRAF);
     }
-    rotate3d();
+
+    const container=$('pl-landscape');
+    container.innerHTML='';
+    container.style.cssText='height:340px;position:relative;background:#030810;border-radius:8px;overflow:hidden';
+
+    // Canvas
+    const cv=document.createElement('canvas');
+    cv.style.cssText='display:block;width:100%;height:100%';
+    container.appendChild(cv);
+
+    // Tooltip
+    const tt=document.createElement('div');
+    tt.style.cssText='position:absolute;display:none;background:rgba(4,12,32,0.93);border:1px solid rgba(0,200,140,0.4);border-radius:7px;padding:8px 12px;font-family:\'JetBrains Mono\',monospace;font-size:11px;color:#e0f0ff;pointer-events:none;z-index:10;box-shadow:0 0 20px rgba(0,200,140,0.15)';
+    container.appendChild(tt);
+
+    // Legend
+    const leg=document.createElement('div');
+    leg.style.cssText='position:absolute;bottom:10px;left:12px;display:flex;gap:14px;font-family:\'JetBrains Mono\',monospace;font-size:8px;color:rgba(255,255,255,0.35);pointer-events:none';
+    leg.innerHTML='<span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#00ffb4;box-shadow:0 0 5px #00ffb4;margin-right:4px;vertical-align:middle"></span>BUY peaks</span>'
+      +'<span><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#6090ff;margin-right:4px;vertical-align:middle"></span>WATCH foothills</span>'
+      +'<span><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:#ff3250;margin-right:4px;vertical-align:middle"></span>AVOID valleys</span>'
+      +'<span style="color:rgba(255,255,255,0.18)">· drag · scroll</span>';
+    container.appendChild(leg);
+
+    cv.width  = container.offsetWidth  || 600;
+    cv.height = container.offsetHeight || 340;
+
+    const renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
+    renderer.setSize(cv.width,cv.height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+    renderer.setClearColor(0x030810,1);
+    window._terrainRenderer=renderer;
+
+    const scene3=new THREE.Scene();
+    scene3.fog=new THREE.FogExp2(0x030810,0.024);
+
+    const cam3=new THREE.PerspectiveCamera(55,cv.width/cv.height,0.1,200);
+    cam3.position.set(0,14,28);
+    cam3.lookAt(0,0,0);
+
+    // Lighting
+    scene3.add(new THREE.AmbientLight(0x0a1a3a,1.2));
+    const dl=new THREE.DirectionalLight(0x4466ff,0.8); dl.position.set(5,20,10); scene3.add(dl);
+    const ptG=new THREE.PointLight(0x00ffb4,2.5,40); ptG.position.set(0,8,0); scene3.add(ptG);
+    scene3.add(new THREE.PointLight(0x2244ff,1.2,60));
+
+    // Grid layout — spiral fill so highest scores cluster at centre
+    const COLS=22,ROWS=20,W=26,D=24;
+    const sorted=[...sig].sort((a,b)=>b.score-a.score);
+    function spiralIdx(cols,rows){
+      const out=[];let top=0,bot=rows-1,left=0,right=cols-1;
+      const total=cols*rows;
+      while(out.length<total){
+        for(let c=left;c<=right&&out.length<total;c++) out.push([top,c]); top++;
+        for(let r=top;r<=bot&&out.length<total;r++) out.push([r,right]); right--;
+        for(let c=right;c>=left&&out.length<total;c--) out.push([bot,c]); bot--;
+        for(let r=bot;r>=top&&out.length<total;r--) out.push([r,left]); left++;
+      }
+      return out;
+    }
+    const spiral=spiralIdx(COLS,ROWS).reverse();
+    const grid=new Float32Array(COLS*ROWS);
+    const gridData=new Array(COLS*ROWS);
+    sorted.forEach((tk,i)=>{
+      if(i>=COLS*ROWS) return;
+      const [row,col]=spiral[i];
+      const idx=row*COLS+col;
+      grid[idx]=tk.score;
+      gridData[idx]=tk;
+    });
+
+    // Terrain mesh
+    const geom=new THREE.PlaneGeometry(W,D,COLS-1,ROWS-1);
+    geom.rotateX(-Math.PI/2);
+    const verts=geom.attributes.position;
+    for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
+      const vi=r*COLS+c;
+      const h=(grid[vi]||0)/50*5.5;
+      verts.setY(vi,h+(Math.random()-0.5)*0.25);
+    }
+    geom.computeVertexNormals();
+    verts.needsUpdate=true;
+
+    const colors=new Float32Array(verts.count*3);
+    for(let i=0;i<verts.count;i++){
+      const t=Math.max(0,Math.min(1,verts.getY(i)/5.5));
+      let r,g,b;
+      if(t>0.75){r=0;g=0.9+t*0.1;b=0.6+(1-t)*0.4;}
+      else if(t>0.4){const u=(t-0.4)/0.35;r=0.1*(1-u);g=0.3+u*0.5;b=0.6+u*0.3;}
+      else if(t>0.1){const u=(t-0.1)/0.3;r=0.05;g=0.05+u*0.25;b=0.2+u*0.4;}
+      else{r=0.1*(1-t);g=0.02;b=0.05;}
+      colors[i*3]=r;colors[i*3+1]=g;colors[i*3+2]=b;
+    }
+    geom.setAttribute('color',new THREE.BufferAttribute(colors,3));
+    const mat=new THREE.MeshPhongMaterial({vertexColors:true,shininess:60,specular:new THREE.Color(0x112244)});
+    const mesh=new THREE.Mesh(geom,mat);
+    scene3.add(mesh);
+
+    // Faint wireframe overlay
+    const wm=new THREE.MeshBasicMaterial({color:0x1a3a6a,wireframe:true,transparent:true,opacity:0.1});
+    const wMesh=new THREE.Mesh(geom.clone(),wm); wMesh.position.y=0.05; scene3.add(wMesh);
+
+    // Top-20 peak markers
+    sorted.slice(0,20).forEach((tk,i)=>{
+      const [row,col]=spiral[i];
+      const x=(col/(COLS-1)-0.5)*W, z=(row/(ROWS-1)-0.5)*D, y=(tk.score/50)*5.5+0.3;
+      const sp=new THREE.Mesh(new THREE.SphereGeometry(0.22,8,8),new THREE.MeshBasicMaterial({color:0x00ffb4}));
+      sp.position.set(x,y,z); scene3.add(sp);
+      const rg=new THREE.Mesh(new THREE.RingGeometry(0.28,0.42,16),new THREE.MeshBasicMaterial({color:0x00ffb4,transparent:true,opacity:0.4,side:THREE.DoubleSide}));
+      rg.position.set(x,y+0.05,z); rg.rotation.x=-Math.PI/2; scene3.add(rg);
+    });
+
+    scene3.add(new THREE.GridHelper(W,COLS,0x0a1a40,0x0a1a40));
+
+    // Raycasting for hover tooltip
+    const ray=new THREE.Raycaster(), mouse3=new THREE.Vector2(-9999,-9999);
+    function pickTicker(ix,iz){
+      const col=Math.round((ix/W+0.5)*(COLS-1));
+      const row=Math.round((iz/D+0.5)*(ROWS-1));
+      if(col<0||col>=COLS||row<0||row>=ROWS) return null;
+      return gridData[row*COLS+col]||null;
+    }
+    container.addEventListener('mousemove',e=>{
+      const r=cv.getBoundingClientRect();
+      mouse3.x=((e.clientX-r.left)/r.width)*2-1;
+      mouse3.y=-((e.clientY-r.top)/r.height)*2+1;
+      let tx=e.clientX-r.left+14, ty=e.clientY-r.top-20;
+      if(tx+140>r.width) tx-=155;
+      if(ty+80>r.height) ty-=80;
+      tt.style.left=tx+'px'; tt.style.top=ty+'px';
+    });
+    container.addEventListener('mouseleave',()=>{mouse3.set(-9999,-9999);tt.style.display='none';});
+
+    // Drag-to-orbit
+    let drag=false,lx=0,ly=0,camTheta=0.25,camPhi=0.48,camR=30;
+    const TGT=new THREE.Vector3(0,1,0);
+    function updateCam(){
+      cam3.position.x=TGT.x+camR*Math.sin(camPhi)*Math.sin(camTheta);
+      cam3.position.y=TGT.y+camR*Math.cos(camPhi);
+      cam3.position.z=TGT.z+camR*Math.sin(camPhi)*Math.cos(camTheta);
+      cam3.lookAt(TGT);
+    }
+    updateCam();
+    cv.addEventListener('mousedown',e=>{drag=true;lx=e.clientX;ly=e.clientY;});
+    window.addEventListener('mouseup',()=>drag=false);
+    window.addEventListener('mousemove',e=>{
+      if(!drag)return;
+      camTheta-=(e.clientX-lx)*0.006;
+      camPhi=Math.max(0.15,Math.min(1.4,camPhi+(e.clientY-ly)*0.005));
+      lx=e.clientX;ly=e.clientY;updateCam();
+    });
+    cv.addEventListener('wheel',e=>{camR=Math.max(12,Math.min(50,camR+e.deltaY*0.03));updateCam();e.preventDefault();},{passive:false});
+
+    // Animate
+    let autoA=camTheta;
+    const clk=new THREE.Clock();
+    function terrainAnimate(){
+      window._terrainRAF=requestAnimationFrame(terrainAnimate);
+      const t=clk.getElapsedTime();
+      if(!drag){autoA+=0.0015;camTheta+=(autoA-camTheta)*0.02;updateCam();}
+      ptG.intensity=2.0+Math.sin(t*1.5)*0.6;
+      ptG.position.y=7+Math.sin(t*0.8)*1.5;
+      ray.setFromCamera(mouse3,cam3);
+      const hits=ray.intersectObject(mesh);
+      if(hits.length>0){
+        const p=hits[0].point, tk=pickTicker(p.x,p.z);
+        if(tk){
+          const ac=tk.action||tk.a||'—';
+          const col=ac==='BUY'?'#00ffb4':ac==='WATCH'?'#6090ff':'#ff3250';
+          const bg=ac==='BUY'?'rgba(0,255,180,0.12)':ac==='WATCH'?'rgba(96,144,255,0.12)':'rgba(255,50,80,0.12)';
+          tt.innerHTML=`<span style="font-size:13px;color:#00ffb4;font-weight:600">${tk.ticker||tk.t}</span>`
+            +`<div style="color:rgba(255,255,255,0.4);font-size:9px;margin-top:2px">SCORE</div>`
+            +`<div style="font-size:14px;font-weight:600;color:#fff">${(tk.score||tk.s||0).toFixed(1)}</div>`
+            +`<span style="font-size:9px;letter-spacing:1px;margin-top:4px;padding:2px 7px;border-radius:4px;display:inline-block;background:${bg};color:${col};border:1px solid ${col}40">${ac}</span>`;
+          tt.style.display='block';
+        } else tt.style.display='none';
+      } else tt.style.display='none';
+      renderer.render(scene3,cam3);
+    }
+    terrainAnimate();
+
+    // Resize observer
+    const ro=new ResizeObserver(()=>{
+      const w=container.offsetWidth,h=container.offsetHeight;
+      if(!w||!h)return;
+      renderer.setSize(w,h);
+      cam3.aspect=w/h;cam3.updateProjectionMatrix();
+    });
+    ro.observe(container);
   }
 
   // Full sortable scrollable signal table
