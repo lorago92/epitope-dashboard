@@ -1556,7 +1556,7 @@ async function loadData(){
     const res=await fetch('data/meta_signal_latest.csv?t='+Date.now());
     if(res.ok){
       const text=await res.text();
-      const rows=text.trim().split('\n').slice(1).map(l=>{const c=l.split(',');return{ticker:c[0],score:parseFloat(c[3]||0),final_score:parseFloat(c[1]||0),action:c[2]||'—',phi:parseFloat(c[9]||0),psi:parseFloat(c[10]||0),gate:parseFloat(c[16]||0)};}).filter(r=>r.ticker&&r.ticker.length>0&&!isNaN(r.score));
+      const rows=text.trim().split('\n').slice(1).map(l=>{const c=l.split(',');return{ticker:c[0],score:parseFloat(c[3]||0),final_score:parseFloat(c[1]||0),action:c[2]||'—',phi:parseFloat(c[4]||0),psi:parseFloat(c[5]||0),gate:parseFloat(c[8]||0)};}).filter(r=>r.ticker&&r.ticker.length>0&&!isNaN(r.score));
       rows.sort((a,b)=>b.score-a.score);
       D.sig=rows;
     }
