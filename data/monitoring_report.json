@@ -1,13 +1,13 @@
 {
   "date": "2026-03-26",
-  "portfolio_value": 89587.15,
-  "total_pl": -10412.850000000006,
-  "total_return_pct": -10.412850000000006,
-  "today_pl": -711.39,
-  "today_return_pct": -0.7878,
+  "portfolio_value": 89805.01,
+  "total_pl": -10194.990000000005,
+  "total_return_pct": -10.194990000000004,
+  "today_pl": -493.53,
+  "today_return_pct": -0.5466,
   "long_positions": 20,
   "short_positions": 0,
-  "total_long_pl": -10749.07,
+  "total_long_pl": -10531.21,
   "total_short_pl": 0.0,
   "n_alerts": 0,
   "n_drift_alerts": 0,
@@ -18,7 +18,7 @@
   "live_score": "2/5",
   "weeks_live": 0.42857142857142855,
   "cash": 938.27,
-  "long_market_value": 88648.87000000001,
+  "long_market_value": 88866.73999999999,
   "spy_price": 646.23,
   "xbi_price": 123.93,
   "spy_inception_price": 655.37,
@@ -31,10 +31,10 @@
       "side": "long",
       "qty": 2848.0,
       "avg_cost": 1.27,
-      "market_value": 4645.09,
-      "unrealized_pl": 1028.13,
-      "current_price": 1.631,
-      "unrealized_plpc": 28.43
+      "market_value": 4675.28,
+      "unrealized_pl": 1058.32,
+      "current_price": 1.6416,
+      "unrealized_plpc": 29.26
     },
     {
       "ticker": "CNTA",
@@ -131,10 +131,10 @@
       "side": "long",
       "qty": 998.0,
       "avg_cost": 5.01,
-      "market_value": 4401.18,
-      "unrealized_pl": -598.8,
-      "current_price": 4.41,
-      "unrealized_plpc": -11.98
+      "market_value": 4391.2,
+      "unrealized_pl": -608.78,
+      "current_price": 4.4,
+      "unrealized_plpc": -12.18
     },
     {
       "ticker": "MDXG",
@@ -145,6 +145,16 @@
       "unrealized_pl": -677.1,
       "current_price": 3.94,
       "unrealized_plpc": -13.41
+    },
+    {
+      "ticker": "REPL",
+      "side": "long",
+      "qty": 583.0,
+      "avg_cost": 8.77,
+      "market_value": 4407.48,
+      "unrealized_pl": -705.43,
+      "current_price": 7.56,
+      "unrealized_plpc": -13.8
     },
     {
       "ticker": "OLMA",
@@ -161,30 +171,20 @@
       "side": "long",
       "qty": 5391.0,
       "avg_cost": 0.9695,
-      "market_value": 4448.11,
-      "unrealized_pl": -778.46,
-      "current_price": 0.8251,
-      "unrealized_plpc": -14.89
+      "market_value": 4420.62,
+      "unrealized_pl": -805.95,
+      "current_price": 0.82,
+      "unrealized_plpc": -15.42
     },
     {
       "ticker": "SGMO",
       "side": "long",
       "qty": 11744.0,
       "avg_cost": 0.4079,
-      "market_value": 4023.49,
-      "unrealized_pl": -766.88,
-      "current_price": 0.3426,
-      "unrealized_plpc": -16.01
-    },
-    {
-      "ticker": "REPL",
-      "side": "long",
-      "qty": 583.0,
-      "avg_cost": 8.77,
-      "market_value": 4197.6,
-      "unrealized_pl": -915.31,
-      "current_price": 7.2,
-      "unrealized_plpc": -17.9
+      "market_value": 4038.76,
+      "unrealized_pl": -751.62,
+      "current_price": 0.3439,
+      "unrealized_plpc": -15.69
     },
     {
       "ticker": "BCYC",
