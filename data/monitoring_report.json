@@ -1,13 +1,13 @@
 {
   "date": "2026-03-31",
-  "portfolio_value": 88579.11,
-  "total_pl": -11420.89,
-  "total_return_pct": -11.420889999999995,
-  "today_pl": 5243.65,
-  "today_return_pct": 6.2922,
+  "portfolio_value": 88431.43,
+  "total_pl": -11568.570000000007,
+  "total_return_pct": -11.568570000000012,
+  "today_pl": 5095.97,
+  "today_return_pct": 6.115,
   "long_positions": 20,
   "short_positions": 0,
-  "total_long_pl": -12412.300000000001,
+  "total_long_pl": -12559.990000000002,
   "total_short_pl": 0.0,
   "n_alerts": 1,
   "n_drift_alerts": 0,
@@ -18,7 +18,7 @@
   "live_score": "2/5",
   "weeks_live": 0.14285714285714285,
   "cash": -1228.53,
-  "long_market_value": 89807.65000000001,
+  "long_market_value": 89659.95999999999,
   "spy_price": 649.85,
   "xbi_price": 127.5,
   "spy_inception_price": 632.02,
@@ -71,10 +71,10 @@
       "side": "long",
       "qty": 888.0,
       "avg_cost": 5.45,
-      "market_value": 4657.56,
-      "unrealized_pl": -182.04,
-      "current_price": 5.245,
-      "unrealized_plpc": -3.76
+      "market_value": 4696.63,
+      "unrealized_pl": -142.97,
+      "current_price": 5.289,
+      "unrealized_plpc": -2.95
     },
     {
       "ticker": "XENE",
@@ -177,16 +177,6 @@
       "unrealized_plpc": -16.45
     },
     {
-      "ticker": "KPTI",
-      "side": "long",
-      "qty": 775.0,
-      "avg_cost": 7.7838,
-      "market_value": 4316.75,
-      "unrealized_pl": -1715.69,
-      "current_price": 5.57,
-      "unrealized_plpc": -28.44
-    },
-    {
       "ticker": "MAZE",
       "side": "long",
       "qty": 142.0,
@@ -201,10 +191,20 @@
       "side": "long",
       "qty": 222.0,
       "avg_cost": 27.557,
-      "market_value": 4263.4,
-      "unrealized_pl": -1854.26,
-      "current_price": 19.2045,
-      "unrealized_plpc": -30.31
+      "market_value": 4264.62,
+      "unrealized_pl": -1853.04,
+      "current_price": 19.21,
+      "unrealized_plpc": -30.29
+    },
+    {
+      "ticker": "KPTI",
+      "side": "long",
+      "qty": 775.0,
+      "avg_cost": 7.7838,
+      "market_value": 4117.03,
+      "unrealized_pl": -1915.41,
+      "current_price": 5.3123,
+      "unrealized_plpc": -31.75
     },
     {
       "ticker": "RANI",
@@ -221,10 +221,10 @@
       "side": "long",
       "qty": 11744.0,
       "avg_cost": 0.4079,
-      "market_value": 2900.77,
-      "unrealized_pl": -1889.61,
-      "current_price": 0.247,
-      "unrealized_plpc": -39.45
+      "market_value": 2912.51,
+      "unrealized_pl": -1877.87,
+      "current_price": 0.248,
+      "unrealized_plpc": -39.2
     }
   ]
 }
