@@ -1,13 +1,13 @@
 {
   "date": "2026-04-01",
-  "portfolio_value": 90540.52,
-  "total_pl": -9459.479999999996,
-  "total_return_pct": -9.459479999999997,
-  "today_pl": 1893.91,
-  "today_return_pct": 2.1365,
+  "portfolio_value": 90500.43,
+  "total_pl": -9499.570000000007,
+  "total_return_pct": -9.499570000000002,
+  "today_pl": 1853.82,
+  "today_return_pct": 2.0913,
   "long_positions": 20,
   "short_positions": 0,
-  "total_long_pl": -10450.89,
+  "total_long_pl": -10490.960000000001,
   "total_short_pl": 0.0,
   "n_alerts": 0,
   "n_drift_alerts": 0,
@@ -18,7 +18,7 @@
   "live_score": "2/5",
   "weeks_live": 0.2857142857142857,
   "cash": -1228.54,
-  "long_market_value": 91769.05000000002,
+  "long_market_value": 91728.98,
   "spy_price": 655.44,
   "xbi_price": 128.33,
   "spy_inception_price": 632.02,
@@ -51,10 +51,10 @@
       "side": "long",
       "qty": 179.0,
       "avg_cost": 28.79,
-      "market_value": 5677.88,
-      "unrealized_pl": 524.47,
-      "current_price": 31.72,
-      "unrealized_plpc": 10.18
+      "market_value": 5663.56,
+      "unrealized_pl": 510.15,
+      "current_price": 31.64,
+      "unrealized_plpc": 9.9
     },
     {
       "ticker": "PHAT",
@@ -97,6 +97,16 @@
       "unrealized_plpc": -7.18
     },
     {
+      "ticker": "BCYC",
+      "side": "long",
+      "qty": 903.0,
+      "avg_cost": 5.35,
+      "market_value": 4478.88,
+      "unrealized_pl": -352.17,
+      "current_price": 4.96,
+      "unrealized_plpc": -7.29
+    },
+    {
       "ticker": "NGNE",
       "side": "long",
       "qty": 222.0,
@@ -117,34 +127,24 @@
       "unrealized_plpc": -7.73
     },
     {
-      "ticker": "BCYC",
-      "side": "long",
-      "qty": 903.0,
-      "avg_cost": 5.35,
-      "market_value": 4424.7,
-      "unrealized_pl": -406.35,
-      "current_price": 4.9,
-      "unrealized_plpc": -8.41
-    },
-    {
       "ticker": "CTMX",
       "side": "long",
       "qty": 998.0,
       "avg_cost": 5.01,
-      "market_value": 4563.85,
-      "unrealized_pl": -436.13,
-      "current_price": 4.573,
-      "unrealized_plpc": -8.72
+      "market_value": 4551.98,
+      "unrealized_pl": -448.0,
+      "current_price": 4.5611,
+      "unrealized_plpc": -8.96
     },
     {
       "ticker": "REPL",
       "side": "long",
       "qty": 583.0,
       "avg_cost": 8.77,
-      "market_value": 4547.4,
-      "unrealized_pl": -565.51,
-      "current_price": 7.8,
-      "unrealized_plpc": -11.06
+      "market_value": 4524.08,
+      "unrealized_pl": -588.83,
+      "current_price": 7.76,
+      "unrealized_plpc": -11.52
     },
     {
       "ticker": "MDXG",
@@ -171,10 +171,10 @@
       "side": "long",
       "qty": 5391.0,
       "avg_cost": 0.9695,
-      "market_value": 4331.67,
-      "unrealized_pl": -894.91,
-      "current_price": 0.8035,
-      "unrealized_plpc": -17.12
+      "market_value": 4366.71,
+      "unrealized_pl": -859.86,
+      "current_price": 0.81,
+      "unrealized_plpc": -16.45
     },
     {
       "ticker": "KPTI",
@@ -187,44 +187,44 @@
       "unrealized_plpc": -25.23
     },
     {
-      "ticker": "VRDN",
-      "side": "long",
-      "qty": 222.0,
-      "avg_cost": 27.557,
-      "market_value": 4229.1,
-      "unrealized_pl": -1888.56,
-      "current_price": 19.05,
-      "unrealized_plpc": -30.87
-    },
-    {
       "ticker": "MAZE",
       "side": "long",
       "qty": 142.0,
       "avg_cost": 42.328,
-      "market_value": 4125.1,
-      "unrealized_pl": -1885.48,
-      "current_price": 29.05,
-      "unrealized_plpc": -31.37
+      "market_value": 4075.4,
+      "unrealized_pl": -1935.18,
+      "current_price": 28.7,
+      "unrealized_plpc": -32.2
     },
     {
       "ticker": "RANI",
       "side": "long",
       "qty": 5376.0,
       "avg_cost": 1.1847,
-      "market_value": 4320.69,
-      "unrealized_pl": -2048.16,
-      "current_price": 0.8037,
-      "unrealized_plpc": -32.16
+      "market_value": 4308.33,
+      "unrealized_pl": -2060.52,
+      "current_price": 0.8014,
+      "unrealized_plpc": -32.35
+    },
+    {
+      "ticker": "VRDN",
+      "side": "long",
+      "qty": 222.0,
+      "avg_cost": 27.557,
+      "market_value": 4122.12,
+      "unrealized_pl": -1995.54,
+      "current_price": 18.5681,
+      "unrealized_plpc": -32.62
     },
     {
       "ticker": "SGMO",
       "side": "long",
       "qty": 11744.0,
       "avg_cost": 0.4079,
-      "market_value": 3083.97,
-      "unrealized_pl": -1706.4,
-      "current_price": 0.2626,
-      "unrealized_plpc": -35.62
+      "market_value": 3173.23,
+      "unrealized_pl": -1617.15,
+      "current_price": 0.2702,
+      "unrealized_plpc": -33.76
     }
   ]
 }
