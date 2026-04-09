@@ -1,15 +1,15 @@
 {
-  "date": "2026-04-07",
-  "regime": "Strong Bull",
-  "composite_score": -0.0964,
-  "hmm_state": 2,
+  "date": "2026-04-08",
+  "regime": "Mild Bull",
+  "composite_score": -0.7562,
+  "hmm_state": 1,
   "position_gate": 1.0,
   "position_scale_soft": 1.0,
   "position_scale_passthru": 0.0,
   "pca_explained_variance": [
-    0.481,
+    0.4809,
     0.1876,
-    0.0989
+    0.099
   ],
   "hmm_converged": true,
   "method": "macro_pca_hmm",
@@ -17,41 +17,41 @@
     "0": {
       "regime": "Bear",
       "gate": 0.0,
-      "hist_pct": 0.2264,
-      "z1_mean": 0.6469,
-      "z2_mean": -0.1145,
-      "z3_mean": 0.0534,
-      "spy_mean_daily_ret": -0.003143
+      "hist_pct": 0.2263,
+      "z1_mean": 0.6461,
+      "z2_mean": -0.1144,
+      "z3_mean": 0.0523,
+      "spy_mean_daily_ret": -0.003136
     },
     "1": {
       "regime": "Mild Bull",
       "gate": 1.0,
-      "hist_pct": 0.2733,
-      "z1_mean": -0.1843,
-      "z2_mean": -0.3799,
-      "z3_mean": 0.1149,
-      "spy_mean_daily_ret": 0.00201
+      "hist_pct": 0.2739,
+      "z1_mean": -0.1867,
+      "z2_mean": -0.3795,
+      "z3_mean": 0.1143,
+      "spy_mean_daily_ret": 0.002023
     },
     "2": {
       "regime": "Strong Bull",
       "gate": 1.0,
-      "hist_pct": 0.3202,
-      "z1_mean": -0.4031,
-      "z2_mean": 0.0604,
+      "hist_pct": 0.3188,
+      "z1_mean": -0.4028,
+      "z2_mean": 0.0612,
       "z3_mean": -0.0581,
-      "spy_mean_daily_ret": 0.002906
+      "spy_mean_daily_ret": 0.00292
     },
     "3": {
       "regime": "Neutral",
       "gate": 0.5,
-      "hist_pct": 0.1801,
-      "z1_mean": 0.1823,
-      "z2_mean": 0.6,
-      "z3_mean": -0.137,
-      "spy_mean_daily_ret": -0.002081
+      "hist_pct": 0.181,
+      "z1_mean": 0.1828,
+      "z2_mean": 0.5998,
+      "z3_mean": -0.1357,
+      "spy_mean_daily_ret": -0.002078
     }
   },
-  "z1_mixed_s": -0.1589,
-  "z2_rates_s": 0.0083,
-  "z3_inflation_s": -0.2452
+  "z1_mixed_s": -0.9058,
+  "z2_rates_s": -0.4726,
+  "z3_inflation_s": 0.5254
 }
