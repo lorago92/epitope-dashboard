@@ -1,29 +1,29 @@
 {
   "date": "2026-04-09",
-  "portfolio_value": 91720.41,
-  "total_pl": -8279.589999999997,
-  "total_return_pct": -8.279589999999992,
-  "today_pl": 1153.58,
-  "today_return_pct": 1.2737,
+  "portfolio_value": 91542.13,
+  "total_pl": -8457.869999999995,
+  "total_return_pct": -8.45787,
+  "today_pl": 1.44,
+  "today_return_pct": 0.0016,
   "long_positions": 20,
   "short_positions": 0,
-  "total_long_pl": -9807.439999999999,
+  "total_long_pl": -9985.72,
   "total_short_pl": 0.0,
-  "n_alerts": 0,
+  "n_alerts": 1,
   "n_drift_alerts": 0,
-  "n_regime_alerts": 0,
+  "n_regime_alerts": 1,
   "n_squeeze_alerts": 0,
-  "regime": "Strong Bull",
-  "regime_score": -0.0964,
+  "regime": "Mild Bull",
+  "regime_score": -0.7562,
   "live_score": "2/5",
   "weeks_live": 0.42857142857142855,
   "cash": -1271.28,
-  "long_market_value": 92991.68,
-  "spy_price": 676.01,
+  "long_market_value": 92813.40000000001,
+  "spy_price": 674.43,
   "xbi_price": 130.35,
   "spy_inception_price": 658.79,
   "xbi_inception_price": 128.7,
-  "spy_return_pct": 2.6138830279755387,
+  "spy_return_pct": 2.374049393585209,
   "xbi_return_pct": 1.2820512820512775,
   "positions": [
     {
@@ -31,10 +31,10 @@
       "side": "long",
       "qty": 2848.0,
       "avg_cost": 1.27,
-      "market_value": 6265.6,
-      "unrealized_pl": 2648.64,
-      "current_price": 2.2,
-      "unrealized_plpc": 73.23
+      "market_value": 6322.56,
+      "unrealized_pl": 2705.6,
+      "current_price": 2.22,
+      "unrealized_plpc": 74.8
     },
     {
       "ticker": "CNTA",
@@ -51,30 +51,30 @@
       "side": "long",
       "qty": 143.0,
       "avg_cost": 28.79,
-      "market_value": 4588.87,
-      "unrealized_pl": 471.9,
-      "current_price": 32.09,
-      "unrealized_plpc": 11.46
+      "market_value": 4561.7,
+      "unrealized_pl": 444.73,
+      "current_price": 31.9,
+      "unrealized_plpc": 10.8
     },
     {
       "ticker": "PHAT",
       "side": "long",
       "qty": 463.0,
       "avg_cost": 11.08,
-      "market_value": 5389.32,
-      "unrealized_pl": 259.28,
-      "current_price": 11.64,
-      "unrealized_plpc": 5.05
+      "market_value": 5509.7,
+      "unrealized_pl": 379.66,
+      "current_price": 11.9,
+      "unrealized_plpc": 7.4
     },
     {
       "ticker": "CMPX",
       "side": "long",
       "qty": 888.0,
       "avg_cost": 5.45,
-      "market_value": 4848.48,
-      "unrealized_pl": 8.88,
-      "current_price": 5.46,
-      "unrealized_plpc": 0.18
+      "market_value": 4830.72,
+      "unrealized_pl": -8.88,
+      "current_price": 5.44,
+      "unrealized_plpc": -0.18
     },
     {
       "ticker": "ENTA",
@@ -91,10 +91,10 @@
       "side": "long",
       "qty": 309.0,
       "avg_cost": 16.29,
-      "market_value": 4974.68,
-      "unrealized_pl": -58.93,
-      "current_price": 16.0993,
-      "unrealized_plpc": -1.17
+      "market_value": 4838.94,
+      "unrealized_pl": -194.67,
+      "current_price": 15.66,
+      "unrealized_plpc": -3.87
     },
     {
       "ticker": "XENE",
@@ -131,100 +131,100 @@
       "side": "long",
       "qty": 222.0,
       "avg_cost": 23.45,
-      "market_value": 4764.12,
-      "unrealized_pl": -441.78,
-      "current_price": 21.46,
-      "unrealized_plpc": -8.49
-    },
-    {
-      "ticker": "ORGO",
-      "side": "long",
-      "qty": 1888.0,
-      "avg_cost": 2.74,
-      "market_value": 4568.96,
-      "unrealized_pl": -604.16,
-      "current_price": 2.42,
-      "unrealized_plpc": -11.68
-    },
-    {
-      "ticker": "MDXG",
-      "side": "long",
-      "qty": 1110.0,
-      "avg_cost": 4.55,
-      "market_value": 4406.7,
-      "unrealized_pl": -643.8,
-      "current_price": 3.97,
-      "unrealized_plpc": -12.75
+      "market_value": 4798.06,
+      "unrealized_pl": -407.84,
+      "current_price": 21.6129,
+      "unrealized_plpc": -7.83
     },
     {
       "ticker": "HRTX",
       "side": "long",
       "qty": 5391.0,
       "avg_cost": 0.9695,
-      "market_value": 4485.31,
-      "unrealized_pl": -741.26,
-      "current_price": 0.832,
-      "unrealized_plpc": -14.18
+      "market_value": 4528.44,
+      "unrealized_pl": -698.13,
+      "current_price": 0.84,
+      "unrealized_plpc": -13.36
     },
     {
       "ticker": "CTMX",
       "side": "long",
       "qty": 998.0,
       "avg_cost": 5.01,
-      "market_value": 4256.67,
-      "unrealized_pl": -743.31,
-      "current_price": 4.2652,
-      "unrealized_plpc": -14.87
+      "market_value": 4330.82,
+      "unrealized_pl": -669.16,
+      "current_price": 4.3395,
+      "unrealized_plpc": -13.38
+    },
+    {
+      "ticker": "MDXG",
+      "side": "long",
+      "qty": 1110.0,
+      "avg_cost": 4.55,
+      "market_value": 4373.4,
+      "unrealized_pl": -677.1,
+      "current_price": 3.94,
+      "unrealized_plpc": -13.41
+    },
+    {
+      "ticker": "ORGO",
+      "side": "long",
+      "qty": 1888.0,
+      "avg_cost": 2.74,
+      "market_value": 4418.11,
+      "unrealized_pl": -755.01,
+      "current_price": 2.3401,
+      "unrealized_plpc": -14.59
     },
     {
       "ticker": "RANI",
       "side": "long",
       "qty": 5376.0,
       "avg_cost": 1.1847,
-      "market_value": 4515.3,
-      "unrealized_pl": -1853.55,
-      "current_price": 0.8399,
-      "unrealized_plpc": -29.1
+      "market_value": 4409.93,
+      "unrealized_pl": -1958.92,
+      "current_price": 0.8203,
+      "unrealized_plpc": -30.76
     },
     {
       "ticker": "SGMO",
       "side": "long",
       "qty": 15254.0,
       "avg_cost": 0.376,
-      "market_value": 3897.4,
-      "unrealized_pl": -1838.53,
-      "current_price": 0.2555,
-      "unrealized_plpc": -32.05
+      "market_value": 3915.7,
+      "unrealized_pl": -1820.23,
+      "current_price": 0.2567,
+      "unrealized_plpc": -31.73
     },
     {
       "ticker": "REPL",
       "side": "long",
       "qty": 583.0,
       "avg_cost": 8.77,
-      "market_value": 3473.86,
-      "unrealized_pl": -1639.05,
-      "current_price": 5.9586,
-      "unrealized_plpc": -32.06
+      "market_value": 3439.41,
+      "unrealized_pl": -1673.5,
+      "current_price": 5.8995,
+      "unrealized_plpc": -32.73
     },
     {
       "ticker": "MAZE",
       "side": "long",
       "qty": 142.0,
       "avg_cost": 42.328,
-      "market_value": 4015.76,
-      "unrealized_pl": -1994.82,
-      "current_price": 28.28,
-      "unrealized_plpc": -33.19
+      "market_value": 3936.24,
+      "unrealized_pl": -2074.34,
+      "current_price": 27.72,
+      "unrealized_plpc": -34.51
     },
     {
       "ticker": "VRDN",
       "side": "long",
       "qty": 329.0,
       "avg_cost": 23.1457,
-      "market_value": 4625.74,
-      "unrealized_pl": -2989.19,
-      "current_price": 14.06,
-      "unrealized_plpc": -39.25
+      "market_value": 4684.76,
+      "unrealized_pl": -2930.17,
+      "current_price": 14.2394,
+      "unrealized_plpc": -38.48
     }
   ]
 }
