@@ -1,13 +1,13 @@
 {
   "date": "2026-04-10",
-  "portfolio_value": 90963.94,
-  "total_pl": -9036.059999999998,
-  "total_return_pct": -9.03606,
-  "today_pl": -2542.11,
-  "today_return_pct": -2.7187,
+  "portfolio_value": 91132.04,
+  "total_pl": -8867.960000000006,
+  "total_return_pct": -8.867960000000007,
+  "today_pl": -2374.01,
+  "today_return_pct": -2.5389,
   "long_positions": 20,
   "short_positions": 0,
-  "total_long_pl": -10563.9,
+  "total_long_pl": -10395.81,
   "total_short_pl": 0.0,
   "n_alerts": 1,
   "n_drift_alerts": 0,
@@ -18,13 +18,13 @@
   "live_score": "2/5",
   "weeks_live": 0.5714285714285714,
   "cash": -1271.28,
-  "long_market_value": 92235.22,
+  "long_market_value": 92403.31000000001,
   "spy_price": 679.35,
-  "xbi_price": 129.51,
+  "xbi_price": 129.75,
   "spy_inception_price": 658.79,
   "xbi_inception_price": 128.7,
   "spy_return_pct": 3.1208731158639313,
-  "xbi_return_pct": 0.6293706293706292,
+  "xbi_return_pct": 0.8158508158508271,
   "positions": [
     {
       "ticker": "CDXS",
@@ -57,6 +57,16 @@
       "unrealized_plpc": 13.99
     },
     {
+      "ticker": "TVTX",
+      "side": "long",
+      "qty": 143.0,
+      "avg_cost": 28.79,
+      "market_value": 4265.99,
+      "unrealized_pl": 149.02,
+      "current_price": 29.8321,
+      "unrealized_plpc": 3.62
+    },
+    {
       "ticker": "KPTI",
       "side": "long",
       "qty": 775.0,
@@ -77,16 +87,6 @@
       "unrealized_plpc": 1.29
     },
     {
-      "ticker": "TVTX",
-      "side": "long",
-      "qty": 143.0,
-      "avg_cost": 28.79,
-      "market_value": 4141.28,
-      "unrealized_pl": 24.31,
-      "current_price": 28.96,
-      "unrealized_plpc": 0.59
-    },
-    {
       "ticker": "OLMA",
       "side": "long",
       "qty": 309.0,
@@ -97,6 +97,16 @@
       "unrealized_plpc": -1.17
     },
     {
+      "ticker": "CMPX",
+      "side": "long",
+      "qty": 888.0,
+      "avg_cost": 5.45,
+      "market_value": 4715.19,
+      "unrealized_pl": -124.41,
+      "current_price": 5.3099,
+      "unrealized_plpc": -2.57
+    },
+    {
       "ticker": "XENE",
       "side": "long",
       "qty": 83.0,
@@ -105,16 +115,6 @@
       "unrealized_pl": -252.32,
       "current_price": 58.4,
       "unrealized_plpc": -4.95
-    },
-    {
-      "ticker": "CMPX",
-      "side": "long",
-      "qty": 888.0,
-      "avg_cost": 5.45,
-      "market_value": 4590.96,
-      "unrealized_pl": -248.64,
-      "current_price": 5.17,
-      "unrealized_plpc": -5.14
     },
     {
       "ticker": "BCYC",
@@ -181,10 +181,10 @@
       "side": "long",
       "qty": 15254.0,
       "avg_cost": 0.376,
-      "market_value": 3917.23,
-      "unrealized_pl": -1818.7,
-      "current_price": 0.2568,
-      "unrealized_plpc": -31.71
+      "market_value": 3836.38,
+      "unrealized_pl": -1899.55,
+      "current_price": 0.2515,
+      "unrealized_plpc": -33.12
     },
     {
       "ticker": "VRDN",
