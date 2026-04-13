@@ -1,13 +1,13 @@
 {
   "date": "2026-04-13",
-  "portfolio_value": 90338.97,
-  "total_pl": -9661.029999999999,
-  "total_return_pct": -9.661030000000004,
-  "today_pl": -539.55,
-  "today_return_pct": -0.5937,
+  "portfolio_value": 90268.02,
+  "total_pl": -9731.979999999996,
+  "total_return_pct": -9.731979999999997,
+  "today_pl": -610.5,
+  "today_return_pct": -0.6718,
   "long_positions": 20,
   "short_positions": 0,
-  "total_long_pl": -11188.86,
+  "total_long_pl": -11259.81,
   "total_short_pl": 0.0,
   "n_alerts": 0,
   "n_drift_alerts": 0,
@@ -18,7 +18,7 @@
   "live_score": "2/5",
   "weeks_live": 1.0,
   "cash": -1271.28,
-  "long_market_value": 91610.26000000001,
+  "long_market_value": 91539.31,
   "spy_price": 685.99,
   "xbi_price": 132.09,
   "spy_inception_price": 658.79,
@@ -61,10 +61,10 @@
       "side": "long",
       "qty": 143.0,
       "avg_cost": 28.79,
-      "market_value": 4433.0,
-      "unrealized_pl": 316.03,
-      "current_price": 31.0,
-      "unrealized_plpc": 7.68
+      "market_value": 4381.52,
+      "unrealized_pl": 264.55,
+      "current_price": 30.64,
+      "unrealized_plpc": 6.43
     },
     {
       "ticker": "KPTI",
@@ -147,6 +147,16 @@
       "unrealized_plpc": -12.28
     },
     {
+      "ticker": "ORGO",
+      "side": "long",
+      "qty": 1888.0,
+      "avg_cost": 2.74,
+      "market_value": 4493.44,
+      "unrealized_pl": -679.68,
+      "current_price": 2.38,
+      "unrealized_plpc": -13.14
+    },
+    {
       "ticker": "MDXG",
       "side": "long",
       "qty": 1110.0,
@@ -155,16 +165,6 @@
       "unrealized_pl": -699.3,
       "current_price": 3.92,
       "unrealized_plpc": -13.85
-    },
-    {
-      "ticker": "ORGO",
-      "side": "long",
-      "qty": 1888.0,
-      "avg_cost": 2.74,
-      "market_value": 4448.51,
-      "unrealized_pl": -724.61,
-      "current_price": 2.3562,
-      "unrealized_plpc": -14.01
     },
     {
       "ticker": "NGNE",
@@ -181,20 +181,10 @@
       "side": "long",
       "qty": 15254.0,
       "avg_cost": 0.376,
-      "market_value": 3921.8,
-      "unrealized_pl": -1814.13,
-      "current_price": 0.2571,
-      "unrealized_plpc": -31.63
-    },
-    {
-      "ticker": "RANI",
-      "side": "long",
-      "qty": 5376.0,
-      "avg_cost": 1.1847,
-      "market_value": 4180.38,
-      "unrealized_pl": -2188.47,
-      "current_price": 0.7776,
-      "unrealized_plpc": -34.36
+      "market_value": 3973.67,
+      "unrealized_pl": -1762.26,
+      "current_price": 0.2605,
+      "unrealized_plpc": -30.72
     },
     {
       "ticker": "MAZE",
@@ -217,14 +207,24 @@
       "unrealized_plpc": -35.19
     },
     {
+      "ticker": "RANI",
+      "side": "long",
+      "qty": 5376.0,
+      "avg_cost": 1.1847,
+      "market_value": 4070.17,
+      "unrealized_pl": -2298.68,
+      "current_price": 0.7571,
+      "unrealized_plpc": -36.09
+    },
+    {
       "ticker": "REPL",
       "side": "long",
       "qty": 583.0,
       "avg_cost": 8.77,
-      "market_value": 1026.08,
-      "unrealized_pl": -4086.83,
-      "current_price": 1.76,
-      "unrealized_plpc": -79.93
+      "market_value": 1020.02,
+      "unrealized_pl": -4092.89,
+      "current_price": 1.7496,
+      "unrealized_plpc": -80.05
     }
   ]
 }
