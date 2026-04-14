@@ -1,13 +1,13 @@
 {
   "date": "2026-04-14",
-  "portfolio_value": 94669.91,
-  "total_pl": -5330.0899999999965,
-  "total_return_pct": -5.330089999999998,
-  "today_pl": 4382.45,
-  "today_return_pct": 4.8539,
+  "portfolio_value": 94630.74,
+  "total_pl": -5369.259999999995,
+  "total_return_pct": -5.369259999999998,
+  "today_pl": 4343.28,
+  "today_return_pct": 4.8105,
   "long_positions": 20,
   "short_positions": 0,
-  "total_long_pl": -8037.68,
+  "total_long_pl": -8076.85,
   "total_short_pl": 0.0,
   "n_alerts": 1,
   "n_drift_alerts": 0,
@@ -18,7 +18,7 @@
   "live_score": "2/5",
   "weeks_live": 0.14285714285714285,
   "cash": 545.21,
-  "long_market_value": 94124.71,
+  "long_market_value": 94085.54000000001,
   "spy_price": 694.17,
   "xbi_price": 135.5,
   "spy_inception_price": 685.99,
@@ -51,10 +51,10 @@
       "side": "long",
       "qty": 143.0,
       "avg_cost": 28.79,
-      "market_value": 5949.87,
-      "unrealized_pl": 1832.9,
-      "current_price": 41.6075,
-      "unrealized_plpc": 44.52
+      "market_value": 6024.59,
+      "unrealized_pl": 1907.62,
+      "current_price": 42.13,
+      "unrealized_plpc": 46.34
     },
     {
       "ticker": "PHAT",
@@ -151,10 +151,10 @@
       "side": "long",
       "qty": 998.0,
       "avg_cost": 5.01,
-      "market_value": 4535.31,
-      "unrealized_pl": -464.67,
-      "current_price": 4.5444,
-      "unrealized_plpc": -9.29
+      "market_value": 4540.9,
+      "unrealized_pl": -459.08,
+      "current_price": 4.55,
+      "unrealized_plpc": -9.18
     },
     {
       "ticker": "NGNE",
@@ -181,20 +181,20 @@
       "side": "long",
       "qty": 5376.0,
       "avg_cost": 1.1847,
-      "market_value": 4563.69,
-      "unrealized_pl": -1805.16,
-      "current_price": 0.8489,
-      "unrealized_plpc": -28.34
+      "market_value": 4563.15,
+      "unrealized_pl": -1805.7,
+      "current_price": 0.8488,
+      "unrealized_plpc": -28.35
     },
     {
       "ticker": "SGMO",
       "side": "long",
       "qty": 15254.0,
       "avg_cost": 0.376,
-      "market_value": 3947.74,
-      "unrealized_pl": -1788.2,
-      "current_price": 0.2588,
-      "unrealized_plpc": -31.18
+      "market_value": 3930.96,
+      "unrealized_pl": -1804.98,
+      "current_price": 0.2577,
+      "unrealized_plpc": -31.47
     },
     {
       "ticker": "MAZE",
@@ -221,10 +221,10 @@
       "side": "long",
       "qty": 2554.0,
       "avg_cost": 3.3756,
-      "market_value": 4954.76,
-      "unrealized_pl": -3666.53,
-      "current_price": 1.94,
-      "unrealized_plpc": -42.53
+      "market_value": 4852.6,
+      "unrealized_pl": -3768.69,
+      "current_price": 1.9,
+      "unrealized_plpc": -43.71
     }
   ]
 }
