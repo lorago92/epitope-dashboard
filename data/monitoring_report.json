@@ -1,13 +1,13 @@
 {
   "date": "2026-04-14",
-  "portfolio_value": 94490.88,
-  "total_pl": -5509.119999999995,
-  "total_return_pct": -5.509120000000001,
-  "today_pl": 4203.42,
-  "today_return_pct": 4.6556,
+  "portfolio_value": 94669.91,
+  "total_pl": -5330.0899999999965,
+  "total_return_pct": -5.330089999999998,
+  "today_pl": 4382.45,
+  "today_return_pct": 4.8539,
   "long_positions": 20,
   "short_positions": 0,
-  "total_long_pl": -8216.710000000001,
+  "total_long_pl": -8037.68,
   "total_short_pl": 0.0,
   "n_alerts": 1,
   "n_drift_alerts": 0,
@@ -18,7 +18,7 @@
   "live_score": "2/5",
   "weeks_live": 0.14285714285714285,
   "cash": 545.21,
-  "long_market_value": 93945.67,
+  "long_market_value": 94124.71,
   "spy_price": 694.17,
   "xbi_price": 135.5,
   "spy_inception_price": 685.99,
@@ -51,10 +51,10 @@
       "side": "long",
       "qty": 143.0,
       "avg_cost": 28.79,
-      "market_value": 5867.29,
-      "unrealized_pl": 1750.32,
-      "current_price": 41.03,
-      "unrealized_plpc": 42.52
+      "market_value": 5949.87,
+      "unrealized_pl": 1832.9,
+      "current_price": 41.6075,
+      "unrealized_plpc": 44.52
     },
     {
       "ticker": "PHAT",
@@ -151,10 +151,10 @@
       "side": "long",
       "qty": 998.0,
       "avg_cost": 5.01,
-      "market_value": 4540.9,
-      "unrealized_pl": -459.08,
-      "current_price": 4.55,
-      "unrealized_plpc": -9.18
+      "market_value": 4535.31,
+      "unrealized_pl": -464.67,
+      "current_price": 4.5444,
+      "unrealized_plpc": -9.29
     },
     {
       "ticker": "NGNE",
@@ -191,10 +191,10 @@
       "side": "long",
       "qty": 15254.0,
       "avg_cost": 0.376,
-      "market_value": 3921.8,
-      "unrealized_pl": -1814.13,
-      "current_price": 0.2571,
-      "unrealized_plpc": -31.63
+      "market_value": 3947.74,
+      "unrealized_pl": -1788.2,
+      "current_price": 0.2588,
+      "unrealized_plpc": -31.18
     },
     {
       "ticker": "MAZE",
@@ -221,10 +221,10 @@
       "side": "long",
       "qty": 2554.0,
       "avg_cost": 3.3756,
-      "market_value": 4878.65,
-      "unrealized_pl": -3742.64,
-      "current_price": 1.9102,
-      "unrealized_plpc": -43.41
+      "market_value": 4954.76,
+      "unrealized_pl": -3666.53,
+      "current_price": 1.94,
+      "unrealized_plpc": -42.53
     }
   ]
 }
