@@ -1,13 +1,13 @@
 {
   "date": "2026-04-15",
-  "portfolio_value": 97507.62,
-  "total_pl": -2492.3800000000047,
-  "total_return_pct": -2.492380000000005,
-  "today_pl": 2957.73,
-  "today_return_pct": 3.1282,
+  "portfolio_value": 97510.67,
+  "total_pl": -2489.3300000000017,
+  "total_return_pct": -2.4893300000000007,
+  "today_pl": 2960.78,
+  "today_return_pct": 3.1314,
   "long_positions": 20,
   "short_positions": 0,
-  "total_long_pl": -5038.229999999999,
+  "total_long_pl": -5035.169999999999,
   "total_short_pl": 0.0,
   "n_alerts": 1,
   "n_drift_alerts": 0,
@@ -18,7 +18,7 @@
   "live_score": "2/5",
   "weeks_live": 0.2857142857142857,
   "cash": 545.0,
-  "long_market_value": 96962.62,
+  "long_market_value": 96965.68,
   "spy_price": 699.4,
   "xbi_price": 136.11,
   "spy_inception_price": 685.99,
@@ -51,10 +51,10 @@
       "side": "long",
       "qty": 143.0,
       "avg_cost": 28.79,
-      "market_value": 5855.85,
-      "unrealized_pl": 1738.88,
-      "current_price": 40.95,
-      "unrealized_plpc": 42.24
+      "market_value": 5848.69,
+      "unrealized_pl": 1731.72,
+      "current_price": 40.8999,
+      "unrealized_plpc": 42.06
     },
     {
       "ticker": "PHAT",
@@ -181,10 +181,10 @@
       "side": "long",
       "qty": 5376.0,
       "avg_cost": 1.1847,
-      "market_value": 5222.78,
-      "unrealized_pl": -1146.07,
-      "current_price": 0.9715,
-      "unrealized_plpc": -18.0
+      "market_value": 5233.0,
+      "unrealized_pl": -1135.85,
+      "current_price": 0.9734,
+      "unrealized_plpc": -17.83
     },
     {
       "ticker": "SGMO",
