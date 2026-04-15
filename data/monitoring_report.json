@@ -1,13 +1,13 @@
 {
   "date": "2026-04-15",
-  "portfolio_value": 97218.54,
-  "total_pl": -2781.4600000000064,
-  "total_return_pct": -2.7814600000000023,
-  "today_pl": 2668.65,
-  "today_return_pct": 2.8225,
+  "portfolio_value": 97339.97,
+  "total_pl": -2660.029999999999,
+  "total_return_pct": -2.660030000000002,
+  "today_pl": 2790.08,
+  "today_return_pct": 2.9509,
   "long_positions": 20,
   "short_positions": 0,
-  "total_long_pl": -5327.3099999999995,
+  "total_long_pl": -5205.879999999999,
   "total_short_pl": 0.0,
   "n_alerts": 1,
   "n_drift_alerts": 0,
@@ -18,7 +18,7 @@
   "live_score": "2/5",
   "weeks_live": 0.2857142857142857,
   "cash": 545.0,
-  "long_market_value": 96673.54,
+  "long_market_value": 96794.97,
   "spy_price": 699.4,
   "xbi_price": 136.11,
   "spy_inception_price": 685.99,
@@ -51,9 +51,9 @@
       "side": "long",
       "qty": 143.0,
       "avg_cost": 28.79,
-      "market_value": 5848.69,
-      "unrealized_pl": 1731.72,
-      "current_price": 40.8999,
+      "market_value": 5848.7,
+      "unrealized_pl": 1731.73,
+      "current_price": 40.9,
       "unrealized_plpc": 42.06
     },
     {
@@ -81,10 +81,10 @@
       "side": "long",
       "qty": 888.0,
       "avg_cost": 5.45,
-      "market_value": 5150.4,
-      "unrealized_pl": 310.8,
-      "current_price": 5.8,
-      "unrealized_plpc": 6.42
+      "market_value": 5194.8,
+      "unrealized_pl": 355.2,
+      "current_price": 5.85,
+      "unrealized_plpc": 7.34
     },
     {
       "ticker": "ENTA",
@@ -181,30 +181,30 @@
       "side": "long",
       "qty": 5376.0,
       "avg_cost": 1.1847,
-      "market_value": 5053.44,
-      "unrealized_pl": -1315.41,
-      "current_price": 0.94,
-      "unrealized_plpc": -20.65
+      "market_value": 5184.08,
+      "unrealized_pl": -1184.77,
+      "current_price": 0.9643,
+      "unrealized_plpc": -18.6
     },
     {
       "ticker": "SGMO",
       "side": "long",
       "qty": 15254.0,
       "avg_cost": 0.376,
-      "market_value": 4197.9,
-      "unrealized_pl": -1538.03,
-      "current_price": 0.2752,
-      "unrealized_plpc": -26.81
+      "market_value": 4194.85,
+      "unrealized_pl": -1541.08,
+      "current_price": 0.275,
+      "unrealized_plpc": -26.87
     },
     {
       "ticker": "REPL",
       "side": "long",
       "qty": 2554.0,
       "avg_cost": 3.3756,
-      "market_value": 5797.58,
-      "unrealized_pl": -2823.71,
-      "current_price": 2.27,
-      "unrealized_plpc": -32.75
+      "market_value": 5747.01,
+      "unrealized_pl": -2874.28,
+      "current_price": 2.2502,
+      "unrealized_plpc": -33.34
     },
     {
       "ticker": "VRDN",
