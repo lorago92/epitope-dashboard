@@ -1,13 +1,13 @@
 {
   "date": "2026-04-16",
-  "portfolio_value": 97506.49,
-  "total_pl": -2493.5099999999948,
-  "total_return_pct": -2.493509999999999,
-  "today_pl": -257.26,
-  "today_return_pct": -0.2631,
+  "portfolio_value": 97528.11,
+  "total_pl": -2471.8899999999994,
+  "total_return_pct": -2.471889999999999,
+  "today_pl": -235.64,
+  "today_return_pct": -0.241,
   "long_positions": 20,
   "short_positions": 0,
-  "total_long_pl": -5039.370000000001,
+  "total_long_pl": -5017.740000000002,
   "total_short_pl": 0.0,
   "n_alerts": 1,
   "n_drift_alerts": 0,
@@ -18,7 +18,7 @@
   "live_score": "2/5",
   "weeks_live": 0.42857142857142855,
   "cash": 545.0,
-  "long_market_value": 96961.48999999999,
+  "long_market_value": 96983.12,
   "spy_price": 701.53,
   "xbi_price": 135.445,
   "spy_inception_price": 685.99,
@@ -61,10 +61,10 @@
       "side": "long",
       "qty": 888.0,
       "avg_cost": 5.45,
-      "market_value": 5772.0,
-      "unrealized_pl": 932.4,
-      "current_price": 6.5,
-      "unrealized_plpc": 19.27
+      "market_value": 5789.76,
+      "unrealized_pl": 950.16,
+      "current_price": 6.52,
+      "unrealized_plpc": 19.63
     },
     {
       "ticker": "KPTI",
@@ -121,10 +121,10 @@
       "side": "long",
       "qty": 998.0,
       "avg_cost": 5.01,
-      "market_value": 4970.04,
-      "unrealized_pl": -29.94,
-      "current_price": 4.98,
-      "unrealized_plpc": -0.6
+      "market_value": 4976.33,
+      "unrealized_pl": -23.65,
+      "current_price": 4.9863,
+      "unrealized_plpc": -0.47
     },
     {
       "ticker": "HRTX",
@@ -171,10 +171,10 @@
       "side": "long",
       "qty": 5376.0,
       "avg_cost": 1.1847,
-      "market_value": 4905.6,
-      "unrealized_pl": -1463.25,
-      "current_price": 0.9125,
-      "unrealized_plpc": -22.98
+      "market_value": 4928.72,
+      "unrealized_pl": -1440.13,
+      "current_price": 0.9168,
+      "unrealized_plpc": -22.61
     },
     {
       "ticker": "MDXG",
@@ -201,10 +201,10 @@
       "side": "long",
       "qty": 2554.0,
       "avg_cost": 3.3756,
-      "market_value": 5644.34,
-      "unrealized_pl": -2976.95,
-      "current_price": 2.21,
-      "unrealized_plpc": -34.53
+      "market_value": 5618.8,
+      "unrealized_pl": -3002.49,
+      "current_price": 2.2,
+      "unrealized_plpc": -34.83
     },
     {
       "ticker": "VRDN",
